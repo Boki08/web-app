@@ -5,7 +5,7 @@ import { HttpClientXsrfModule } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import { OwlModule } from 'ngx-owl-carousel';
+//import { OwlModule } from 'ngx-owl-carousel';
 
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
@@ -70,7 +70,11 @@ const Routes = [
     NgbModule,
     FormsModule,
     ReactiveFormsModule,
-    OwlModule
+    //OwlModule,
+    
+  ],
+  entryComponents: [
+    CardsComponent
   ],
   providers:  [
     CanActivateViaAuthGuard,
