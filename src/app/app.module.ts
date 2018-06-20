@@ -1,10 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule,ViewChild } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule,HttpClient } from '@angular/common/http';
 import { HttpClientXsrfModule } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+
 //import { OwlModule } from 'ngx-owl-carousel';
 
 import { RouterModule, Routes } from '@angular/router';
@@ -20,7 +21,9 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { RentServicesComponent } from './rent-services/rent-services.component';
-
+import { VehiclePageComponent } from './vehicle-page/vehicle-page.component';
+import { VehicleCardsComponent } from './vehicle-cards/vehicle-cards.component';
+import { DataService } from './cards/dataRentService';
 
 const Routes = [
   {
@@ -43,6 +46,10 @@ const Routes = [
   {
     path: "rentServices",
     component: RentServicesComponent
+  },
+  {
+    path: "vehiclePage/:rentServiceId",
+    component: VehiclePageComponent
   }
 ]
 
@@ -60,7 +67,10 @@ const Routes = [
     NavbarComponent,
     HomeComponent,
     RegisterComponent,
-    RentServicesComponent
+    RentServicesComponent,
+    VehiclePageComponent,
+    
+    VehicleCardsComponent
   ],
   imports: [
     BrowserModule,
@@ -70,12 +80,13 @@ const Routes = [
     NgbModule,
     FormsModule,
     ReactiveFormsModule,
+
     //OwlModule,
     
   ],
-  entryComponents: [
+ /*   entryComponents: [
     CardsComponent
-  ],
+  ],  */
   providers:  [
     CanActivateViaAuthGuard,
     {
@@ -88,9 +99,11 @@ const Routes = [
       useValue: () => {
         return true;
       } 
-    }
+    },
+    DataService
     ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+ 
 })
 
 

@@ -1,0 +1,30 @@
+<div class="container-fluid">
+  <div class="row content">
+    <div class="col-sm-3 sidenav">
+      <h4>{{rentService.Name}}</h4>
+      <div class="card my-4">
+        <h5 class="card-header">{{rentService.Name}}</h5>
+        <div class="card-body">
+          <p class="card-text">Info:
+
+            <li>Description: <ul>{{rentService.Description}}</ul></li>
+            <li>Email: <b>{{rentService.Email}}</b></li>
+
+          </p>
+        </div>
+        <div class="card-footer">
+          <pre>Rate: <b>{{rentService.Grade}}</b></pre>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-sm-9">
+      <h4>
+        <small>RECENT POSTS</small>
+      </h4>
+      <hr>
+      <app-vehicle-cards #vehicleCards></app-vehicle-cards>
+    </div>
+  </div>
+</div>

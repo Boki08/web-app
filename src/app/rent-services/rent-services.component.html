@@ -45,8 +45,16 @@
       </div>
     </div>
     <div class="col-xl-9">
-      <div class="row">
-        <div #processContainer> </div>
+        <h4>
+            <small>Available Rent Services</small>
+          </h4>
+          <hr>
+      <app-cards #cards (sendServiceId)="getVehicles($event)"></app-cards>
+     <!--  <app-vehicle-cards #vehicleCards (sendServiceId)="getVehicles($event)"></app-vehicle-cards> -->
+     <!--  <div class="row">-->
+       <div class="row">
+         <div #processContainer> </div>
+       </div>
         <!-- <div class="jumbotron" style="width: 600px;">
         <div class="container">
           <h1 class="display-5">Fluid jumbotron</h1>
@@ -83,7 +91,7 @@
           </div>
         </div>
       </div> -->
-      </div>
+      <!-- </div> -->
     </div>
   </div>
 </div>

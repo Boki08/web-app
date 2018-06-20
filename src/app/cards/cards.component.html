@@ -1,96 +1,103 @@
-<!-- <div class="row"> -->
-
-<div class="col-lg-4 col-md-6 mb-4" >
-  <div class="card h-100">
-    <a href="#">
-      <img class="card-img-top" src="http://placehold.it/700x400" alt="">
-    </a>
-    <div class="card-body">
-      <h4 class="card-title">
-        <a href="#">{{data.Name}}</a>
-      </h4>
-      <p class="card-text">{{data.Description}}</p>
-    </div>
-    <div class="card-footer">
-      <pre>Rate: <b>{{data.Grade}}</b></pre>
+<div class="row">
+  <div class="col-lg-4 col-md-6 mb-4" *ngIf="isVisible[0]">
+    <div class="card h-100">
+      <a href="#">
+        <img class="card-img-top" src="http://placehold.it/700x400" alt="">
+      </a>
+      <div class="card-body">
+        <h4 class="card-title">
+          <a href="#" (click)="sendMessage(rentServices[0].RentServiceId)" [routerLink]="['/vehiclePage',rentServices[0].RentServiceId]">{{rentServices[0].Name}}</a>
+        </h4>
+        <p class="card-text">{{rentServices[0].Description}}</p>
+      </div>
+      <div class="card-footer">
+        <pre>Rate: <b>{{rentServices[0].Grade}}</b></pre>
+      </div>
     </div>
   </div>
 
-</div>
-
-<!-- <div class="col-lg-4 col-md-6 mb-4">
+  <div class="col-lg-4 col-md-6 mb-4" *ngIf="isVisible[1]">
     <div class="card h-100">
-      <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
+      <a href="#">
+        <img class="card-img-top" src="http://placehold.it/700x400" alt="">
+      </a>
       <div class="card-body">
         <h4 class="card-title">
-          <a href="#">{{rentServices[1].Name}}</a>
+            <a href="#" (click)="sendMessage(rentServices[1].RentServiceId)" [routerLink]="['/vehiclePage',rentServices[1].RentServiceId]">{{rentServices[1].Name}}</a>
         </h4>
         <p class="card-text">{{rentServices[1].Description}}</p>
       </div>
       <div class="card-footer">
-          <pre>Rate: <b>{{rentServices[1].Grade}}</b></pre>
+        <pre>Rate: <b>{{rentServices[1].Grade}}</b></pre>
       </div>
     </div>
   </div>
 
-  <div class="col-lg-4 col-md-6 mb-4">
+  <div class="col-lg-4 col-md-6 mb-4" *ngIf="isVisible[2]">
     <div class="card h-100">
-      <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
+      <a href="#">
+        <img class="card-img-top" src="http://placehold.it/700x400" alt="">
+      </a>
       <div class="card-body">
         <h4 class="card-title">
-          <a href="#">{{rentServices[2].Name}}</a>
+            <a href="#" (click)="sendMessage(rentServices[2].RentServiceId)" [routerLink]="['/vehiclePage',rentServices[2].RentServiceId]">{{rentServices[2].Name}}</a>
         </h4>
         <p class="card-text">{{rentServices[2].Description}}</p>
       </div>
       <div class="card-footer">
-          <pre>Rate: <b>{{rentServices[2].Grade}}</b></pre>
+        <pre>Rate: <b>{{rentServices[2].Grade}}</b></pre>
       </div>
     </div>
   </div>
 
-  <div class="col-lg-4 col-md-6 mb-4">
+  <div class="col-lg-4 col-md-6 mb-4" *ngIf="isVisible[3]">
     <div class="card h-100">
-      <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
+      <a href="#">
+        <img class="card-img-top" src="http://placehold.it/700x400" alt="">
+      </a>
       <div class="card-body">
         <h4 class="card-title">
-          <a href="#">{{rentServices[3].Name}}</a>
+            <a href="#" (click)="sendMessage(rentServices[3].RentServiceId)" [routerLink]="['/vehiclePage',rentServices[3].RentServiceId]">{{rentServices[3].Name}}</a>
         </h4>
         <p class="card-text">{{rentServices[3].Description}}</p>
       </div>
       <div class="card-footer">
-          <pre>Rate: <b>{{rentServices[3].Grade}}</b></pre>
+        <pre>Rate: <b>{{rentServices[3].Grade}}</b></pre>
       </div>
     </div>
   </div>
 
-  <div class="col-lg-4 col-md-6 mb-4">
+  <div class="col-lg-4 col-md-6 mb-4" *ngIf="isVisible[4]">
     <div class="card h-100">
-      <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
+      <a href="#">
+        <img class="card-img-top" src="http://placehold.it/700x400" alt="">
+      </a>
       <div class="card-body">
         <h4 class="card-title">
-          <a href="#">{{Name5}}</a>
+            <a href="#" (click)="sendMessage(rentServices[4].RentServiceId)" [routerLink]="['/vehiclePage',rentServices[4].RentServiceId]">{{rentServices[4].Name}}</a>
         </h4>
         <p class="card-text">{{rentServices[4].Description}}</p>
       </div>
       <div class="card-footer">
-          <pre>Rate: <b>{{rentServices[4].Grade}}</b></pre>
+        <pre>Rate: <b>{{rentServices[4].Grade}}</b></pre>
       </div>
     </div>
   </div>
 
-  <div class="col-lg-4 col-md-6 mb-4">
+  <div class="col-lg-4 col-md-6 mb-4" *ngIf="isVisible[5]">
     <div class="card h-100">
-      <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
+      <a href="#">
+        <img class="card-img-top" src="http://placehold.it/700x400" alt="">
+      </a>
       <div class="card-body">
         <h4 class="card-title">
-          <a href="#">{{Name6}}</a>
+            <a href="#" (click)="sendMessage(rentServices[5].RentServiceId)" [routerLink]="['/vehiclePage',rentServices[5].RentServiceId]">{{rentServices[5].Name}}</a>
         </h4>
         <p class="card-text">{{rentServices[5].Description}}</p>
       </div>
       <div class="card-footer">
-          <pre>Rate: <b>{{rentServices[5].Grade}}</b></pre>
+        <pre>Rate: <b>{{rentServices[5].Grade}}</b></pre>
       </div>
     </div>
   </div>
-  </div>
- -->
+</div>
