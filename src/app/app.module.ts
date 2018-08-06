@@ -24,6 +24,8 @@ import { RentServicesComponent } from './rent-services/rent-services.component';
 import { VehiclePageComponent } from './vehicle-page/vehicle-page.component';
 import { VehicleCardsComponent } from './vehicle-cards/vehicle-cards.component';
 import { DataService } from './cards/dataRentService';
+import { PagerComponent } from './pager/pager.component';
+import { Services } from './services/services.component';
 
 const Routes = [
   {
@@ -58,7 +60,7 @@ const Routes = [
   declarations: [
     AppComponent,
     LogInComponent,
-    //Services,
+   // Services,
     //TokenInterceptor,
     //CanActivateViaAuthGuard,
     CommunicationComponent,
@@ -70,7 +72,9 @@ const Routes = [
     RentServicesComponent,
     VehiclePageComponent,
     
-    VehicleCardsComponent
+    VehicleCardsComponent,
+    
+    PagerComponent
   ],
   imports: [
     BrowserModule,
@@ -80,13 +84,16 @@ const Routes = [
     NgbModule,
     FormsModule,
     ReactiveFormsModule,
-
+    NgbModule.forRoot()
     //OwlModule,
     
   ],
  /*   entryComponents: [
     CardsComponent
   ],  */
+  ///exports:[
+   // Services
+  //],
   providers:  [
     CanActivateViaAuthGuard,
     {

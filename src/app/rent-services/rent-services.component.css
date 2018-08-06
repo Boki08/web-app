@@ -1,3 +1,4 @@
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 .wrapper {
     display: flex;
     align-items: stretch;
@@ -36,7 +37,7 @@ a[aria-expanded="true"]::before {
         margin-left: 0;
     }
 }
-@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+
 
 
 body {
