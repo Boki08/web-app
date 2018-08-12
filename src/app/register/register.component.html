@@ -1,42 +1,72 @@
-<form class="needs-validation pt-3 " novalidate>
+<form class="needs-validation pt-3 " #f="ngForm" (ngSubmit)="onSubmit(f.value, f)" novalidate>
   <div class="form-group row pt-3 justify-content-md-center">
 
-    <label for="colFormLabelSm" class="col-sm-2 col-form-label ">First name</label>
+    <label for="fullNameInput" class="col-sm-2 col-form-label ">First name</label>
     <div class="col-sm-3">
-      <input type="text" class="form-control  is-valid" id="firstNameInput" placeholder="First name" required>
+      <input type="text" name="FullName" ngModel class="form-control  is-valid" id="fullNameInput" placeholder="Full name" required>
     </div>
     <!-- <label for="validationCustom01">First name</label>
         <input type="text" class="form-control is-valid" id="validationCustom01" placeholder="First name" value="Mark" required>
          -->
     <div class="invalid-feedback">
-      Please choose a name.
+      Please input a name.
     </div>
     <div class="col-lg-offset-2">
 
     </div>
   </div>
-  <div class="form-group row pt-3 justify-content-md-center">
-    <label for="colFormLabelSm" class="col-sm-2 col-form-label ">Last name</label>
+  <!-- <div class="form-group row pt-3 justify-content-md-center">
+    <label for="lastNameInput" class="col-sm-2 col-form-label ">Last name</label>
     <div class="col-sm-3">
-      <input type="text" class="form-control  is-valid" id="lastNameInput" placeholder="Last name" required>
+      <input type="text" name="Surname" ngModel class="form-control  is-valid" id="lastNameInput" placeholder="Last name" required>
+    </div>
+     <label for="validationCustom02">Last name</label>
+      <input type="text" class="form-control" id="validationCustom02" placeholder="Last name" value="Otto" required>
+      
+    <div class="invalid-feedback">
+      Please choose a last name.
+
+    </div>
+  </div> -->
+  <div class="form-group row pt-3 justify-content-md-center">
+    <label for="passwordInput" class="col-sm-2 col-form-label ">Password</label>
+    <div class="col-sm-3">
+      <input type="password" name="Password" ngModel class="form-control  is-valid" id="passwordInput" placeholder="Password" required #passwordInput="ngModel">
     </div>
     <!-- <label for="validationCustom02">Last name</label>
       <input type="text" class="form-control" id="validationCustom02" placeholder="Last name" value="Otto" required>
       -->
     <div class="invalid-feedback">
-      Please choose a last name.
+      Please choose a password.
 
     </div>
   </div>
   <div class="form-group row pt-3 justify-content-md-center">
-    <label for="colFormLabelSm" class="col-sm-2 col-form-label ">Email</label>
+    <label for="repeatedPassword" class="col-sm-2 col-form-label ">Repeat Password</label>
+    <div class="col-sm-3">
+      <input type="password" name="RepeatedPassword" ngModel class="form-control  is-valid" id="repeatedPassword" placeholder="Repeat Password" required #repeatedPassword="ngModel">
+      <div *ngIf="(repeatedPassword.dirty || repeatedPassword.touched)"
+           class="alert alert-danger">  
+            <div [hidden]="passwordInput.value == repeatedPassword.value">
+              <p id="errPasswordMatch">Password doesn't match</p>
+            </div>
+          </div>
+    </div>
+    
+    <div class="invalid-feedback">
+      Please choose a password.
+
+    </div>
+  </div>
+  <div class="form-group row pt-3 justify-content-md-center">
+    <label for="emailInput" class="col-sm-2 col-form-label ">Email</label>
 
 
     <!-- <div class="input-group-prepend">
           <span class="input-group-text" id="inputGroupPrepend">@</span>
         </div> -->
     <div class="col-sm-3">
-      <input type="email" class="form-control" id="emailInput" placeholder="Email" aria-describedby="inputGroupPrepend" required>
+      <input type="email" name="Email" ngModel class="form-control" id="emailInput" placeholder="Email" aria-describedby="inputGroupPrepend" required>
     </div>
     <div class="invalid-feedback">
       Please choose a username.
@@ -45,23 +75,24 @@
   </div>
 
   <div class="form-group row pt-3 justify-content-md-center">
-    <label for="colFormLabelSm" class="col-sm-2 col-form-label ">Birthday</label>
+    <label for="birthDate" class="col-sm-2 col-form-label ">Birthday</label>
     <div class="col-sm-3">
       <div class="input-group">
-        <input class="form-control" [minDate]="minDate" [maxDate]="maxDate" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="model"
-          ngbDatepicker #d="ngbDatepicker">
-        <div class="input-group-append">
+        <input class="form-control" type="date" name="BirthDate" min="minDate" max="maxDate" placeholder="yyyy-MM-dd" [(ngModel)]="model" >
+          <!-- ngbDatepicker #d="ngbDatepicker"
+         <div class="input-group-append">
           <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
             <img src="img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
           </button>
-        </div>
+        </div> -->
+       
       </div>
     </div>
   </div>
   <!-- 
       <hr/>
-      <pre>Model: {{ model | json }}</pre> -->
-  <hr/>
+      <pre>Model: {{ model | json }}</pre> 
+  <hr/>-->
   <div class="form-group row pt-3 justify-content-md-center">
   <button class="btn btn-primary justify-content-md-center" type="submit">Register</button>
 </div>

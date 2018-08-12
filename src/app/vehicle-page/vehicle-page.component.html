@@ -26,5 +26,6 @@
       <hr>
       <app-vehicle-cards #vehicleCards></app-vehicle-cards>
     </div>
+    <app-pager [page]="pageNumber" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
   </div>
 </div>

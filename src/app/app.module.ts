@@ -4,6 +4,7 @@ import { HttpClientModule,HttpClient } from '@angular/common/http';
 import { HttpClientXsrfModule } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Http, Response } from '@angular/http';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 //import { OwlModule } from 'ngx-owl-carousel';

@@ -77,7 +77,7 @@ export class RentServicesComponent implements OnInit {
     //(<ProcessComponent>componentRef.instance).data=step.desc;
     
   }
-  getVehicles($event) {
+  /* getVehicles($event) {
     let a;
     this.Service.getRentServiceCars($event).subscribe(
       data => {
@@ -97,6 +97,6 @@ export class RentServicesComponent implements OnInit {
       error => {
         console.log(error);
       })
-  }
+  } */
   
 }

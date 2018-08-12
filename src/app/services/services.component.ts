@@ -4,7 +4,7 @@ import { Headers, RequestOptions } from '@angular/http';
 import { HttpClient, HttpHeaders,HttpResponse } from '@angular/common/http';
 import { RentServices } from '../models/rentServices';
 import { Observable } from 'rxjs';
-import { Vehicles } from '../models/vehicles';
+import { User } from '../models/user.model';
 import { Config } from '../../../node_modules/protractor';
 
 @Injectable({
@@ -73,12 +73,13 @@ getTheToken(dataString:string){
    // return this.httpClient.get('http://localhost:51680/api/rentService/getAll?&pagenumber='+pageNumber+'&pageSize='+pageSize, {"headers": headers}) as Observable<any>
    return this.httpClient.get<Config>('http://localhost:51680/api/rentService/getAll?&pagenumber='+pageNumber+'&pageSize='+pageSize, { observe: 'response' }); 
   }
-  getRentServiceCars(serviceId:number):Observable<Vehicles[]> {
+  getRentServiceCars(serviceId:number,pageNumber:number,pageSize:number):Observable<HttpResponse<Config>>{//Observable<Vehicles[]> {
 
     let headers = new HttpHeaders();
     headers = headers.append('Content-type', 'application/x-www-form-urlencoded');
     
-    return this.httpClient.get('http://localhost:51680/api/vehicle/getServiceVehicles/'+serviceId, {"headers": headers}) as Observable<any>
+    //return this.httpClient.get('http://localhost:51680/api/vehicle/getServiceVehicles/'+serviceId, {"headers": headers}) as Observable<any>
+    return this.httpClient.get<Config>('http://localhost:51680/api/vehicle/getServiceVehicles/'+serviceId+'?&pagenumber='+pageNumber+'&pageSize='+pageSize, { observe: 'response' }); //as Observable<any>
 
     /* x.subscribe(
       res => {
@@ -91,4 +92,10 @@ getTheToken(dataString:string){
       }
     ); */
   }
+  postAddUser(newUser: User): Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-type', 'application/json');
+    return this.httpClient.post('http://localhost:51680/api/appUser/addAppUser', newUser, {"headers": headers});
+  }
+
 }

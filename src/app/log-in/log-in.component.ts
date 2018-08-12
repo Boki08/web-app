@@ -21,7 +21,7 @@ export class LogInComponent implements OnInit {
 
   onSubmit(user: User, form: NgForm) {
     console.log(user);
-    this.Service.getTheToken(`username=`+user.name+`&password=`+user.password+`&grant_type=password`);
+    this.Service.getTheToken(`username=`+user.fullName+`&password=`+user.password+`&grant_type=password`);
 
     form.reset();
   }

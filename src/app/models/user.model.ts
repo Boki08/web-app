@@ -1,9 +1,18 @@
 export class User {
-    name: string;
-    password: number;
+    /* Id:number;
+    FullName:string;
+    Email:string;
+    BirthDay:Date;
+    PersonalDocument:string;
+    Activated:boolean; */
 
-    constructor(name:string, password: number) {
-        this.name = name;
-        this.password = password;
-    }
+
+    constructor(
+        public fullName: string,
+        public email: string,
+        public birthDate: Date,
+        public password: string,
+        public repeatedPassword: string,
+    ){ }
+
 }
