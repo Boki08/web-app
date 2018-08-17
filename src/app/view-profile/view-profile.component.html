@@ -1,0 +1,57 @@
+<div class="container mt-5 col-xl-6 justify-content-md-center">
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Profile Data</th>
+        <th scope="col"></th>
+      </tr>
+
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Name:</th>
+        <td>{{userData.FullName}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Email:</th>
+        <td>{{userData.Email}}</td>
+      </tr>
+      <tr>
+        <th scope="row">BirthDate:</th>
+        <td>{{userData.BirthDate}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Document Picture:</th>
+        <td>
+          <p [ngStyle]="{'color': userData.DocumentPicture!=NULL? 'green' : 'red'}">{{userData.DocumentPicture!=NULL? 'Added'
+            : 'Not added' }}</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Activated:</th>
+        <td>
+          <p [ngStyle]="{'color': userData.Activated? 'green' : 'red'}">{{true == userData.Activated ? 'Yes' : 'No' }}</p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-sm"  style="
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: center;" >
+        <button type="button" class="btn btn-primary"  [routerLink]="['/editUser']">Edit Profile</button>
+      </div>
+      <div class="col-sm " style="
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: center;" >
+        <button type="button" class="btn btn-primary" [routerLink]="['/changePassword']">Change password</button>
+      </div>
+    </div>
+  </div>
+</div>

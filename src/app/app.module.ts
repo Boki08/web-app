@@ -14,7 +14,7 @@ import { AppComponent } from './app.component';
 import { LogInComponent } from './log-in/log-in.component';
 //import { Services } from './services/services.component';
 import { TokenInterceptor } from './interceptors/interceptors.component';
-import { CanActivateViaAuthGuard } from './guard/guard.component';
+import { AdminManagerGuard } from './guard/guard.component';
 import { CommunicationComponent } from './communication/communication.component';
 import { SearchComponent } from './search/search.component';
 import { CardsComponent } from './cards/cards.component';
@@ -27,6 +27,12 @@ import { VehicleCardsComponent } from './vehicle-cards/vehicle-cards.component';
 import { DataService } from './cards/dataRentService';
 import { PagerComponent } from './pager/pager.component';
 import { Services } from './services/services.component';
+import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
+import { ViewProfileComponent } from './view-profile/view-profile.component';
+import { ManageUsersComponent } from './manage-users/manage-users.component';
+import { ManageServicesComponent } from './manage-services/manage-services.component';
+
 
 const Routes = [
   {
@@ -53,6 +59,21 @@ const Routes = [
   {
     path: "vehiclePage/:rentServiceId",
     component: VehiclePageComponent
+  },
+  {
+    path: "editUser",
+    component: EditProfileComponent,
+    canActivate:['IsLoggedInGuard']
+  },
+  {
+    path: "changePassword",
+    component: ChangePasswordComponent,
+    canActivate:['IsLoggedInGuard']
+  },
+  {
+    path: "viewProfile",
+    component: ViewProfileComponent,
+    canActivate:['IsLoggedInGuard']
   }
 ]
 
@@ -75,7 +96,18 @@ const Routes = [
     
     VehicleCardsComponent,
     
-    PagerComponent
+    PagerComponent,
+    
+    EditProfileComponent,
+    
+    ChangePasswordComponent,
+    
+    ViewProfileComponent,
+    
+    ManageUsersComponent,
+    
+    ManageServicesComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -96,7 +128,7 @@ const Routes = [
    // Services
   //],
   providers:  [
-    CanActivateViaAuthGuard,
+    AdminManagerGuard,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
@@ -107,6 +139,12 @@ const Routes = [
       useValue: () => {
         return true;
       } 
+    },
+    {
+      provide:'IsLoggedInGuard',
+      useValue: () => { if(localStorage.role !=undefined)
+        return true;
+      }
     },
     DataService
     ],

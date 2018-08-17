@@ -8,11 +8,14 @@ export class User {
 
 
     constructor(
-        public fullName: string,
-        public email: string,
-        public birthDate: Date,
-        public password: string,
-        public repeatedPassword: string,
+        public UserId: string,
+        public FullName: string,
+        public Email: string,
+        public BirthDate: Date,
+        public Password: string,
+        public RepeatedPassword: string,
+        public DocumentPicture:string,
+        public Activated:boolean,
     ){ }
 
 }

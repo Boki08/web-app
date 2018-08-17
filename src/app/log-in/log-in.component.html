@@ -1,30 +1,46 @@
-<div class="dropdown">
+<div  is-open="isOpen" class="dropdown"  *ngIf="isVisibleNotLogged" >
 
-<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-  Log In
+  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Log In
   </button>
-<div class="dropdown-menu dropdown-menu-right">
-  <form #f="ngForm" class="px-4 py-3" (ngSubmit)="onSubmit(f.value, f)">
-    <div class="form-group">
-      <label for="Name">Name</label>
-      <input type="text" class="form-control" name="name" placeholder="email@example.com" ngModel>
-    </div>
-    <div class="form-group">
-      <label for="Password">Password</label>
-      <input type="text" class="form-control" name="password" placeholder="Password" ngModel>
-    </div>
-    <div class="form-check">
-      <input type="checkbox" class="form-check-input" id="dropdownCheck">
-      <label class="form-check-label" for="dropdownCheck">
-        Remember me
-      </label>
-    </div>
-    <button type="submit" class="btn btn-primary">Sign in</button>
-  </form>
-  <div class="dropdown-divider"></div>
-  <a class="dropdown-item" [routerLink]="['/register']" >New around here? Sign up</a>
-  <a class="dropdown-item" href="#">Forgot password?</a>
+  <div ng-click="isOpen = false" class="dropdown-menu dropdown-menu-right">
+    <form #f="ngForm" class="px-4 py-3" (ngSubmit)="onSubmit(f.value, f)">
+      <div class="form-group">
+        <label for="Username">Username</label>
+        <input type="text" class="form-control" name="Username" placeholder="Username" ngModel>
+      </div>
+      <div class="form-group">
+        <label for="Password">Password</label>
+        <input type="password" class="form-control" name="Password" placeholder="Password" ngModel>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="dropdownCheck">
+        <label class="form-check-label" for="dropdownCheck">
+          Remember me
+        </label>
+      </div>
+      <button type="submit" class="btn btn-primary" (click)="getUser()">Sign in</button>
+    </form>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" [routerLink]="['/register']">New around here? Sign up</a>
+    <a class="dropdown-item" href="#">Forgot password?</a>
+  </div>
 </div>
-</div>
-<!-- Modal -->
 
+<div is-open="isOpen" class="dropdown" *ngIf="isVisibleLogged">
+
+  <button type="button" id="loggedButton" #loggedButton class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+    aria-expanded="false">
+    Log In
+  </button>
+  <div  ng-click="isOpen = false" class="dropdown-menu dropdown-menu-right">
+
+      <a class="dropdown-item" [routerLink]="['/viewProfile']">View Profile</a>
+      <a class="dropdown-item" [routerLink]="['/editUser']">Edit Profile</a>
+      <a class="dropdown-item" [routerLink]="['/changePassword']">Change Password</a>
+      <a class="dropdown-item"  [routerLink]="['/home']" (click)="logOut()">Log Out</a>
+
+  </div>
+</div>
+
+<!-- Modal -->
