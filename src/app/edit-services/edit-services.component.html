@@ -1,0 +1,69 @@
+<div class="container  justify-content-md-center">
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="wrapper ">
+
+        <nav id="sidebar">
+          <!-- Sidebar Header -->
+          <div class="sidebar-header">
+            <h3>Selection</h3>
+          </div>
+
+          <!-- Sidebar Links -->
+          <ul class="list-unstyled components">
+            <div class="container  justify-content-md-center">
+
+              <div class="col col-md-7">
+                <div class="custom-control custom-radio">
+                  <input type="radio" class="custom-control-input" (click)="setradio('Approved')" value="Approved" id="defaultGroupExample1"
+                    name="groupOfDefaultRadios" checked>
+                  <label class="custom-control-label" for="defaultGroupExample1">Approved</label>
+                </div>
+
+
+                <div class="custom-control custom-radio mt-3">
+                  <input type="radio" class="custom-control-input" (click)="setradio('NotApproved')" value="NotApproved" #defaultGroupExample2 id="defaultGroupExample2"
+                    name="groupOfDefaultRadios">
+                  <label class="custom-control-label" for="defaultGroupExample2">Not Approved</label>
+                </div>
+
+              
+
+              
+                <div class="row">
+                  <div class="col-4">
+                   
+                      <div class="custom-control custom-checkbox">
+                          <input type="checkbox" class="custom-control-input" (click)="setCheckBox1()" [disabled]="!defaultGroupExample2.checked" #defaultUnchecked id="defaultUnchecked">
+                          <label class="custom-control-label" for="defaultUnchecked">Without Offices</label>
+                      </div>
+
+                      <div class="custom-control custom-checkbox">
+                          <input type="checkbox" class="custom-control-input" (click)="setCheckBox2()" [disabled]="!defaultGroupExample2.checked" #defaultUnchecked2 id="defaultUnchecked2">
+                          <label class="custom-control-label" for="defaultUnchecked2">Without Vehicles</label>
+                      </div>
+
+                      
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ul>
+        </nav>
+
+      </div>
+    </div>
+    <div class="col-xl-9">
+      <h4>
+        <small>Available Rent Services</small>
+      </h4>
+      <hr>
+      <app-cards #RentServicescards  [isUser]="false"></app-cards>
+      <div class="row">
+        <div #processContainer> </div>
+      </div>
+
+      <app-pager [page]="pageNumber" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
+    </div>
+  </div>
+</div>

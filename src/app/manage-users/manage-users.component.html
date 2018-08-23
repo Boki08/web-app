@@ -1,3 +1,189 @@
-<p>
-  manage-users works!
-</p>
+<div class="container  justify-content-md-center">
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="wrapper ">
+
+        <nav id="sidebar">
+          <!-- Sidebar Header -->
+          <div class="sidebar-header">
+            <h3>Selection</h3>
+          </div>
+
+          <!-- Sidebar Links -->
+          <ul class="list-unstyled components">
+            <div class="container  justify-content-md-center">
+              
+                <div class="col col-md-7">
+                    <div class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input" (click)="setradio('Manager')" value="Managers" id="defaultGroupExample1" name="groupOfDefaultRadios" checked>
+                        <label class="custom-control-label" for="defaultGroupExample1">Managers</label>
+                      </div>
+                      
+                      
+                      <div class="custom-control custom-radio mt-3">
+                        <input type="radio" class="custom-control-input" (click)="setradio('AppUser')" value="Users" id="defaultGroupExample2" name="groupOfDefaultRadios" >
+                        <label class="custom-control-label" for="defaultGroupExample2">Users</label>
+                      </div>
+                
+              </div>
+            </div>
+          </ul>
+        </nav>
+
+      </div>
+    </div>
+    <div class="col ">
+        <div class="text-left  mt-3" *ngIf="isSelected('Manager')" >  
+            <p>List of Managers </p>
+          </div>  
+           
+          <div class="text-left  mt-3" *ngIf="isSelected('AppUser')">  
+             <p>List of Users </p>
+          </div> 
+      <table class="table  table-hover mt-2">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">BirthDate</th>
+            <th scope="col">Picture uploaded</th>
+            <th scope="col">Profile Edited</th>
+            <th scope="col">Approved</th>
+          </tr>
+
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users ; let i = index" (click)="userDetails(user,i)" data-toggle="modal" data-target="#userModal">
+            <th scope="row">{{i+1}}</th>
+            <td>{{user.FullName}}</td>
+            <td>{{user.Email}}</td>
+            <td>{{user.BirthDate}}</td>
+            <td>
+              <p [ngStyle]="{'color': user.DocumentPicture!=NULL? 'green' : 'red'}">{{user.DocumentPicture!=NULL? 'Added'
+                : 'Not added' }}</p>
+            </td>
+            <td>
+              <p [ngStyle]="{'color': user.ProfileEdited? 'green' : 'red'}">{{true == user.ProfileEdited ? 'Yes' : 'No' }}</p>
+            </td>
+            <td>
+              <p [ngStyle]="{'color': user.Activated? 'green' : 'red'}">{{true == user.Activated ? 'Yes' : 'No' }}</p>
+            </td>
+          </tr>
+
+
+        </tbody>
+      </table>
+
+      <app-pager [page]="pageIndex" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
+
+
+
+
+      <!-- Modal -->
+      <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">{{null != userData ? userData.FullName: 'no data' }}</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="container">
+                <div class="row justify-content-center">
+
+                  <div class="col">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Profile Data</th>
+                          <th scope="col"></th>
+                        </tr>
+
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th scope="row">User ID:</th>
+                          <td>{{null != userData ? userData.UserId: 'no data' }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Email:</th>
+                          <td>{{null != userData ? userData.Email: 'no data' }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">BirthDate:</th>
+                          <td>{{null != userData ? userData.BirthDate: 'no data' }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Document Picture:</th>
+                          <td>
+                            <p [ngStyle]="{'color': (userData!=null && userData.DocumentPicture!=NULL)? 'green' : 'red'}">{{(userData!=null
+                              && userData.DocumentPicture!=NULL)?'Added' : 'Not added' }}</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Profile Edited:</th>
+                          <td>
+                            <p [ngStyle]="{'color': (userData!=null && true == userData.ProfileEdited) ? 'green' : 'red'}">{{(userData!=null
+                              && true == userData.ProfileEdited) ? 'Yes': 'No'}}</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Activated:</th>
+                          <td>
+                            <p [ngStyle]="{'color': (userData!=null && true == userData.Activated) ? 'green' : 'red'}">{{(userData!=null
+                              && true == userData.Activated) ? 'Yes': 'No'}}</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col">
+                    <div class="container">
+                      <div class="row justify-content-center">
+                        <span class="border border-primary">
+                          <div class="col">
+
+                            <div class="thumbnail">
+                              <img class="group list-group-image" src='http://localhost:51680/api/appUser/getDocumentPicture?path={{userData!=null ? userData.DocumentPicture:"" }}'
+                                alt="" />
+                              <div class="caption">
+
+                              </div>
+                            </div>
+
+                          </div>
+                        </span>
+                      </div>
+                      <div class="row justify-content-center mt-4">
+
+                        <div class="col col-md-3" style="display: flex;flex-flow: row wrap;justify-content: center;">
+                          <button class="btn btn-danger" (click)="acceptUser(counter,userData.UserId,false)" [disabled]="(userData==null || userData.DocumentPicture==null|| userData.ProfileEdited==false || userData.Activated==true  || disableButtons==true)">
+                            <span class="glyphicon glyphicon-remove"></span> Decline
+                          </button>
+                        </div>
+                        <div class="col col-md-3" style="display: flex;flex-flow: row wrap;justify-content: center;">
+                          <button class="btn btn-success" (click)="acceptUser(counter,userData.UserId,true)" [disabled]="(userData==null || userData.DocumentPicture==null || userData.ProfileEdited==false || userData.Activated==true || disableButtons==true)">
+                            <span class="glyphicon glyphicon-ok"></span> Accept
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

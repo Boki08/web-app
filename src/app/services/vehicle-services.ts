@@ -11,7 +11,7 @@ import 'rxjs/add/operator/map'; */
 @Injectable({
   providedIn: 'root'
 })
-export class UserServices {
+export class VehicleServices {
 
   constructor( private httpClient: HttpClient) { }
 
@@ -53,5 +53,19 @@ export class UserServices {
   ActivateUser(userId:number,activated:boolean): Observable<any> {
     return this.httpClient.get("http://localhost:51680/api/appUser/activateUser/"+userId+"/"+activated) ;
     
+  }
+
+
+
+  GetRentVehicles(serviceId:number,pageIndex:number, pageSize:number){
+    return this.httpClient.get("http://localhost:51680/api/vehicle/allServiceVehicles/"+pageIndex+"/"+pageSize+"/"+serviceId, { observe: 'response' }) ;
+    
+  }
+  DisableVehicle(vehicleId:number,enabled:boolean){
+    return this.httpClient.get("http://localhost:51680/api/vehicle/disableVehicle/"+vehicleId+"/"+enabled);
+  }
+
+  GetVehiclePictures(vehicleId:number){
+    return this.httpClient.get('http://localhost:51680/api/vehicle/getVehiclePictures/'+vehicleId);
   }
 }

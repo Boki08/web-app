@@ -1,12 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule,ViewChild } from '@angular/core';
-import { HttpClientModule,HttpClient } from '@angular/common/http';
+import { NgModule, ViewChild } from '@angular/core';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { HttpClientXsrfModule } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Http, Response } from '@angular/http';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AgmCoreModule } from '@agm/core';
 //import { OwlModule } from 'ngx-owl-carousel';
 
 import { RouterModule, Routes } from '@angular/router';
@@ -32,13 +32,16 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { ViewProfileComponent } from './view-profile/view-profile.component';
 import { ManageUsersComponent } from './manage-users/manage-users.component';
 import { ManageServicesComponent } from './manage-services/manage-services.component';
+import { AddServiceComponent } from './add-service/add-service.component';
+import { EditServicesComponent } from './edit-services/edit-services.component';
+import { ManageOfficesVehiclesComponent } from './manage-offices-vehicles/manage-offices-vehicles.component';
 
 
 const Routes = [
   {
     path: "",
     redirectTo: "home",
-    pathMatch:"full"
+    pathMatch: "full"
   },
   {
     path: "login",
@@ -63,18 +66,49 @@ const Routes = [
   {
     path: "editUser",
     component: EditProfileComponent,
-    canActivate:['IsLoggedInGuard']
+    canActivate: ['IsLoggedInGuard']
   },
   {
     path: "changePassword",
     component: ChangePasswordComponent,
-    canActivate:['IsLoggedInGuard']
+    canActivate: ['IsLoggedInGuard']
   },
   {
     path: "viewProfile",
     component: ViewProfileComponent,
-    canActivate:['IsLoggedInGuard']
+    canActivate: ['IsLoggedInGuard']
   }
+  ,
+  {
+    path: "manageUsers",
+    component: ManageUsersComponent,
+    canActivate: ['IsAdminGuard']
+  }
+  ,
+  {
+    path: "manageServices",
+    component: ManageServicesComponent,
+    canActivate: ['IsAdminGuard']
+  }
+  ,
+  {
+    path: "addServiceComponent",
+    component: AddServiceComponent,
+    canActivate: ['IsManagerGuard']
+  }
+  ,
+  {
+    path: "editServicesComponent",
+    component: EditServicesComponent,
+    canActivate: ['IsManagerGuard']
+  } ,
+  {
+    path: "manageOfficesVehiclesComponent/:rentServiceId",
+    component: ManageOfficesVehiclesComponent,
+    canActivate: ['IsManagerGuard']
+  }
+
+  
 ]
 
 
@@ -82,7 +116,7 @@ const Routes = [
   declarations: [
     AppComponent,
     LogInComponent,
-   // Services,
+    // Services,
     //TokenInterceptor,
     //CanActivateViaAuthGuard,
     CommunicationComponent,
@@ -93,21 +127,27 @@ const Routes = [
     RegisterComponent,
     RentServicesComponent,
     VehiclePageComponent,
-    
+
     VehicleCardsComponent,
-    
+
     PagerComponent,
-    
+
     EditProfileComponent,
-    
+
     ChangePasswordComponent,
-    
+
     ViewProfileComponent,
-    
+
     ManageUsersComponent,
-    
+
     ManageServicesComponent,
-    
+
+    AddServiceComponent,
+
+    EditServicesComponent,
+
+    ManageOfficesVehiclesComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -117,17 +157,20 @@ const Routes = [
     NgbModule,
     FormsModule,
     ReactiveFormsModule,
-    NgbModule.forRoot()
+    NgbModule.forRoot(), 
+    BrowserModule,
+    AgmCoreModule.forRoot({apiKey: 'AIzaSyDnihJyw_34z5S1KZXp90pfTGAqhFszNJk'}),
+  
     //OwlModule,
-    
+
   ],
- /*   entryComponents: [
-    CardsComponent
-  ],  */
+  /*   entryComponents: [
+     CardsComponent
+   ],  */
   ///exports:[
-   // Services
+  // Services
   //],
-  providers:  [
+  providers: [
     AdminManagerGuard,
     {
       provide: HTTP_INTERCEPTORS,
@@ -135,27 +178,43 @@ const Routes = [
       multi: true
     },
     {
-      provide: 'CanAlwaysActivateGuard',
+      provide: 'AdminManagerGuard',
       useValue: () => {
-        return true;
-      } 
-    },
-    {
-      provide:'IsLoggedInGuard',
-      useValue: () => { if(localStorage.role !=undefined)
         return true;
       }
     },
+    {
+      provide: 'IsLoggedInGuard',
+      useValue: () => {
+        if (localStorage.role != undefined)
+          return true;
+      }
+    },
+    {
+      provide: 'IsAdminGuard',
+      useValue: () => {
+        if (localStorage.role == "Admin")
+          return true;
+      }
+    }
+    ,
+    {
+      provide: 'IsManagerGuard',
+      useValue: () => {
+        if (localStorage.role == "Manager")
+          return true;
+      }
+    },
     DataService
-    ],
+  ],
   bootstrap: [AppComponent],
- 
+
 })
 
 
 export class AppModule {
-  
-  
+
+
 
 
 }

@@ -1,4 +1,4 @@
-export class RentServices {
+/* export class RentServices {
     rentServiceId:number
      name :string
      email  :string 
@@ -15,3 +15,4 @@ export class RentServices {
         this.grade = grade;
     }
 }
+ */

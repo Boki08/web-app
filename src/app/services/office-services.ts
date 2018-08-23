@@ -11,7 +11,7 @@ import 'rxjs/add/operator/map'; */
 @Injectable({
   providedIn: 'root'
 })
-export class UserServices {
+export class OfficeServices {
 
   constructor( private httpClient: HttpClient) { }
 
@@ -53,5 +53,12 @@ export class UserServices {
   ActivateUser(userId:number,activated:boolean): Observable<any> {
     return this.httpClient.get("http://localhost:51680/api/appUser/activateUser/"+userId+"/"+activated) ;
     
+  }
+
+
+
+  GetRentOffices(serviceId:number,pageIndex:number, pageSize:number){
+    return this.httpClient.get("http://localhost:51680/api/office/allServiceOffices/"+pageIndex+"/"+pageSize+"/"+serviceId, { observe: 'response' }) ;
+   
   }
 }

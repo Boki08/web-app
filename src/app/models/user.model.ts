@@ -16,6 +16,7 @@ export class User {
         public RepeatedPassword: string,
         public DocumentPicture:string,
         public Activated:boolean,
+        public ProfileEdited:boolean,
     ){ }
 
 }

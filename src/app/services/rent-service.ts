@@ -5,13 +5,14 @@ import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
+import { ServiceData } from '../models/serviceData';
 /* import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map'; */
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserServices {
+export class RentServices {
 
   constructor( private httpClient: HttpClient) { }
 
@@ -30,24 +31,23 @@ export class UserServices {
     return this.httpClient.post("http://localhost:51680/api/Account/Logout",localStorage.jwt);
   }
   
-  EditUser(userData:User, fileToUpload:File){
-    const endpoint = 'http://localhost:51680/api/appUser/editAppUser';
+  AddRentService(serviceData:ServiceData, fileToUpload:File){
+    const endpoint = 'http://localhost:51680/api/rentService/addRentService';
     const formData: FormData = new FormData();
-    if(!userData.DocumentPicture)
+    if(!serviceData.Logo)
     {
-      formData.append('Image', fileToUpload, fileToUpload.name);
+      formData.append('Logo', fileToUpload, fileToUpload.name);
     }
     
-    formData.append('FullName', userData.FullName.toString());
-    formData.append('BirthDate', userData.BirthDate.toString());
-    formData.append('Email', userData.Email.toString());
-    formData.append('UserId', userData.UserId.toString());
+    formData.append('Name', serviceData.Name.toString());
+    formData.append('Email', serviceData.Email.toString());
+    formData.append('Description', serviceData.Description.toString());
 
     return this.httpClient.post(endpoint, formData);
   }
 
-  GetAllUsers(type:string,pageIndex:number,pageSize:number): Observable<any> {
-    return this.httpClient.get("http://localhost:51680/api/appUser/allUsers/"+pageIndex+"/"+pageSize+"/"+type, { observe: 'response' }) ;
+  GetAllServicesManager(isApproved:boolean,noOffices:boolean,noVehicles:boolean,pageIndex:number,pageSize:number): Observable<any> {
+    return this.httpClient.get("http://localhost:51680/api/rentService/getAllRentServicesManager/"+pageIndex+"/"+pageSize+"/"+isApproved+"/"+noOffices+"/"+noVehicles, { observe: 'response' }) ;
     
   }
   ActivateUser(userId:number,activated:boolean): Observable<any> {

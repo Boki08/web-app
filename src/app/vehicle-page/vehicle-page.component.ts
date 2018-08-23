@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { VehicleCardsComponent } from '../vehicle-cards/vehicle-cards.component';
 import { Services } from '../services/services.component';
-import { RentServices } from '../models/rentServices';
+import { ServiceData } from '../models/serviceData';
 import { DataService } from '../cards/dataRentService';
 @Component({
   selector: 'app-vehicle-page',
@@ -15,8 +15,8 @@ export class VehiclePageComponent implements OnInit {
   Id: string = "-1";
   vehicles: any;
   counter: number;
-  rentServiceTemp:RentServices;
-  rentService:RentServices;
+  rentServiceTemp:ServiceData;
+  rentService:ServiceData;
   pageNumber:number=1;
   pageSize:number=2;
   totalPagesNumber:number=20;

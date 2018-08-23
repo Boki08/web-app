@@ -49,50 +49,13 @@
             <small>Available Rent Services</small>
           </h4>
           <hr>
-      <app-cards #cards (sendServiceId)="getVehicles($event)"></app-cards>
-     <!--  <app-vehicle-cards #vehicleCards (sendServiceId)="getVehicles($event)"></app-vehicle-cards> -->
-     <!--  <div class="row">-->
+      <!-- <app-cards #cards (sendServiceId)="getVehicles($event)" [isUser]="true"></app-cards> -->
+      <app-cards #cards  [isUser]="true"></app-cards>
        <div class="row">
          <div #processContainer> </div>
        </div>
-        <!-- <div class="jumbotron" style="width: 600px;">
-        <div class="container">
-          <h1 class="display-5">Fluid jumbotron</h1>
-          <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
-        </div>
-      </div> -->
-
-        <!-- <div class="card border-primary mb-3" style="max-width: 18rem;">
-        <div class="card-header">All Renting Services</div>
-        <div class="card-body text-primary">
-          <h5 class="card-title">Primary card title</h5>
-
-          <div class="container">
-            <div class="dropdown">
-              <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Tutorials
-                <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                <li role="presentation">
-                  <a role="menuitem" tabindex="-1" href="#">HTML</a>
-                </li>
-                <li role="presentation">
-                  <a role="menuitem" tabindex="-1" href="#">CSS</a>
-                </li>
-                <li role="presentation">
-                  <a role="menuitem" tabindex="-1" href="#">JavaScript</a>
-                </li>
-                <li role="presentation" class="divider"></li>
-                <li role="presentation">
-                  <a role="menuitem" tabindex="-1" href="#">About Us</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div> -->
-      <!-- </div> -->
-      <app-pager [page]="pageNumber" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
+        
+      <app-pager [page]="pageNumber" [totalPages]="totalPagesNumber"   (changePage)="page=$event" ></app-pager>
     </div>
   </div>
 </div>

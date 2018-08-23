@@ -1,0 +1,79 @@
+<form class="needs-validation pt-3 " #f="ngForm" (ngSubmit)="onSubmit(f.value, f)" novalidate>
+  <div class="form-group row pt-3 justify-content-md-center">
+
+    <label for="NameInput" class="col-sm-2 col-form-label ">Name of the RentService</label>
+    <div class="col-sm-3">
+      <input type="text" name="Name" ngModel class="form-control  is-valid" id="NameInput" placeholder="RentService" required>
+    </div>
+    <!-- <label for="validationCustom01">First name</label>
+          <input type="text" class="form-control is-valid" id="validationCustom01" placeholder="First name" value="Mark" required>
+           -->
+    <div class="invalid-feedback">
+      Please input a name.
+    </div>
+    <div class="col-lg-offset-2">
+
+    </div>
+
+  </div>
+
+  <div class="form-group row pt-3 justify-content-md-center">
+    <label for="emailInput" class="col-sm-2 col-form-label ">Email</label>
+
+
+    <!-- <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroupPrepend">@</span>
+            </div> -->
+    <div class="col-sm-3">
+      <input type="email" name="Email" ngModel class="form-control" id="emailInput" placeholder="Email" aria-describedby="inputGroupPrepend"
+        required>
+    </div>
+    <div class="invalid-feedback">
+      Please choose a username.
+
+    </div>
+  </div>
+
+
+
+
+
+  <div class="form-group row pt-3 justify-content-md-center">
+    <label for="descriptionInput" class="col-sm-2 col-form-label ">Description of the RentService</label>
+
+
+    <!-- <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroupPrepend">@</span>
+              </div> -->
+    <div class="col-sm-3">
+      <input type="text" name="Description" ngModel class="form-control" id="descriptionInput" placeholder="Description" aria-describedby="inputGroupPrepend"
+        required>
+    </div>
+    <div class="invalid-feedback">
+      Please input a Description.
+
+    </div>
+  </div>
+
+
+  <div class="form-group row pt-3 justify-content-md-center">
+    <div class="row">
+      <div class="col col-lg-4 col-lg-push-4">
+        <img [src]="imageUrl" style="width:250px; height:150px">
+        <br>
+        <br>
+        <input type="file" (change)="handleFileInput($event.target.files)" name="Logo" accept="image/*">
+        <br>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 
+        <hr/>
+        <pre>Model: {{ model | json }}</pre> 
+    <hr/>-->
+  <div class="form-group row pt-3 justify-content-md-center">
+    <button class="btn btn-primary justify-content-md-center" type="submit">Add</button>
+  </div>
+</form>

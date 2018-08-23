@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { User } from '../models/user.model';
 import { NgForm } from '@angular/forms';
 import { LogInService } from '../services/log-in-service';
@@ -18,6 +18,12 @@ export class LogInComponent implements AfterViewInit {
   isVisibleLogged: boolean;
   name: string = "-1";
   @ViewChild('loggedButton') loggedButton: ElementRef;
+
+  @Output()
+  private loggedOutEvent:EventEmitter<number>= new EventEmitter<number>();
+
+ 
+
   constructor(private LogInService: LogInService, private UserService: UserServices) {
   }
 
@@ -74,9 +80,11 @@ export class LogInComponent implements AfterViewInit {
     this.UserService.LogOut()
     .subscribe(
       data=>{
+
         localStorage.removeItem("jwt");
         localStorage.removeItem("role");
         this.setUp();
+        this.loggedOutEvent.emit();
         alert("Logged out");
       },
       error=>{

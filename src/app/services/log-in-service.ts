@@ -2,7 +2,7 @@ import { Injectable, Output, EventEmitter } from '@angular/core';
 
 import { Headers, RequestOptions } from '@angular/http';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { RentServices } from '../models/rentServices';
+import { ServiceData } from '../models/serviceData';
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
 import { Config } from '../../../node_modules/protractor';
