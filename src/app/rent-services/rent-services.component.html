@@ -18,7 +18,7 @@
               <a href="#">About</a>
             </li>
 
-            <li>
+            
               <!-- Link with dropdown items -->
               <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Pages</a>
               <ul class="collapse list-unstyled" id="homeSubmenu">
@@ -39,23 +39,24 @@
               <li>
                 <a href="#">Contact</a>
               </li>
+            
           </ul>
         </nav>
 
       </div>
     </div>
     <div class="col-xl-9">
-        <h4>
-            <small>Available Rent Services</small>
-          </h4>
-          <hr>
+      <h4>
+        <small>Available Rent Services</small>
+      </h4>
+      <hr>
       <!-- <app-cards #cards (sendServiceId)="getVehicles($event)" [isUser]="true"></app-cards> -->
-      <app-cards #cards  [isUser]="true"></app-cards>
-       <div class="row">
-         <div #processContainer> </div>
-       </div>
-        
-      <app-pager [page]="pageNumber" [totalPages]="totalPagesNumber"   (changePage)="page=$event" ></app-pager>
+      <app-cards #cards [isUser]="true"></app-cards>
+      <div class="row">
+        <div #processContainer> </div>
+      </div>
+
+      <app-pager [page]="pageNumber" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
     </div>
   </div>
 </div>

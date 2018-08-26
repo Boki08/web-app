@@ -54,4 +54,9 @@ export class RentServices {
     return this.httpClient.get("http://localhost:51680/api/appUser/activateUser/"+userId+"/"+activated) ;
     
   }
+GetRentService(sericeId:number):Observable<any>{
+  return this.httpClient.get("http://localhost:51680/api/rentService/getRentService/"+sericeId, { observe: 'response' }) ;
+    
+}
+  
 }

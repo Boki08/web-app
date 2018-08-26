@@ -1,65 +1,169 @@
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-  <li class="nav-item" (click)="getServiceOffices()">
-    <a class="nav-link active" id="offices-tab" data-toggle="tab" href="#offices" role="tab" aria-controls="offices" aria-selected="true">Offices</a>
-  </li>
-  <li class="nav-item" (click)="getServiceVehicles()">
-    <a class="nav-link" id="vehicles-tab" data-toggle="tab" href="#vehicles" role="tab" aria-controls="vehicles" aria-selected="false">Vehicles</a>
-  </li>
-</ul>
+<div class="container">
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="wrapper ">
 
-<div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade show active" id="offices" role="tabpanel" aria-labelledby="offices-tab">
+        <nav id="sidebar">
+          <div class="sidebar-header">
+            <h4>{{rentServiceTemp.Name}}</h4>
+          </div>
 
-    <table class="table  table-hover mt-2">
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Address</th>
-        </tr>
+          <li class="list-unstyled components">
+            <div class="card-unstyled " id="list" #list>
+              <h5 class="card-header">Info:</h5>
+              <div class="card-body">
+                <p class="card-text">
 
-      </thead>
-      <tbody>
-        <tr *ngFor="let office of offices ; let i = index" (click)="officeDetails(office,i)" data-toggle="modal" data-target="#officeModal">
-          <th scope="row">{{i+1}}</th>
-          <td>{{office.OfficeId}}</td>
-          <td>{{office.Address}}</td>
-        </tr>
+                  <li>Description:
+                    <ul>{{rentServiceTemp.Description}}</ul>
+                  </li>
+                  <li>Email:
+                    <ul>{{rentServiceTemp.Email}}</ul>
+                  </li>
+
+                </p>
+              </div>
+              <div class="card-footer-unstyled ml-4">
+                <li>Rate: <b>{{rentServiceTemp.Grade}}</b></li>
+              </div>
+            </div>
+          </li>
+          <!--  <div class="container mt-4">
+            <div class=row>
+              <div class="col col-md-5">
+                <button type="button" class="btn btn-primary ">Add Office</button>
+              </div>
+              <div class="col col-md-5">
+                <button type="button" class="btn btn-primary ">Add Vehicle</button>
+              </div>
+            </div>
+
+          </div> -->
+          <ul class="list-unstyled components" #linkList id="linkList">
+            <li>
+              <span class="border border-primary"><a href="#" [routerLink]="['/addOfficeComponent',rentServiceTemp.RentServiceId]"
+                  class="text-center">Add Office</a></span>
+            </li>
+            <li>
+              <span class="border border-primary mt-3"> <a href="#" [routerLink]="['/addVehicleComponent',rentServiceTemp.RentServiceId]"
+                  class="text-center">Add Vehicle</a></span>
+            </li>
+          </ul>
+
+          <!-- <div class="sidebar-header">
+            <h3>Selection</h3>
+          </div>
+
+         
+          <ul class="list-unstyled components">
+            <div class="container  justify-content-md-center">
+
+              <div class="col col-md-7">
+                <div class="custom-control custom-radio">
+                  <input type="radio" class="custom-control-input" (click)="setradio('Approved')" value="Approved" id="defaultGroupExample1"
+                    name="groupOfDefaultRadios" checked>
+                  <label class="custom-control-label" for="defaultGroupExample1">Approved</label>
+                </div>
 
 
-      </tbody>
-    </table>
-    <app-pager [page]="pageIndexO" [totalPages]="totalPagesNumberO" (changePage)="pageO=$event"></app-pager>
-  </div>
-  <div class="tab-pane fade" id="vehicles" role="tabpanel" aria-labelledby="vehicles-tab">
+                <div class="custom-control custom-radio mt-3">
+                  <input type="radio" class="custom-control-input" (click)="setradio('NotApproved')" value="NotApproved" #defaultGroupExample2
+                    id="defaultGroupExample2" name="groupOfDefaultRadios">
+                  <label class="custom-control-label" for="defaultGroupExample2">Not Approved</label>
+                </div>
 
-    <table class="table  table-hover mt-2">
-      <thead>
-        <tr>
-          <th scope="col">Num</th>
-          <th scope="col">Model</th>
-          <th scope="col">Year of Manifacturing</th>
-          <th scope="col">Manufacturer</th>
-          <th scope="col">Available</th>
-        </tr>
 
-      </thead>
-      <tbody>
-        <tr *ngFor="let vehicle of vehicles ; let i = index" (click)="vehicleDetails(vehicle,i)" data-toggle="modal" data-target="#vehicleModal">
-          <th scope="row">{{i+1}}</th>
-          <td>{{vehicle.Model}}</td>
-          <td>{{vehicle.YearOfManufacturing}}</td>
-          <td>{{vehicle.Manufacturer}}</td>
-          <td>
-            <p [ngStyle]="{'color': (vehicle!=null && vehicle.Available==true)? 'green' : 'red'}">{{(vehicle!=null && vehicle.Available==true)?'Yes'
-              : 'No' }}</p>
-          </td>
-      </tbody>
-    </table>
-    <app-pager [page]="pageIndexV" [totalPages]="totalPagesNumberV" (changePage)="pageV=$event"></app-pager>
+
+
+                <div class="row">
+                  <div class="col-4">
+
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (click)="setCheckBox1()" [disabled]="!defaultGroupExample2.checked" #defaultUnchecked
+                        id="defaultUnchecked">
+                      <label class="custom-control-label" for="defaultUnchecked">Without Offices</label>
+                    </div>
+
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (click)="setCheckBox2()" [disabled]="!defaultGroupExample2.checked" #defaultUnchecked2
+                        id="defaultUnchecked2">
+                      <label class="custom-control-label" for="defaultUnchecked2">Without Vehicles</label>
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ul> -->
+        </nav>
+
+      </div>
+    </div>
+    <div class="col">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" (click)="getServiceOffices()">
+          <a class="nav-link active" id="offices-tab" data-toggle="tab" href="#offices" role="tab" aria-controls="offices" aria-selected="true">Offices</a>
+        </li>
+        <li class="nav-item" (click)="getServiceVehicles()">
+          <a class="nav-link" id="vehicles-tab" data-toggle="tab" href="#vehicles" role="tab" aria-controls="vehicles" aria-selected="false">Vehicles</a>
+        </li>
+      </ul>
+
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="offices" role="tabpanel" aria-labelledby="offices-tab">
+
+          <table class="table  table-hover mt-2">
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Address</th>
+              </tr>
+
+            </thead>
+            <tbody>
+              <tr *ngFor="let office of offices ; let i = index" (click)="officeDetails(office,i)" data-toggle="modal" data-target="#officeModal">
+                <th scope="row">{{i+1}}</th>
+                <td>{{office.OfficeId}}</td>
+                <td>{{office.Address}}</td>
+              </tr>
+
+
+            </tbody>
+          </table>
+          <app-pager [page]="pageIndexO" [totalPages]="totalPagesNumberO" (changePage)="pageO=$event"></app-pager>
+        </div>
+        <div class="tab-pane fade" id="vehicles" role="tabpanel" aria-labelledby="vehicles-tab">
+
+          <table class="table  table-hover mt-2">
+            <thead>
+              <tr>
+                <th scope="col">Num</th>
+                <th scope="col">Model</th>
+                <th scope="col">Year of Manifacturing</th>
+                <th scope="col">Manufacturer</th>
+                <th scope="col">Available</th>
+              </tr>
+
+            </thead>
+            <tbody>
+              <tr *ngFor="let vehicle of vehicles ; let i = index" (click)="vehicleDetails(vehicle,i)" data-toggle="modal" data-target="#vehicleModal">
+                <th scope="row">{{i+1}}</th>
+                <td>{{vehicle.Model}}</td>
+                <td>{{vehicle.YearOfManufacturing}}</td>
+                <td>{{vehicle.Manufacturer}}</td>
+                <td>
+                  <p [ngStyle]="{'color': (vehicle!=null && vehicle.Available==true)? 'green' : 'red'}">{{(vehicle!=null
+                    && vehicle.Available==true)?'Yes' : 'No' }}</p>
+                </td>
+            </tbody>
+          </table>
+          <app-pager [page]="pageIndexV" [totalPages]="totalPagesNumberV" (changePage)="pageV=$event"></app-pager>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-
-
 <!-- Vehicle Modal -->
 <div class="modal fade" id="vehicleModal" tabindex="-1" role="dialog" aria-labelledby="VehicleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -142,37 +246,40 @@
 
 
             <div class="col">
-              <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                <ol class="carousel-indicators">
-                  <li data-target="#carouselExampleIndicators" *ngFor="let picture of vehilePictures; let i = index" data-slide-to="i" [class.active]="isFirst"></li>
+              <span class="border border-primary">
+                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                  <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators" *ngFor="let picture of vehiclePictures; let i = index" data-slide-to="i" [class.active]="isFirst"></li>
 
-                  <!--       <li data-target="#carouselExampleIndicators"  data-slide-to="i+1"></li> -->
+                    <!--       <li data-target="#carouselExampleIndicators"  data-slide-to="i+1"></li> -->
 
-                  <!--    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li> -->
-                </ol>
-                <div class="carousel-inner">
-                  <!-- <div class="carousel-item active" >   
+                    <!--    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li> -->
+                  </ol>
+                  <div class="carousel-inner">
+                    <!-- <div class="carousel-item active" >   
                     <img class="d-block w-100" src='http://localhost:51680/api/vehicle/getVehiclePicture/?path={{tempPic!=null ? tempPic:"" }}'  alt="">
                   </div>  -->
-                  <div class="carousel-item" data-slide-to="i+1" *ngFor="let picture of vehilePictures; let isFirst = first" [class.active]="isFirst">
-                    <img class="d-block w-100" src='http://localhost:51680/api/vehicle/getVehiclePicture/?path={{picture.Data }}' alt="">
-                  </div>
-                  <!--  <div class="carousel-item">
+                    <div class="carousel-item" data-slide-to="i+1" *ngFor="let picture of vehiclePictures; let isFirst = first" [class.active]="isFirst">
+                      <img class="d-block w-100" style="width:250px; height:250px" src='http://localhost:51680/api/vehicle/getVehiclePicture/?path={{picture.Data }}'
+                        alt="">
+                    </div>
+                    <!--  <div class="carousel-item">
                     <img class="d-block w-100" src="..." >
                   </div>
                   <div class="carousel-item">
                     <img class="d-block w-100" src="..." >
                   </div> -->
+                  </div>
+                  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                  </a>
                 </div>
-                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Next</span>
-                </a>
-              </div>
+              </span>
             </div>
 
             <!-- <div class="col">
@@ -331,7 +438,7 @@
                     <div class="col">
 
                       <div class="thumbnail">
-                        <img class="group list-group-image" src='http://localhost:51680/api/office/getOfficePicture?path={{office!=null ? office.Picture:"" }}'
+                        <img class="group list-group-image" style="width:250px; height:250px" src='http://localhost:51680/api/office/getOfficePicture?path={{office!=null ? office.Picture:"" }}'
                           alt="" />
                         <div class="caption">
 
@@ -360,30 +467,30 @@
             </div>
           </div>
           <div class="row">
-            <div class="col">
-                <p>
-                    <!-- Kreiramo mapu -->
-                    <agm-map [latitude]="mapInfo.centerLat" [longitude]="mapInfo.centerLong" [zoom]="18" (mapClick)="placeMarker($event)">
-                     
-                      <!-- Postavljamo markere -->
-                      <agm-marker [latitude]="mapInfo.centerLat" [longitude]="mapInfo.centerLong" [title]="mapInfo.title"
-                      [label]="mapInfo.label">
-                  
-                        <!-- Svakom markeru dodajemo info-window (Nije obavezno!)-->
-                        <agm-info-window [latitude]="mapInfo.centerLat" [longitude]="mapInfo.centerLong" >
-                  
-                          <!-- U info-window stavljamo html -->
-                          <span style="font-size: 16px;font-family:'Times New Roman'">Fakultet tehničkih nauka</span>
-                          <br/>
-                          <span style="font-family:'Times New Roman'; color:gray;"><strong>Jugodrvo</strong></span>
-                          <span style="font-family:'Times New Roman'; color:gray;">Bulevar oslobođenja 131</span>
-                          <a [href]="mapInfo.link">See the site.</a>
-                        </agm-info-window>
-                  
-                      </agm-marker>
-                    </agm-map>
-                  </p>
-                  
+            <div class="col col-xl-6">
+
+              <!-- Kreiramo mapu -->
+              <!-- ng-class="{latitude:((null != office)? office.Latitude: 1) }" ng-class="{longitude:((null != office) ? office.Longitude: 1 )}  -->
+              <agm-map [latitude]="office.Latitude" [longitude]="office.Longitude" [zoom]="18">
+
+                <!-- Postavljamo markere -->
+                <agm-marker [latitude]="office.Latitude" [longitude]="office.Longitude" [title]="mapInfo.title" [label]="mapInfo.label">
+
+                  <!-- Svakom markeru dodajemo info-window (Nije obavezno!)-->
+                  <agm-info-window [latitude]="office.Latitude" [longitude]="office.Longitude">
+
+                    <!-- U info-window stavljamo html -->
+                    <span style="font-size: 16px;font-family:'Times New Roman'">Fakultet tehničkih nauka</span>
+                    <br/>
+                    <span style="font-family:'Times New Roman'; color:gray;"><strong>Jugodrvo</strong></span>
+                    <span style="font-family:'Times New Roman'; color:gray;">Bulevar oslobođenja 131</span>
+                    <a [href]="mapInfo.link">See the site.</a>
+                  </agm-info-window>
+
+                </agm-marker>
+              </agm-map>
+
+
             </div>
           </div>
 

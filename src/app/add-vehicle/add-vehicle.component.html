@@ -1,0 +1,117 @@
+<form class="needs-validation pt-3 " #f="ngForm" (ngSubmit)="onSubmit(f.value, f)" novalidate>
+  <div class="form-group row pt-3 justify-content-md-center">
+
+    <label for="ModelInput" class="col-sm-2 col-form-label ">Model</label>
+    <div class="col-sm-3">
+      <input type="text" name="Model" ngModel class="form-control  is-valid" id="ModelInput" placeholder="Model" required>
+    </div>
+
+    <div class="invalid-feedback">
+      Please input a Model.
+    </div>
+    <div class="col-lg-offset-2">
+
+    </div>
+  </div>
+
+  <div class="form-group row pt-3 justify-content-md-center">
+    <label for="ManufacturerInput" class="col-sm-2 col-form-label ">Manufacturer</label>
+    <div class="col-sm-3">
+      <input type="Manufacturer" name="Manufacturer" ngModel class="form-control  is-valid" id="ManufacturerInput" placeholder="Manufacturer"
+        required #ManufacturerInput="ngModel">
+    </div>
+    <!-- <label for="validationCustom02">Last name</label>
+        <input type="text" class="form-control" id="validationCustom02" placeholder="Last name" value="Otto" required>
+        -->
+    <div class="invalid-feedback">
+      Please choose a Manufacturer.
+
+    </div>
+  </div>
+
+  <div class="form-group row pt-3 justify-content-md-center">
+    <label for="YearOfManufacturingInput" class="col-sm-2 col-form-label ">Year of Manufacturing</label>
+    <div class="col-sm-3">
+      <input type="YearOfManufacturing" name="YearOfManufacturing" ngModel class="form-control  is-valid" id="YearOfManufacturingInput"
+        placeholder="YearOfManufacturing" required #YearOfManufacturingInput="ngModel">
+    </div>
+    <!-- <label for="validationCustom02">Last name</label>
+          <input type="text" class="form-control" id="validationCustom02" placeholder="Last name" value="Otto" required>
+          -->
+    <div class="invalid-feedback">
+      Please choose a Year Of Manufacturing.
+
+    </div>
+  </div>
+
+  <div class="form-group row pt-3 justify-content-md-center">
+      <label for="HourlyPriceInput" class="col-sm-2 col-form-label ">Hourly Price</label>
+      <div class="col-sm-3">
+        <input type="HourlyPrice" name="HourlyPrice" ngModel class="form-control  is-valid" id="Hourly Price" placeholder="HourlyPrice"
+          required #HourlyPriceInput="ngModel">
+      </div>
+      <!-- <label for="validationCustom02">Last name</label>
+              <input type="text" class="form-control" id="validationCustom02" placeholder="Last name" value="Otto" required>
+              -->
+      <div class="invalid-feedback">
+        Please choose a Hourly Price.
+  
+      </div>
+    </div>
+
+  <div class="form-group row pt-3 justify-content-md-center">
+    <label for="DescriptionInput" class="col-sm-2 col-form-label ">Description</label>
+    <div class="col-sm-3">
+      <input type="Description" name="Description" ngModel class="form-control  is-valid" id="DescriptionInput" placeholder="Description"
+        required #DescriptionInput="ngModel">
+    </div>
+    <!-- <label for="validationCustom02">Last name</label>
+            <input type="text" class="form-control" id="validationCustom02" placeholder="Last name" value="Otto" required>
+            -->
+    <div class="invalid-feedback">
+      Please choose a Description.
+
+    </div>
+  </div>
+  
+
+
+  <div class="form-group row pt-3 justify-content-md-center">
+    <button type="button" id="dLabel" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      {{selectedType}}
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dLabel">
+      <a class="dropdown-item" *ngFor="let type of vehicleTypes" (click)="GetSelectedType(type)">{{type.Type}}</a>
+
+    </div>
+    <!-- <li *ngFor="let type of vehicleTypes; let i = index" (click) = "GetSelectedType($event, i);">   
+        <a class="dropdown-item"  href="#">{{ type.Type}}</a>
+      </li> -->
+  </div>
+
+  <div class="form-group row pt-3 justify-content-md-center">
+    <div class="row">
+      <div class="col col-lg-4 col-lg-push-4">
+        <img [src]="imagesUrl[1]" style="width:250px; height:150px">
+        <br>
+        <br>
+        <input type="file" (change)="handleFileInput($event.target.files)" name="Picture" #Picture accept="image/*">
+        <br>
+      </div>
+      <div class="col col-lg-4 col-lg-push-4">
+        <img [src]="imagesUrl[2]" style="width:250px; height:150px">
+      </div>
+      <div class="col col-lg-4 col-lg-push-4">
+        <img [src]="imagesUrl[3]" style="width:250px; height:150px">
+      </div>
+    </div>
+  </div>
+  <!-- 
+        <hr/>
+        <pre>Model: {{ model | json }}</pre> 
+    <hr/>-->
+  <div class="form-group row pt-3 justify-content-md-center">
+      <button class="btn btn-primary justify-content-md-center" [routerLink]="['/manageOfficesVehiclesComponent',rentServiceId]">Back</button>
+    <button class="btn btn-primary justify-content-md-center" type="submit">Register</button>
+  </div>
+</form>

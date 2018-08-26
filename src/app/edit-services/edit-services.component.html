@@ -13,7 +13,7 @@
           <ul class="list-unstyled components">
             <div class="container  justify-content-md-center">
 
-              <div class="col col-md-7">
+              <div class="col col-md-9">
                 <div class="custom-control custom-radio">
                   <input type="radio" class="custom-control-input" (click)="setradio('Approved')" value="Approved" id="defaultGroupExample1"
                     name="groupOfDefaultRadios" checked>
@@ -31,18 +31,18 @@
 
               
                 <div class="row">
-                  <div class="col-4">
-                   
+                  <div class="col mt-3">
+                   <ul>
                       <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" (click)="setCheckBox1()" [disabled]="!defaultGroupExample2.checked" #defaultUnchecked id="defaultUnchecked">
+                          <input type="checkbox" class="custom-control-input" (change)="setCheckBoxOffice($event)" [disabled]="!defaultGroupExample2.checked" #defaultUnchecked id="defaultUnchecked">
                           <label class="custom-control-label" for="defaultUnchecked">Without Offices</label>
                       </div>
 
                       <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" (click)="setCheckBox2()" [disabled]="!defaultGroupExample2.checked" #defaultUnchecked2 id="defaultUnchecked2">
+                          <input type="checkbox" class="custom-control-input" (change)="setCheckBoxVehicle($event)" [disabled]="!defaultGroupExample2.checked" #defaultUnchecked2 id="defaultUnchecked2">
                           <label class="custom-control-label" for="defaultUnchecked2">Without Vehicles</label>
                       </div>
-
+                    </ul>
                       
                   </div>
                 </div>
@@ -63,7 +63,7 @@
         <div #processContainer> </div>
       </div>
 
-      <app-pager [page]="pageNumber" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
+      <app-pager [page]="pageIndex" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
     </div>
   </div>
 </div>

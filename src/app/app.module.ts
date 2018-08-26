@@ -35,6 +35,8 @@ import { ManageServicesComponent } from './manage-services/manage-services.compo
 import { AddServiceComponent } from './add-service/add-service.component';
 import { EditServicesComponent } from './edit-services/edit-services.component';
 import { ManageOfficesVehiclesComponent } from './manage-offices-vehicles/manage-offices-vehicles.component';
+import { AddOfficeComponent } from './add-office/add-office.component';
+import { AddVehicleComponent } from './add-vehicle/add-vehicle.component';
 
 
 const Routes = [
@@ -106,9 +108,18 @@ const Routes = [
     path: "manageOfficesVehiclesComponent/:rentServiceId",
     component: ManageOfficesVehiclesComponent,
     canActivate: ['IsManagerGuard']
+  },
+  {
+    path: "addOfficeComponent/:rentServiceId",
+    component: AddOfficeComponent,
+    canActivate: ['IsManagerGuard']
   }
-
-  
+  ,
+  {
+    path: "addVehicleComponent/:rentServiceId",
+    component: AddVehicleComponent,
+    canActivate: ['IsManagerGuard']
+  }
 ]
 
 
@@ -147,6 +158,10 @@ const Routes = [
     EditServicesComponent,
 
     ManageOfficesVehiclesComponent,
+
+    AddOfficeComponent,
+
+    AddVehicleComponent,
 
   ],
   imports: [

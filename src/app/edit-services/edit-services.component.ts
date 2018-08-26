@@ -12,58 +12,66 @@ import { CardsComponent } from '../cards/cards.component';
 })
 export class EditServicesComponent implements OnInit {
 
-  constructor(private RentService:RentServices) { }
+  constructor(private RentService: RentServices) { }
 
   @ViewChild('RentServicescards') child: CardsComponent;
-  @ViewChild('defaultUnchecked') checkBox1:ElementRef;
-  @ViewChild('defaultUnchecked2') checkBox2:ElementRef;
+  @ViewChild('defaultUnchecked') checkBox1: ElementRef;
+  @ViewChild('defaultUnchecked2') checkBox2: ElementRef;
   pageSize: number = 6;
   pageIndex: number = 1;
-  totalPagesNumber: number;
+  totalPagesNumber: number=1;
   private selectedLink: string = "Approved";
-  noOffices:boolean=false;
-  noVehicles:boolean=false;
-  isApproved:boolean=true;
-  services:ServiceData[];
+  noOffices: boolean = false;
+  noVehicles: boolean = false;
+  isApproved: boolean = true;
+  services: ServiceData[];
   counter: number;
+
+
+  set page(val: number){
+    if(val!== this.pageIndex) {
+      this.pageIndex=val;
+      this.getAllServices();
+    }
+  }
 
   ngOnInit() {
     this.getAllServices();
   }
 
   setradio(value: string): void {
-    if(value=='Approved'){
-      this.noVehicles=false;
-      this.noOffices=false;
-      this.checkBox1.nativeElement.checked=false;
-      this.checkBox2.nativeElement.checked=false;
-      this.isApproved=true;
+    if (value == 'Approved') {
+      this.noVehicles = false;
+      this.noOffices = false;
+      this.checkBox1.nativeElement.checked = false;
+      this.checkBox2.nativeElement.checked = false;
+      this.isApproved = true;
     }
-    else{
-      this.isApproved=false;
+    else {
+      this.isApproved = false;
     }
     this.getAllServices();
     this.selectedLink = value;
 
   }
-  
-  setCheckBox1(){
-    this.noOffices=!this.noOffices;
+
+ /*  setCheckBox1() {
+    this.noOffices = !this.noOffices;
     this.getAllServices();
   }
-  setCheckBox2(){
-    this.noVehicles=!this.noVehicles;
+  setCheckBox2() {
+    this.noVehicles = !this.noVehicles;
     this.getAllServices();
   }
+ */
+  getAllServices() {
 
-  getAllServices(){
-    
 
-    this.RentService.GetAllServicesManager(this.isApproved, this.noOffices, this.noVehicles,this.pageIndex,this.pageSize).subscribe(
+    this.RentService.GetAllServicesManager(this.isApproved, this.noOffices, this.noVehicles, this.pageIndex, this.pageSize).subscribe(
       data => {
         this.services = data.body as ServiceData[];
         //this.userData=this.users[0];
-this.counter=0;
+        this.counter = 0;
         let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
         this.pageIndex = jsonData.currentPage;
@@ -77,15 +85,33 @@ this.counter=0;
            (<ProcessComponent>componentReference.instance).data=item; */
           //this.Cards.toggle(this.counter);
           this.child.rentServices[this.counter] = item;
-          this.child.isVisible[this.counter++]=true;
+          this.child.isVisible[this.counter++] = true;
         }
-        for (let i=this.counter;i<this.pageSize;i++) {
-            this.child.isVisible[i]=false;
-          
+        for (let i = this.counter; i < this.pageSize; i++) {
+          this.child.isVisible[i] = false;
+
         }
       },
       error => {
         console.log(error);
       })
+  }
+  setCheckBoxVehicle(event) {
+    if (event.target.checked) {
+      this.noVehicles = true;
+    }
+    else {
+      this.noVehicles = false;
+    }
+    this.getAllServices();
+  }
+  setCheckBoxOffice(event) {
+    if (event.target.checked) {
+      this.noOffices = true;
+    }
+    else {
+      this.noOffices = false;
+    }
+    this.getAllServices();
   }
 }
