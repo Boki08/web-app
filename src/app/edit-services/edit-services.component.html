@@ -22,28 +22,30 @@
 
 
                 <div class="custom-control custom-radio mt-3">
-                  <input type="radio" class="custom-control-input" (click)="setradio('NotApproved')" value="NotApproved" #defaultGroupExample2 id="defaultGroupExample2"
-                    name="groupOfDefaultRadios">
+                  <input type="radio" class="custom-control-input" (click)="setradio('NotApproved')" value="NotApproved" #defaultGroupExample2
+                    id="defaultGroupExample2" name="groupOfDefaultRadios">
                   <label class="custom-control-label" for="defaultGroupExample2">Not Approved</label>
                 </div>
 
-              
 
-              
+
+
                 <div class="row">
                   <div class="col mt-3">
-                   <ul>
+                    <ul>
                       <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" (change)="setCheckBoxOffice($event)" [disabled]="!defaultGroupExample2.checked" #defaultUnchecked id="defaultUnchecked">
-                          <label class="custom-control-label" for="defaultUnchecked">Without Offices</label>
+                        <input type="checkbox" class="custom-control-input" (change)="setCheckBoxOffice($event)" [disabled]="!defaultGroupExample2.checked"
+                          #defaultUnchecked id="defaultUnchecked">
+                        <label class="custom-control-label" for="defaultUnchecked">Without Offices</label>
                       </div>
 
                       <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" (change)="setCheckBoxVehicle($event)" [disabled]="!defaultGroupExample2.checked" #defaultUnchecked2 id="defaultUnchecked2">
-                          <label class="custom-control-label" for="defaultUnchecked2">Without Vehicles</label>
+                        <input type="checkbox" class="custom-control-input" (change)="setCheckBoxVehicle($event)" [disabled]="!defaultGroupExample2.checked"
+                          #defaultUnchecked2 id="defaultUnchecked2">
+                        <label class="custom-control-label" for="defaultUnchecked2">Without Vehicles</label>
                       </div>
                     </ul>
-                      
+
                   </div>
                 </div>
               </div>
@@ -58,12 +60,15 @@
         <small>Available Rent Services</small>
       </h4>
       <hr>
-      <app-cards #RentServicescards  [isUser]="false"></app-cards>
+      <app-cards #RentServicescards [isUser]="false"></app-cards>
       <div class="row">
         <div #processContainer> </div>
       </div>
 
-      <app-pager [page]="pageIndex" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
-    </div>
+      <div class=" row justify-content-md-center">
+
+        <app-pager [page]="pageIndex" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
+      </div>
+    </div>>
   </div>
 </div>

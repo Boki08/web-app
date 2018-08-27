@@ -131,7 +131,10 @@
 
             </tbody>
           </table>
-          <app-pager [page]="pageIndexO" [totalPages]="totalPagesNumberO" (changePage)="pageO=$event"></app-pager>
+          <div class=" row justify-content-md-center">
+
+            <app-pager [page]="pageIndexO" [totalPages]="totalPagesNumberO" (changePage)="pageO=$event"></app-pager>
+          </div>
         </div>
         <div class="tab-pane fade" id="vehicles" role="tabpanel" aria-labelledby="vehicles-tab">
 
@@ -158,8 +161,12 @@
                 </td>
             </tbody>
           </table>
-          <app-pager [page]="pageIndexV" [totalPages]="totalPagesNumberV" (changePage)="pageV=$event"></app-pager>
+          <div class=" row justify-content-md-center">
+
+            <app-pager [page]="pageIndexV" [totalPages]="totalPagesNumberV" (changePage)="pageV=$event"></app-pager>
+          </div>
         </div>
+
       </div>
     </div>
   </div>

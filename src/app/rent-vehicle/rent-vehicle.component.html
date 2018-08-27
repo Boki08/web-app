@@ -1,0 +1,50 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="wrapper ">
+
+        <nav id="sidebar" class="column">
+          <div class="sidebar-header">
+            <h4>{{vehicle!=null?vehicle.Model:'No Data'}}</h4>
+          </div>
+
+          <li class="list-unstyled components">
+            <div class="card-unstyled " id="list" #list>
+              <h5 class="card-header">Info:</h5>
+              <div class="card-body">
+                <p class="card-text">
+
+                  <li>Manufacturer:
+                    <ul>{{vehicle!=null?vehicle.Manufacturer:'No Data'}}</ul>
+                  </li>
+                  <li>Year of Manufacturing:
+                    <ul>{{vehicle!=null?vehicle.YearOfManufacturing:'No Data'}}</ul>
+                  </li>
+                  <li>Price per Hour:
+                    <ul>{{vehicle!=null?vehicle.HourlyPrice:'No Data'}}</ul>
+                  </li>
+                  <li>Description:
+                    <ul>{{vehicle!=null?vehicle.Description:'No Data'}}</ul>
+                  </li>
+                  
+
+                </p>
+              </div>
+            </div>
+          </li>
+        </nav>
+
+      </div>
+    </div>
+    <div class="form-group">
+        <button type="button" id="dLabel" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{selectedDepartureOffice}}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dLabel">
+
+          <a class="dropdown-item" *ngFor="let office of offices" (click)="GetSelectedDepartureOffice(office)">{{office.Address}}</a>
+        </div>
+
+      </div>
+  </div>
+</div>

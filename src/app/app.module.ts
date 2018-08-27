@@ -37,6 +37,7 @@ import { EditServicesComponent } from './edit-services/edit-services.component';
 import { ManageOfficesVehiclesComponent } from './manage-offices-vehicles/manage-offices-vehicles.component';
 import { AddOfficeComponent } from './add-office/add-office.component';
 import { AddVehicleComponent } from './add-vehicle/add-vehicle.component';
+import { RentVehicleComponent } from './rent-vehicle/rent-vehicle.component';
 
 
 const Routes = [
@@ -119,6 +120,11 @@ const Routes = [
     path: "addVehicleComponent/:rentServiceId",
     component: AddVehicleComponent,
     canActivate: ['IsManagerGuard']
+  },
+  {
+    path: "rentVehicleComponent/:rentServiceId/:vehicleId",
+    component: RentVehicleComponent,
+    canActivate: ['IsUserGuard']
   }
 ]
 
@@ -162,6 +168,8 @@ const Routes = [
     AddOfficeComponent,
 
     AddVehicleComponent,
+
+    RentVehicleComponent,
 
   ],
   imports: [
@@ -209,6 +217,13 @@ const Routes = [
       provide: 'IsAdminGuard',
       useValue: () => {
         if (localStorage.role == "Admin")
+          return true;
+      }
+    },
+    {
+      provide: 'IsUserGuard',
+      useValue: () => {
+        if (localStorage.role == "AppUser")
           return true;
       }
     }

@@ -44,22 +44,5 @@ export class PagerServices {
       }
     ); */
   }
-  getRentServiceCars(serviceId:number):Observable<Vehicle[]> {
-
-    let headers = new HttpHeaders();
-    headers = headers.append('Content-type', 'application/x-www-form-urlencoded');
-    
-    return this.httpClient.get('http://localhost:51680/api/vehicle/getServiceVehicles/'+serviceId, {"headers": headers}) as Observable<any>
-
-    /* x.subscribe(
-      res => {
-        console.log(res.access_token);
-        
-        return res;
-      },
-      err => {
-        console.log("Error occured");
-      }
-    ); */
-  }
+  
 }

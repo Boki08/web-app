@@ -1,9 +1,14 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { VehicleCardsComponent } from '../vehicle-cards/vehicle-cards.component';
 import { Services } from '../services/services.component';
 import { ServiceData } from '../models/serviceData';
 import { DataService } from '../cards/dataRentService';
+import { RentServices } from '../services/rent-service';
+import { VehicleServices } from '../services/vehicle-services';
+import { Vehicle } from '../models/vehicles';
+import { VehiclePictures } from '../models/vehicle-pictures';
+import { VehicleTypes } from '../models/vehicleTypes';
 @Component({
   selector: 'app-vehicle-page',
   templateUrl: './vehicle-page.component.html',
@@ -11,27 +16,62 @@ import { DataService } from '../cards/dataRentService';
 })
 export class VehiclePageComponent implements OnInit {
 
-  @ViewChild('vehicleCards') child: VehicleCardsComponent;
+  /*  @ViewChild('vehicleCards') child: VehicleCardsComponent; */
   Id: string = "-1";
-  vehicles: any;
+  vehicles: Vehicle[];
   counter: number;
-  rentServiceTemp:ServiceData;
-  rentService:ServiceData;
-  pageNumber:number=1;
-  pageSize:number=2;
-  totalPagesNumber:number=20;
-  id: number;
+  rentServiceTemp: ServiceData;
+  rentService: ServiceData = new ServiceData(1, " ", " ", " ", " ", 1, true, true);
+  pageNumber: number = 1;
+  pageSize: number = 9;
+  totalPagesNumber: number = 20;
+  rentServiceId: number;
+  @Input() isVisible: boolean[];
+  vehicle: Vehicle;
+  vehiclePictures: VehiclePictures[];
+  @Input() logedIn:boolean=false;
+  selectedTypePrice:string="Price Sort";
+  typePriceToServer:string="Mixed";
+  vehicleTypes: VehicleTypes[];
+  selectedTypeVehicle :string = "Type Sort";
+  selectedTypeVehicleIdToServer: number=-1;
+  availableCheckedToServer:boolean=false;
   
-  constructor(private dataRentService: DataService,private Service: Services, private router: Router, private activatedRoute: ActivatedRoute) {
-    activatedRoute.params.subscribe(params => { this.Id = params["rentServiceId"] });
+  constructor(private vehicleServices: VehicleServices, private rentServices: RentServices, private dataRentService: DataService, private Service: Services, private router: Router, private activatedRoute: ActivatedRoute) {
+    activatedRoute.params.subscribe(params => { this.rentServiceId = params["rentServiceId"] });
+
+    if (localStorage.role!=null &&  localStorage.role == "AppUser") {
+      this.logedIn = true;
+    }
+    else {
+      this.logedIn = false;
+    }
+    this.vehicleServices.GetVehicleTypes()
+      .subscribe(
+        data => {
+          this.vehicleTypes = data.body as VehicleTypes[];
+          this.vehicleTypes.push(new VehicleTypes(-1,"All"))
+        },
+        error => {
+          alert(error.error.ModelState[""][0]);
+
+        }
+      );
   }
   /*  constructor(private Service: Services, private _routeParams: ActivatedRoute) {
      var queryParam = this._routeParams.get('q');
   } */
-  
+
   ngOnInit() {
-    this.dataRentService.currentMessage.subscribe(rentService => this.rentServiceTemp = rentService)
-    this.rentService=this.rentServiceTemp;
+    /*  this.dataRentService.currentMessage.subscribe(rentService => this.rentServiceTemp = rentService) */
+    this.rentServices.GetRentService(this.rentServiceId).subscribe(
+      data => {
+        this.rentService = data.body[0];
+      },
+      error => {
+        console.log(error);
+      })
+    //this.rentService=this.rentServiceTemp;
     this.getVehicles();
     /*  //this.sub = this.activatedRoute.params.subscribe(params => {
      // this.id = +params['rentServiceId'];
@@ -56,48 +96,87 @@ export class VehiclePageComponent implements OnInit {
         console.log(error);
       }) */
   }
+  vehicleDetails(vehicle: Vehicle, counter: number) {
+    this.vehicle = vehicle;
+    //this.vehicleCounter = counter;
+    this.vehiclePictures = this.vehicle.VehiclePictures;
+    //this.vehilePictures=this.vehicle.VehiclePictures;
+    /* this.vehicleServices.GetVehiclePictures(vehicle.VehicleId).subscribe(
+      data => {
+        this.vehilePictures = data as VehiclePictures[];
+        this.tempPic=this.vehilePictures[0].Data;
+        //this.vehilePictures[0]=null;
+      },
+      error => {
+       // this.disableButtons = false;
+        console.log(error);
+      }) */
+  }
 
   public getVehicles() {
-    this.Service.getRentServiceCars(parseInt(this.Id),this.pageNumber,this.pageSize).subscribe(
+    this.vehicleServices.GetRentVehiclesUser(this.rentServiceId, this.pageNumber, this.pageSize,this.availableCheckedToServer,this.typePriceToServer,this.selectedTypeVehicleIdToServer).subscribe(
       data => {
-        this.counter=0;
-        this.vehicles = data.body;
-      
-        let jsonData = JSON.parse(data.headers.get('Paging-Headers')); 
+        this.counter = 0;
+        
+        this.vehicles = data.body as Vehicle[];
 
-        this.pageNumber=jsonData.currentPage;
-        this.pageSize=jsonData.pageSize;
-        this.totalPagesNumber=jsonData.totalPages;
 
-        for (let item of this.vehicles) {
-          /*   const factory = this.resolver.resolveComponentFactory(CardsComponent);
-           let componentReference = this.container.createComponent(factory); 
-           (<ProcessComponent>componentReference.instance).data=item; */
-          //this.Cards.toggle(this.counter);
-          this.child.vehicles[this.counter] = item;
-          this.child.isVisible[this.counter++]=true;
-        }
-        for (let i=this.counter;i<this.pageSize;i++) {
-            this.child.isVisible[i]=false;
-          
-        }
+        let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
+
+        this.pageNumber = jsonData.currentPage;
+        this.pageSize = jsonData.pageSize;
+        this.totalPagesNumber = jsonData.totalPages;
+
+        
+       
         //alert("GET: id: " + this.methodResult.id + ", userId: " + this.methodResult.userId + ", title: " + this.methodResult.title + ", body: " + this.methodResult.body);
       },
       error => {
         console.log(error);
       })
-      
+
     //this.RentServices = JSON.parse(temp);
 
 
     //(<ProcessComponent>componentRef.instance).data=step.desc;
-    
+
   }
 
-  set page(val: number){
-    if(val!== this.pageNumber) {
-      this.pageNumber=val;
+  set page(val: number) {
+    if (val !== this.pageNumber) {
+      this.pageNumber = val;
       this.getVehicles();
     }
+  }
+  GetSelectedType(type:string) {
+    if(type=="Low")
+   {
+    this.selectedTypePrice="Price - Low to High";
+    this.typePriceToServer='Low';
+   }
+   else if(type=="High"){
+    this.selectedTypePrice="Price - High to Low";
+    this.typePriceToServer='High';
+   }
+   else{
+    this.selectedTypePrice="Price - Mixed";
+    this.typePriceToServer='Mixed';
+   }
+   this.getVehicles();
+  }
+  GetSelectedTypeVehicle(type:VehicleTypes) {
+    this.selectedTypeVehicle = type.Type;
+    this.selectedTypeVehicleIdToServer = type.TypeId;
+
+    this.getVehicles();
+  }
+  setCheckBoxAvailable(event) {
+    if (event.target.checked) {
+      this.availableCheckedToServer = true;
+    }
+    else {
+      this.availableCheckedToServer = false;
+    }
+    this.getVehicles();
   }
 }

@@ -17,49 +17,13 @@ export class VehicleServices {
 
   constructor(private httpClient: HttpClient) { }
 
-  register(NewUser): Observable<any> {
-    console.log(NewUser);
-    return this.httpClient.post("http://localhost:51680/api/Account/Register", NewUser);
-  }
-  EditPassword1(NewPassword): Observable<any> {
-    console.log(NewPassword);
-    return this.httpClient.post("http://localhost:51680/api/Account/ChangePassword", NewPassword);
-  }
-  getProfile(): Observable<any> {
-    return this.httpClient.get("http://localhost:51680/api/appUser/getCurrentUser");
-  }
-  LogOut(): Observable<any> {
-    return this.httpClient.post("http://localhost:51680/api/Account/Logout", localStorage.jwt);
-  }
-
-  EditUser(userData: User, fileToUpload: File) {
-    const endpoint = 'http://localhost:51680/api/appUser/editAppUser';
-    const formData: FormData = new FormData();
-    if (!userData.DocumentPicture) {
-      formData.append('Image', fileToUpload, fileToUpload.name);
-    }
-
-    formData.append('FullName', userData.FullName.toString());
-    formData.append('BirthDate', userData.BirthDate.toString());
-    formData.append('Email', userData.Email.toString());
-    formData.append('UserId', userData.UserId.toString());
-
-    return this.httpClient.post(endpoint, formData);
-  }
-
-  GetAllUsers(type: string, pageIndex: number, pageSize: number): Observable<any> {
-    return this.httpClient.get("http://localhost:51680/api/appUser/allUsers/" + pageIndex + "/" + pageSize + "/" + type, { observe: 'response' });
-
-  }
-  ActivateUser(userId: number, activated: boolean): Observable<any> {
-    return this.httpClient.get("http://localhost:51680/api/appUser/activateUser/" + userId + "/" + activated);
-
-  }
-
-
-
   GetRentVehicles(serviceId: number, pageIndex: number, pageSize: number) {
     return this.httpClient.get("http://localhost:51680/api/vehicle/allServiceVehicles/" + pageIndex + "/" + pageSize + "/" + serviceId, { observe: 'response' });
+
+  }
+  //getServiceVehiclesSort/{pageIndex}/{pageSize}/{serviceID}/{available}/{price}/{type}
+  GetRentVehiclesUser(serviceId: number, pageIndex: number, pageSize: number,available:boolean,price:string,type:number) {
+    return this.httpClient.get("http://localhost:51680/api/vehicle/getServiceVehiclesSort/" + pageIndex + "/" + pageSize + "/" + serviceId+ "/" + available+ "/" + price+ "/" + type, { observe: 'response' });
 
   }
   DisableVehicle(vehicleId: number, enabled: boolean) {
@@ -70,8 +34,8 @@ export class VehicleServices {
     return this.httpClient.get('http://localhost:51680/api/vehicle/getVehiclePictures/' + vehicleId);
   }
 
-  GetVehicleTypes() {
-    return this.httpClient.get('http://localhost:51680/api/typeOfVehicle/getVehicleTypes');
+  GetVehicleTypes(): Observable<any> {
+    return this.httpClient.get('http://localhost:51680/api/typeOfVehicle/getVehicleTypes', { observe: 'response' });
   }
 
   AddVehicle(vehicle: Vehicle, photos: File[]): Observable<any> {
@@ -96,19 +60,7 @@ export class VehicleServices {
 
   }
 
-  /* EditUser(userData:User, fileToUpload:File){
-    const endpoint = 'http://localhost:51680/api/appUser/editAppUser';
-    const formData: FormData = new FormData();
-    if(!userData.DocumentPicture)
-    {
-      formData.append('Image', fileToUpload, fileToUpload.name);
-    }
-    
-    formData.append('FullName', userData.FullName.toString());
-    formData.append('BirthDate', userData.BirthDate.toString());
-    formData.append('Email', userData.Email.toString());
-    formData.append('UserId', userData.UserId.toString());
-
-    return this.httpClient.post(endpoint, formData);
-  } */
+  getVehicleInfo(vehicleId:number):Observable<any> {
+    return this.httpClient.get("http://localhost:51680/api/vehicle/getVehicle/"+vehicleId, { observe: 'response' }) ;
+  }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit ,Input} from '@angular/core';
+import { Component, OnInit ,Input, Output, EventEmitter} from '@angular/core';
 
 @Component({
   selector: 'app-vehicle-cards',
@@ -11,6 +11,7 @@ export class VehicleCardsComponent implements OnInit {
 
   @Input() data: any;
   @Input() vehicles: any[];
+  @Output() private clickCard:EventEmitter<number>= new EventEmitter<number>();
   constructor(/* private Service: Services */) {
     this.isVisible = [false, false, false, false, false, false];
     this.vehicles = [true, true, true, false, false, false];

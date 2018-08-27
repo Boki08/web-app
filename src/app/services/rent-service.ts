@@ -16,20 +16,6 @@ export class RentServices {
 
   constructor( private httpClient: HttpClient) { }
 
-  register(NewUser): Observable<any> {
-    console.log(NewUser);
-    return this.httpClient.post("http://localhost:51680/api/Account/Register", NewUser);
-  }
-  EditPassword1(NewPassword): Observable<any> {
-    console.log(NewPassword);
-    return this.httpClient.post("http://localhost:51680/api/Account/ChangePassword", NewPassword);
-  }
-  getProfile():Observable<any>{
-    return this.httpClient.get("http://localhost:51680/api/appUser/getCurrentUser");
-  }
-  LogOut():Observable<any>{
-    return this.httpClient.post("http://localhost:51680/api/Account/Logout",localStorage.jwt);
-  }
   
   AddRentService(serviceData:ServiceData, fileToUpload:File){
     const endpoint = 'http://localhost:51680/api/rentService/addRentService';
@@ -50,10 +36,7 @@ export class RentServices {
     return this.httpClient.get("http://localhost:51680/api/rentService/getAllRentServicesManager/"+pageIndex+"/"+pageSize+"/"+isApproved+"/"+noOffices+"/"+noVehicles, { observe: 'response' }) ;
     
   }
-  ActivateUser(userId:number,activated:boolean): Observable<any> {
-    return this.httpClient.get("http://localhost:51680/api/appUser/activateUser/"+userId+"/"+activated) ;
-    
-  }
+  
 GetRentService(sericeId:number):Observable<any>{
   return this.httpClient.get("http://localhost:51680/api/rentService/getRentService/"+sericeId, { observe: 'response' }) ;
     

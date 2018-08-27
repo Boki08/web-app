@@ -26,7 +26,7 @@ export class CardsComponent implements OnInit, ProcessComponent {
   @Input() data: any;
   @Input() rentServices: any[];
 @Input() isUser:boolean;
-
+imgSrc:string[]=["http://placehold.it/700x400","http://placehold.it/700x400","http://placehold.it/700x400","http://placehold.it/700x400","http://placehold.it/700x400","http://placehold.it/700x400","http://placehold.it/700x400"]
 
   constructor(private dataRentService: DataService/* private Service: Services */) {
     this.isVisible = [false, false, false, false, false, false];

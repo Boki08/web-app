@@ -12,19 +12,20 @@
           <!-- Sidebar Links -->
           <ul class="list-unstyled components">
             <div class="container  justify-content-md-center">
-              
-                <div class="col col-md-7">
-                    <div class="custom-control custom-radio">
-                        <input type="radio" class="custom-control-input" (click)="setradio('Manager')" value="Managers" id="defaultGroupExample1" name="groupOfDefaultRadios" checked>
-                        <label class="custom-control-label" for="defaultGroupExample1">Managers</label>
-                      </div>
-                      
-                      
-                      <div class="custom-control custom-radio mt-3">
-                        <input type="radio" class="custom-control-input" (click)="setradio('AppUser')" value="Users" id="defaultGroupExample2" name="groupOfDefaultRadios" >
-                        <label class="custom-control-label" for="defaultGroupExample2">Users</label>
-                      </div>
-                
+
+              <div class="col col-md-7">
+                <div class="custom-control custom-radio">
+                  <input type="radio" class="custom-control-input" (click)="setradio('Manager')" value="Managers" id="defaultGroupExample1"
+                    name="groupOfDefaultRadios" checked>
+                  <label class="custom-control-label" for="defaultGroupExample1">Managers</label>
+                </div>
+
+
+                <div class="custom-control custom-radio mt-3">
+                  <input type="radio" class="custom-control-input" (click)="setradio('AppUser')" value="Users" id="defaultGroupExample2" name="groupOfDefaultRadios">
+                  <label class="custom-control-label" for="defaultGroupExample2">Users</label>
+                </div>
+
               </div>
             </div>
           </ul>
@@ -33,13 +34,13 @@
       </div>
     </div>
     <div class="col ">
-        <div class="text-left  mt-3" *ngIf="isSelected('Manager')" >  
-            <p>List of Managers </p>
-          </div>  
-           
-          <div class="text-left  mt-3" *ngIf="isSelected('AppUser')">  
-             <p>List of Users </p>
-          </div> 
+      <div class="text-left  mt-3" *ngIf="isSelected('Manager')">
+        <p>List of Managers </p>
+      </div>
+
+      <div class="text-left  mt-3" *ngIf="isSelected('AppUser')">
+        <p>List of Users </p>
+      </div>
       <table class="table  table-hover mt-2">
         <thead>
           <tr>
@@ -74,9 +75,10 @@
 
         </tbody>
       </table>
+      <div class=" row justify-content-md-center">
 
-      <app-pager [page]="pageIndex" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
-
+        <app-pager [page]="pageIndex" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
+      </div>
 
 
 

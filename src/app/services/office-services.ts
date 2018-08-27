@@ -14,65 +14,34 @@ import 'rxjs/add/operator/map'; */
 })
 export class OfficeServices {
 
-  constructor( private httpClient: HttpClient) { }
-
-  register(NewUser): Observable<any> {
-    console.log(NewUser);
-    return this.httpClient.post("http://localhost:51680/api/Account/Register", NewUser);
-  }
-  EditPassword1(NewPassword): Observable<any> {
-    console.log(NewPassword);
-    return this.httpClient.post("http://localhost:51680/api/Account/ChangePassword", NewPassword);
-  }
-  getProfile():Observable<any>{
-    return this.httpClient.get("http://localhost:51680/api/appUser/getCurrentUser");
-  }
-  LogOut():Observable<any>{
-    return this.httpClient.post("http://localhost:51680/api/Account/Logout",localStorage.jwt);
-  }
-  
-  EditUser(userData:User, fileToUpload:File){
-    const endpoint = 'http://localhost:51680/api/appUser/editAppUser';
-    const formData: FormData = new FormData();
-    if(!userData.DocumentPicture)
-    {
-      formData.append('Image', fileToUpload, fileToUpload.name);
-    }
-    
-    formData.append('FullName', userData.FullName.toString());
-    formData.append('BirthDate', userData.BirthDate.toString());
-    formData.append('Email', userData.Email.toString());
-    formData.append('UserId', userData.UserId.toString());
-
-    return this.httpClient.post(endpoint, formData);
-  }
-
-  GetAllUsers(type:string,pageIndex:number,pageSize:number): Observable<any> {
-    return this.httpClient.get("http://localhost:51680/api/appUser/allUsers/"+pageIndex+"/"+pageSize+"/"+type, { observe: 'response' }) ;
-    
-  }
-  ActivateUser(userId:number,activated:boolean): Observable<any> {
-    return this.httpClient.get("http://localhost:51680/api/appUser/activateUser/"+userId+"/"+activated) ;
-    
-  }
+  constructor(private httpClient: HttpClient) { }
 
   
-  AddOffice(office:OfficeModel, fileToUpload:File){
+  GetOffice(rentServiceId: number): Observable<any> {
+    return this.httpClient.get("http://localhost:51680/api/office/getOffice/" + rentServiceId, { observe: 'response' });
+  }
+
+
+  AddOffice(office: OfficeModel, fileToUpload: File) {
     const formData: FormData = new FormData();
     formData.append('Picture', fileToUpload, fileToUpload.name);
     formData.append('Address', office.Address.toString());
     formData.append('Latitude', office.Latitude.toString());
     formData.append('Longitude', office.Longitude.toString());
     formData.append('RentServiceId', office.RentServiceId.toString());
-    return this.httpClient.post("http://localhost:51680/api/office/addOffice/",formData) ;
-   
+    return this.httpClient.post("http://localhost:51680/api/office/addOffice/", formData);
+
   }
-  GetRentOffices(serviceId:number,pageIndex:number, pageSize:number){
-    return this.httpClient.get("http://localhost:51680/api/office/allServiceOffices/"+pageIndex+"/"+pageSize+"/"+serviceId, { observe: 'response' }) ;
-   
+  GetRentOffices(serviceId: number, pageIndex: number, pageSize: number) {
+    return this.httpClient.get("http://localhost:51680/api/office/allServiceOffices/" + pageIndex + "/" + pageSize + "/" + serviceId, { observe: 'response' });
+
   }
-  GetRentOffice(serviceId:number): Observable<any> {
-    return this.httpClient.get("http://localhost:51680/api/office/getRentOffice/"+serviceId, { observe: 'response' }) ;
-   
+  GetRentOffice(officeId: number): Observable<any> {
+    return this.httpClient.get("http://localhost:51680/api/office/getOffice/" + officeId, { observe: 'response' });
+
+  }
+  GetAllRentOffices(serviceId: number): Observable<any> {
+    return this.httpClient.get("http://localhost:51680/api/office/getOffices/" + serviceId, { observe: 'response' });
+
   }
 }
