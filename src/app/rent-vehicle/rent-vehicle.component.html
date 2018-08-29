@@ -1,50 +1,188 @@
-<div class="container">
-  <div class="row">
-    <div class="col-xs-6">
-      <div class="wrapper ">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha256-m/h/cUDAhf6/iBRixTbuc8+Rg2cIETQtPcH9D3p2Kg0="
+  crossorigin="anonymous" />
 
-        <nav id="sidebar" class="column">
-          <div class="sidebar-header">
-            <h4>{{vehicle!=null?vehicle.Model:'No Data'}}</h4>
-          </div>
+  
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css"
+  integrity="sha256-BJ/G+e+y7bQdrYkS2RBTyNfBHpA9IuGaPmf9htub5MQ=" crossorigin="anonymous" />
 
-          <li class="list-unstyled components">
-            <div class="card-unstyled " id="list" #list>
-              <h5 class="card-header">Info:</h5>
-              <div class="card-body">
-                <p class="card-text">
+ -->
 
-                  <li>Manufacturer:
-                    <ul>{{vehicle!=null?vehicle.Manufacturer:'No Data'}}</ul>
-                  </li>
-                  <li>Year of Manufacturing:
-                    <ul>{{vehicle!=null?vehicle.YearOfManufacturing:'No Data'}}</ul>
-                  </li>
-                  <li>Price per Hour:
-                    <ul>{{vehicle!=null?vehicle.HourlyPrice:'No Data'}}</ul>
-                  </li>
-                  <li>Description:
-                    <ul>{{vehicle!=null?vehicle.Description:'No Data'}}</ul>
-                  </li>
-                  
+<form #f="ngForm" (ngSubmit)="onSubmit(f.value,f)">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-6">
+        <div class="wrapper ">
 
-                </p>
+          <nav id="sidebar" class="column">
+            <div class="sidebar-header">
+              <h4>{{vehicle!=null?vehicle.Model:'No Data'}}</h4>
+            </div>
+
+            <li class="list-unstyled components">
+              <div class="card-unstyled " id="list" #list>
+                <h5 class="card-header">Info:</h5>
+                <div class="card-body">
+                  <p class="card-text">
+
+                    <li>Manufacturer:
+                      <ul>{{vehicle!=null?vehicle.Manufacturer:'No Data'}}</ul>
+                    </li>
+                    <li>Year of Manufacturing:
+                      <ul>{{vehicle!=null?vehicle.YearOfManufacturing:'No Data'}}</ul>
+                    </li>
+                    <li>Price per Hour:
+                      <ul>{{vehicle!=null?vehicle.HourlyPrice:'No Data'}}</ul>
+                    </li>
+                    <li>Description:
+                      <ul>{{vehicle!=null?vehicle.Description:'No Data'}}</ul>
+                    </li>
+                  </p>
+                </div>
+              </div>
+            </li>
+          </nav>
+        </div>
+      </div>
+      <div class="col">
+        <div class="row justify-content-md-center">
+          <div class="col-lg-5 col-md-6 mb-4">
+            <div class="card h-70" style="max-height: 50">
+              <div class="card-header justify-content-md-center">
+                <h5>Departure Office</h5>
+              </div>
+              <div class="card-body ">
+                <div class="row  justify-content-md-center">
+
+                  <div class="form-group">
+                    <button type="button" cl id="dLabel" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                      aria-expanded="false">
+                      {{selectedDepartureOffice}}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dLabel">
+
+                      <a class="dropdown-item" *ngFor="let office of offices" (click)="GetSelectedDepartureOffice(office)">{{office.Address}}</a>
+                    </div>
+
+                  </div>
+                  <div class="col col-xl-12">
+                    <agm-map *ngIf="departureOffice!=null" [latitude]="departureOffice.Latitude" [longitude]="departureOffice.Longitude" [zoom]="18">
+
+                      <agm-marker [latitude]="departureOffice.Latitude" [longitude]="departureOffice.Longitude">
+
+                      </agm-marker>
+                    </agm-map>
+                  </div>
+                </div>
+              </div>
+            
+            <div class="card-footer">
+              <div class="form-group row justify-content-md-center">
+
+                <label for="DepartureDate" class="col-md-5 col-form-label ">Departure</label>
+                <div class="col-md-7">
+                  <!-- <div class="input-group">
+                  <input class="form-control" type="date" (dateSelect)="departureDatePicked($event)" name="DepartureDate" min="minDate"  #DepartureDate="ngModel" placeholder="yyyy-MM-dd" ngModel>
+
+                </div> -->
+                  <div class="input-group">
+                    <input class="form-control" placeholder="yyyy-mm-dd" (dateSelect)="departureDatePicked($event)" #DepartureDate="ngModel"
+                      #d1="ngbDatepicker" ngModel name="DepartureDate" ngbDatepicker>
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary calendar" (click)="d1.toggle()" type="button"></button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </li>
-        </nav>
+          </div>
+          </div>
+          <div class="col-lg-5 col-md-6 mb-4">
+            <div class="card h-70" style="max-height: 50">
+              <div class="card-header justify-content-md-center">
+                <h5>Return Office</h5>
+              </div>
+              <div class="card-body ">
+                <div class="row  justify-content-md-center">
+                  <div class="form-group">
+                    <button type="button" cl id="dLabel" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                      aria-expanded="false">
+                      {{selectedReturnOffice}}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dLabel">
 
-      </div>
-    </div>
-    <div class="form-group">
-        <button type="button" id="dLabel" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {{selectedDepartureOffice}}
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dLabel">
+                      <a class="dropdown-item" *ngFor="let office of offices" (click)="GetSelectedReturnOffice(office)">{{office.Address}}</a>
+                    </div>
 
-          <a class="dropdown-item" *ngFor="let office of offices" (click)="GetSelectedDepartureOffice(office)">{{office.Address}}</a>
+                  </div>
+                  <div class="col col-xl-12">
+
+                    <agm-map *ngIf="returnOffice!=null" [latitude]="returnOffice.Latitude" [longitude]="returnOffice.Longitude" [zoom]="18">
+
+                      <agm-marker [latitude]="returnOffice.Latitude" [longitude]="returnOffice.Longitude">
+                      </agm-marker>
+                    </agm-map>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+
+                <div class="form-group row justify-content-md-center">
+
+                  <label for="ReturnDate" class="col-md-5 col-form-label ">Return</label>
+                  <div class="col-md-7">
+                    <!-- <div class="input-group">
+                            <input class="form-control" ngbDatepicker  (dateSelect)="returnDatePicked($event)" name="ReturnDate" min="minDate" placeholder="yyyy-MM-dd" #ReturnDate="ngModel" ngModel>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+                              </div>
+                          </div> -->
+                    <div class="input-group">
+                      <input class="form-control" placeholder="yyyy-mm-dd" (dateSelect)="returnDatePicked($event)" #ReturnDate="ngModel" #d="ngbDatepicker"
+                        ngModel name="ReturnDate" ngbDatepicker>
+                      <div class="input-group-append">
+                        <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+
+
+          </div>
+        </div>
+
+        <div class="row justify-content-md-center">
+
+          <div class="col">
+            <div class="row justify-content-md-center">
+              <p class="font-weight-normal" *ngIf="isDepartureDateBad!=true && isReturnDateBad!=true">Price: {{calcPrice}}</p>
+            </div>
+            <div class="row justify-content-md-center">
+                <div class="loader" *ngIf="btnHidden"></div>
+              <button type="submit" class="btn btn-success" *ngIf="!btnHidden" [disabled]="!f.valid || isDepartureDateBad==true || isReturnDateBad==true || btnDisabled==true">Rent</button>
+            </div>
+
+            <div class="row justify-content-md-center">
+              <p class="text-warning" *ngIf="isDepartureDateBad==true || isReturnDateBad==true ">{{errMessage}}</p>
+              <p class="text-danger" *ngIf="showDangerErrorMessage">{{dangerErrMessage}}</p>
+            </div>
+          </div>
+
+          <br>
+          <br>
+          <br>
+          <br>
+          <br><br><br><br><br><br>
         </div>
 
       </div>
+
+
+    </div>
   </div>
-</div>
+  
+</form>

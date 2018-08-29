@@ -7,6 +7,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Http, Response } from '@angular/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AgmCoreModule } from '@agm/core';
+import { DlDateTimePickerDateModule } from 'angular-bootstrap-datetimepicker';
+
 //import { OwlModule } from 'ngx-owl-carousel';
 
 import { RouterModule, Routes } from '@angular/router';
@@ -38,7 +40,9 @@ import { ManageOfficesVehiclesComponent } from './manage-offices-vehicles/manage
 import { AddOfficeComponent } from './add-office/add-office.component';
 import { AddVehicleComponent } from './add-vehicle/add-vehicle.component';
 import { RentVehicleComponent } from './rent-vehicle/rent-vehicle.component';
-
+import { ViewOrdersComponent } from './view-orders/view-orders.component';
+import { BottomNavbarComponent } from './bottom-navbar/bottom-navbar.component';
+import { btmNavDataService } from './bottom-navbar/btmNavDataService';
 
 const Routes = [
   {
@@ -126,6 +130,13 @@ const Routes = [
     component: RentVehicleComponent,
     canActivate: ['IsUserGuard']
   }
+  ,
+  {
+    path: "viewOrdersComponent",
+    component: ViewOrdersComponent,
+    canActivate: ['IsUserGuard']
+  }
+  
 ]
 
 
@@ -171,6 +182,10 @@ const Routes = [
 
     RentVehicleComponent,
 
+    ViewOrdersComponent,
+
+    BottomNavbarComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -183,6 +198,8 @@ const Routes = [
     NgbModule.forRoot(), 
     BrowserModule,
     AgmCoreModule.forRoot({apiKey: 'AIzaSyDnihJyw_34z5S1KZXp90pfTGAqhFszNJk'}),
+    DlDateTimePickerDateModule,
+   
   
     //OwlModule,
 
@@ -235,7 +252,8 @@ const Routes = [
           return true;
       }
     },
-    DataService
+    DataService,
+    btmNavDataService
   ],
   bootstrap: [AppComponent],
 

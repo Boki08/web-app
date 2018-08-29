@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { VehicleCardsComponent } from '../vehicle-cards/vehicle-cards.component';
 import { Services } from '../services/services.component';
@@ -9,6 +9,8 @@ import { VehicleServices } from '../services/vehicle-services';
 import { Vehicle } from '../models/vehicles';
 import { VehiclePictures } from '../models/vehicle-pictures';
 import { VehicleTypes } from '../models/vehicleTypes';
+import { CommentServices } from '../services/comment-services';
+
 @Component({
   selector: 'app-vehicle-page',
   templateUrl: './vehicle-page.component.html',
@@ -16,7 +18,7 @@ import { VehicleTypes } from '../models/vehicleTypes';
 })
 export class VehiclePageComponent implements OnInit {
 
-  /*  @ViewChild('vehicleCards') child: VehicleCardsComponent; */
+    //@ViewChild('vehicleModal') modal; 
   Id: string = "-1";
   vehicles: Vehicle[];
   counter: number;
@@ -37,7 +39,8 @@ export class VehiclePageComponent implements OnInit {
   selectedTypeVehicleIdToServer: number=-1;
   availableCheckedToServer:boolean=false;
   
-  constructor(private vehicleServices: VehicleServices, private rentServices: RentServices, private dataRentService: DataService, private Service: Services, private router: Router, private activatedRoute: ActivatedRoute) {
+  
+  constructor(private commentServices:CommentServices,private vehicleServices: VehicleServices, private rentServices: RentServices, private dataRentService: DataService, private Service: Services, private router: Router, private activatedRoute: ActivatedRoute) {
     activatedRoute.params.subscribe(params => { this.rentServiceId = params["rentServiceId"] });
 
     if (localStorage.role!=null &&  localStorage.role == "AppUser") {
@@ -57,6 +60,9 @@ export class VehiclePageComponent implements OnInit {
 
         }
       );
+  }
+  ngOnDestroy(): void {
+    
   }
   /*  constructor(private Service: Services, private _routeParams: ActivatedRoute) {
      var queryParam = this._routeParams.get('q');
@@ -99,7 +105,12 @@ export class VehiclePageComponent implements OnInit {
   vehicleDetails(vehicle: Vehicle, counter: number) {
     this.vehicle = vehicle;
     //this.vehicleCounter = counter;
-    this.vehiclePictures = this.vehicle.VehiclePictures;
+    if(this.vehicle.VehiclePictures.length>0){
+    this.vehiclePictures = this.vehicle.VehiclePictures;}
+    else{
+      this.vehiclePictures=[];
+      this.vehiclePictures.push(new VehiclePictures(1,1,'pic'));
+    }
     //this.vehilePictures=this.vehicle.VehiclePictures;
     /* this.vehicleServices.GetVehiclePictures(vehicle.VehicleId).subscribe(
       data => {
@@ -178,5 +189,27 @@ export class VehiclePageComponent implements OnInit {
       this.availableCheckedToServer = false;
     }
     this.getVehicles();
+  }
+  getComments(){
+    this.commentServices.GetServiceComments(this.rentServiceId).subscribe(
+      data => {
+        this.counter = 0;
+        
+        this.vehicles = data.body as Vehicle[];
+
+
+        let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
+
+        this.pageNumber = jsonData.currentPage;
+        this.pageSize = jsonData.pageSize;
+        this.totalPagesNumber = jsonData.totalPages;
+
+        
+       
+        //alert("GET: id: " + this.methodResult.id + ", userId: " + this.methodResult.userId + ", title: " + this.methodResult.title + ", body: " + this.methodResult.body);
+      },
+      error => {
+        console.log(error);
+      })
   }
 }

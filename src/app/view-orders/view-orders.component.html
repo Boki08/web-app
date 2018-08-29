@@ -1,0 +1,209 @@
+<div class="container  justify-content-md-center">
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="wrapper ">
+
+        <nav id="sidebar">
+          <!-- Sidebar Header -->
+          <div class="sidebar-header">
+            <h3>Selection</h3>
+          </div>
+
+          <!-- Sidebar Links -->
+          <ul class="list-unstyled components">
+            <div class="container  justify-content-md-center">
+
+              <div class="col col-md-7">
+                <div class="custom-control custom-radio">
+                  <input type="radio" class="custom-control-input" (click)="setradio('Manager')" value="Managers" id="defaultGroupExample1"
+                    name="groupOfDefaultRadios" checked>
+                  <label class="custom-control-label" for="defaultGroupExample1">Managers</label>
+                </div>
+
+
+                <div class="custom-control custom-radio mt-3">
+                  <input type="radio" class="custom-control-input" (click)="setradio('AppUser')" value="Users" id="defaultGroupExample2" name="groupOfDefaultRadios">
+                  <label class="custom-control-label" for="defaultGroupExample2">Users</label>
+                </div>
+
+              </div>
+            </div>
+          </ul>
+        </nav>
+
+      </div>
+    </div>
+    <div class="col ">
+
+
+
+      <div class="text-left  mt-3">
+        <p>List of Orders </p>
+      </div>
+      <table class="table  table-hover mt-2">
+        <thead>
+          <tr>
+            <th scope="col">Num</th>
+            <th scope="col">Vehicle Model</th>
+            <th scope="col">Vehicle Manufacturer</th>
+            <th scope="col">Departure date</th>
+            <th scope="col">Return date</th>
+            <th scope="col">Price</th>
+
+          </tr>
+
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of orders ; let i = index" (click)="OrderDetails(order,i)" data-toggle="modal" data-target="#orderModal">
+            <th scope="row">{{i+1}}</th>
+            <td>{{order.Vehicle.Model}}</td>
+            <td>{{order.Vehicle.Manufacturer}}</td>
+            <td>{{order.DepartureDate.slice(0,10)}}</td>
+            <td>{{order.ReturnDate.slice(0,10)}}</td>
+            <td>{{order.Price}}</td>
+            <!-- <td>
+              <p [ngStyle]="{'color': user.DocumentPicture!=NULL? 'green' : 'red'}">{{user.DocumentPicture!=NULL? 'Added'
+                : 'Not added' }}</p>
+            </td>
+            <td>
+              <p [ngStyle]="{'color': user.ProfileEdited? 'green' : 'red'}">{{true == user.ProfileEdited ? 'Yes' : 'No' }}</p>
+            </td>
+            <td>
+              <p [ngStyle]="{'color': user.Activated? 'green' : 'red'}">{{true == user.Activated ? 'Yes' : 'No' }}</p>
+            </td> -->
+          </tr>
+
+
+        </tbody>
+      </table>
+      <div class=" row justify-content-md-center">
+
+        <app-pager [page]="pageIndex" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Order from {{null != order ?order.DepartureDate.slice(0,10):'no data'}}
+          to {{null != order ?order.ReturnDate.slice(0,10):'no data'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row justify-content-center">
+
+            <div class="col">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Order Info</th>
+                    <th scope="col"></th>
+                  </tr>
+
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Vehicle Model:</th>
+                    <td>{{null != order ? order.Vehicle.Model: 'no data' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Vehicle Manufacture:</th>
+                    <td>{{null != order ? order.Vehicle.Manufacturer: 'no data' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Departure Office:</th>
+                    <td>{{null != departureOffice ? departureOffice.Address: 'no data' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Return Office:</th>
+                    <td>{{null != returnOffice ? returnOffice.Address: 'no data' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Price:</th>
+                    <td>{{null != order ? order.Price: 'no data' }}</td>
+                  </tr>
+                  <tr>
+                      <th scope="row">Vehicle returned:</th>
+                      <td>{{null != order ? (order.VehicleReturned==true?'Yes':'No'): 'no data' }}</td>
+                    </tr>
+                
+                </tbody>
+              </table>
+            </div>
+            <div class="col">
+              <div class="container">
+                <form class="needs-validation pt-3 " #f="ngForm" (ngSubmit)="onSubmit(f.value)" >
+                  <div class="row justify-content-center" *ngIf="canComment && order.vehicleReturned==true" >
+                    <div class="row justify-content-center">
+                      <div class="col col-md-4">
+                        <label for="ReviewInput" class="col-sm-2 col-form-label ">Comment:</label>
+                      </div>
+                      <div class="col col-md-8">
+                        <textarea rows="3" name="Review" ngModel #Review="ngModel"  class="form-control  is-valid" id="ReviewInput" placeholder="Comment"></textarea>
+                      </div>
+                    </div>
+                    <div class="row justify-content-center">
+                      <div class="col col-md-4">
+                        <label for="dLabel" class="col-sm-2 col-form-label ">Grade:</label>
+                      </div>
+                      <div class="col col-md-8">
+                        <div class="form-group">
+                          <button type="button" id="dLabel"  required class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{selectedGrade}}
+                          </button>
+                          <div class="dropdown-menu form-control  is-valid" aria-labelledby="dLabel"  >
+
+                            <a class="dropdown-item" (click)="GetSelectedGrade(1)">1</a>
+                            <a class="dropdown-item" (click)="GetSelectedGrade(2)">2</a>
+                            <a class="dropdown-item" (click)="GetSelectedGrade(3)">3</a>
+                            <a class="dropdown-item" (click)="GetSelectedGrade(4)">4</a>
+                            <a class="dropdown-item" (click)="GetSelectedGrade(5)">5</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button class="btn btn-primary justify-content-md-center" [disabled]="!f.valid || canComment==false" type="submit">Submit Review</button>
+                  </div>
+                 
+                </form>
+                <div class="row justify-content-center" *ngIf="displayComment">
+
+                  <div class="col col-md-4">
+                    <label for="CommentInput" class="col-sm-2 col-form-label ">Comment:</label>
+                  </div>
+                  <div class="col col-md-8">
+                    <p>{{null!=commentModel?commentModel.Review:'no data'}}</p>
+                    <p>Grade: {{null!=commentModel?commentModel.Grade:'no data'}}</p>
+                  </div>
+
+                </div>
+                <div class="row justify-content-center mt-4">
+
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" *ngIf="vehicleReturned==false" class="btn btn-secondary" (click)="returnVehicle()" >Return Vehicle</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+      </div>
+    </div>
+  </div>
+</div>

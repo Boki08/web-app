@@ -9,9 +9,12 @@ export class NavbarComponent implements OnInit {
 
   constructor() { }
   link1: string;
+  
   link2: string;
+  link3: string;
   route1: string;
   route2: string;
+  route3: string;
   userNav: boolean;
   ngOnInit() {
     this.loggedOut();
@@ -28,6 +31,14 @@ export class NavbarComponent implements OnInit {
       this.link2 = "Manage Rent Services";
       this.route1 = "/addServiceComponent";
       this.route2 = "/editServicesComponent";
+    }
+    else  if (localStorage.jwt && localStorage.role == "AppUser") {
+      this.link1 = "Home";
+      this.link2 = "Rent Services";
+      this.link3 = "Orders";
+      this.route1 = "/home";
+      this.route2 = "/rentServices";
+      this.route3 = "/viewOrdersComponent";
     }
     else {
       this.link1 = "Home";
