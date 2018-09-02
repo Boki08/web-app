@@ -4,6 +4,7 @@ import { NgForm } from '@angular/forms';
 import { LogInService } from '../services/log-in-service';
 import { LogInData } from '../models/logInData';
 import { UserServices } from '../services/user-services';
+import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 
 
 @Component({
@@ -18,16 +19,19 @@ export class LogInComponent implements AfterViewInit {
   isVisibleLogged: boolean;
   name: string = "-1";
   @ViewChild('loggedButton') loggedButton: ElementRef;
+  showProgress1:boolean=false;
 
   @Output()
   private loggedOutEvent:EventEmitter<number>= new EventEmitter<number>();
 
  
 
-  constructor(private LogInService: LogInService, private UserService: UserServices) {
+  constructor(private btmNavMessageService: btmNavDataService,private LogInService: LogInService, private UserService: UserServices) {
   }
 
   ngOnInit() {
+    this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress1 = message)
+    this.btmNavMessageService.changeMessage(false);
     if (!localStorage.jwt) {
       this.isVisibleNotLogged = true;
       this.isVisibleLogged = false;
@@ -37,7 +41,9 @@ export class LogInComponent implements AfterViewInit {
       this.isVisibleLogged = true;
     }
   }
-
+  ngOnDestroy() {
+    this.btmNavMessageService.changeMessage(false);
+  }
   ngAfterViewInit() {
 
     this.setUp();
@@ -77,6 +83,7 @@ export class LogInComponent implements AfterViewInit {
       });
   } */
   logOut(){
+    this.btmNavMessageService.changeMessage(true);
     this.UserService.LogOut()
     .subscribe(
       data=>{
@@ -86,9 +93,15 @@ export class LogInComponent implements AfterViewInit {
         this.setUp();
         this.loggedOutEvent.emit();
         alert("Logged out");
+        this.btmNavMessageService.changeMessage(false);
       },
       error=>{
-        alert(error.error.ModelState[""][0]);
+        if (localStorage.jwt) {  localStorage.removeItem("jwt");}
+        if (localStorage.role) {localStorage.removeItem("role");}
+        alert(error.error.Message);
+        this.setUp();
+        this.loggedOutEvent.emit();
+        this.btmNavMessageService.changeMessage(false);
       }
     );
   }

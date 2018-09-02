@@ -21,6 +21,12 @@
     -webkit-transition: .4s;
     transition: .4s;
   }
+ 
+  #main{
+    margin-left: 250px;
+    right: 0;
+    top: 0;
+}
   
   .slider:before {
     position: absolute;
@@ -36,6 +42,9 @@
   
   input:checked + .slider {
     background-color: #2196F3;
+  }
+  input:disabled + .slider {
+    background-color:  rgb(93, 121, 145);
   }
   
   input:focus + .slider {
@@ -56,8 +65,14 @@
   .slider.round:before {
     border-radius: 50%;
   } 
+
   agm-map {
-    height: 300px;
+    height: 500px;
+    width:500px;
+    display: flex;
+              flex-flow: row wrap;
+              justify-content: center;
+              margin-right: 0%;
   }
 
 
@@ -73,6 +88,8 @@
     min-width: 250px;
     max-width: 250px;
     min-height: 100vh;
+    height: 100vh;
+    position: fixed;
 }
 
 #sidebar.active {
@@ -132,7 +149,7 @@ a, a:hover, a:focus {
 }
 
 #sidebar .sidebar-header {
-    padding: 20px;
+    padding: 10px;
     background: rgb(33, 37, 41);
 }
 
@@ -198,3 +215,5 @@ ul ul a {
 #linkList li span{
     display: block;
   }
+
+  

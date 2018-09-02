@@ -36,7 +36,12 @@
     .sidenav a {font-size: 18px;}
   }
   
-  
+  #main{
+    margin-left: 250px;
+    right: 0;
+    top: 0;
+}
+
   .wrapper {
     display: flex;
     align-items: stretch;
@@ -46,6 +51,8 @@
     min-width: 250px;
     max-width: 250px;
     min-height: 100vh;
+    height: 100vh;
+    position: fixed;
   }
   
   #sidebar.active {
@@ -105,10 +112,9 @@
   }
   
   #sidebar .sidebar-header {
-    padding: 20px;
+    padding: 10px;
     background: rgb(33, 37, 41);
-  }
-  
+}
   #sidebar ul.components {
     padding: 20px 0;
     border-bottom: 1px solid  #0075af;
@@ -199,7 +205,7 @@
   .loader {
     border: 16px solid #f3f3f3;
     border-radius: 50%;
-    border-top: 16px solid #3498db;
+    border-top: 16px solid #3dd81e;
     width: 50px;
     height: 50px;
     -webkit-animation: spin 2s linear infinite; /* Safari */

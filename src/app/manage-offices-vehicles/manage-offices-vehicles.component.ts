@@ -9,6 +9,7 @@ import { DataService } from '../cards/dataRentService';
 import { ServiceData } from '../models/serviceData';
 import { VehiclePictures } from '../models/vehicle-pictures';
 import { RentServices } from '../services/rent-service';
+import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 
 @Component({
   selector: 'app-manage-offices-vehicles',
@@ -17,7 +18,7 @@ import { RentServices } from '../services/rent-service';
 })
 export class ManageOfficesVehiclesComponent implements OnInit {
 
-  constructor(private rentServices: RentServices, private dataService: DataService, private vehicleServices: VehicleServices, private officeServices: OfficeServices, private activatedRoute: ActivatedRoute) {
+  constructor(private btmNavMessageService: btmNavDataService, private rentServices: RentServices, private dataService: DataService, private vehicleServices: VehicleServices, private officeServices: OfficeServices, private activatedRoute: ActivatedRoute) {
     activatedRoute.params.subscribe(params => { this.rentServiceId = params["rentServiceId"] });
 
 
@@ -40,20 +41,28 @@ export class ManageOfficesVehiclesComponent implements OnInit {
   vehicleEnabled: boolean;
   vehiclePictures: VehiclePictures[];
   tempPic: string;
-  office: OfficeModel = new OfficeModel(1, 1, 'j', 1, 1, 'j');
+  office: OfficeModel =new OfficeModel(1, 1, 'j', 1, 1, 'j');//sredi za modal
   officeCounter: number;
   mapInfo: MapInfo;
-  @Input() rentServiceTemp: ServiceData=new ServiceData(1," "," "," "," ",1,true,true);
+  @Input() rentServiceTemp: ServiceData = new ServiceData(1, " ", " ", " ", " ", 1, true, true);
+  showProgress: boolean;
+  stopProgress: boolean;
+  showVehicleProgress: boolean = false;
+  showOffices: boolean = false;
+  showVehicles: boolean = false;
 
   ngOnInit() {
 
+    this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress = message)
     //this.dataService.currentMessage.subscribe(rentService => this.rentServiceTemp = rentService)
-
+    this.btmNavMessageService.changeMessage(true);
     this.rentServices.GetRentService(this.rentServiceId).subscribe(
       data => {
         this.rentServiceTemp = data.body[0];
+        this.StopProgress();
       },
       error => {
+        this.StopProgress();
         console.log(error);
       })
 
@@ -62,8 +71,19 @@ export class ManageOfficesVehiclesComponent implements OnInit {
     this.office.Longitude = 1;
     this.getServiceOffices();
   }
+  ngOnDestroy() {
+    this.btmNavMessageService.changeMessage(false);
+  }
 
-
+  StopProgress() {
+    if (this.stopProgress == true) {
+      this.btmNavMessageService.changeMessage(false);
+      //his.stopProgress = false;
+    }
+    else {
+      this.stopProgress = true;
+    }
+  }
 
 
   placeMarker($event) {
@@ -77,34 +97,54 @@ export class ManageOfficesVehiclesComponent implements OnInit {
 
 
   public getServiceOffices() {
+    this.btmNavMessageService.changeMessage(true);
     this.officeServices.GetRentOffices(this.rentServiceId, this.pageIndexO, this.pageSizeO).subscribe(
       data => {
         this.offices = data.body as OfficeModel[];
         //this.userData=this.users[0];
 
-        let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
+        if (this.offices.length > 0) {
+          let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
-        this.pageIndexO = jsonData.currentPage;
-        this.pageSizeO = jsonData.pageSize;
-        this.totalPagesNumberO = jsonData.totalPages;
+          this.pageIndexO = jsonData.currentPage;
+          this.pageSizeO = jsonData.pageSize;
+          this.totalPagesNumberO = jsonData.totalPages;
+          this.showOffices = true;
+        }
+        {
+          this.showOffices = false;
+        }
+
+
+
+        this.StopProgress();
       },
       error => {
+        this.StopProgress();
         console.log(error);
       })
   }
   public getServiceVehicles() {
+    this.btmNavMessageService.changeMessage(true);
     this.vehicleServices.GetRentVehicles(this.rentServiceId, this.pageIndexV, this.pageSizeV).subscribe(
       data => {
         this.vehicles = data.body as Vehicle[];
 
+        if (this.vehicles.length > 0) {
+          let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
-        let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
-
-        this.pageIndexV = jsonData.currentPage;
-        this.pageSizeV = jsonData.pageSize;
-        this.totalPagesNumberV = jsonData.totalPages;
+          this.pageIndexV = jsonData.currentPage;
+          this.pageSizeV = jsonData.pageSize;
+          this.totalPagesNumberV = jsonData.totalPages;
+          this.showVehicles = true;
+        }
+        else {
+          this.showVehicles = false;
+        }
+        this.StopProgress();
       },
       error => {
+        this.StopProgress();
         console.log(error);
       })
   }
@@ -172,13 +212,16 @@ export class ManageOfficesVehiclesComponent implements OnInit {
     else {
       this.vehicleEnabled = false;
     }
+    this.showVehicleProgress = true;
     this.vehicleServices.DisableVehicle(vehicleId, this.vehicleEnabled).subscribe(
       data => {
         this.vehicle = data as Vehicle;
         this.vehicles[this.vehicleCounter] = data as Vehicle;
+        this.showVehicleProgress = false;
       },
       error => {
         // this.disableButtons = false;
+        this.showVehicleProgress = false;
         console.log(error);
       })
 

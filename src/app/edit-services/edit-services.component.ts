@@ -3,6 +3,7 @@ import { RentServices } from '../services/rent-service';
 import { VehicleCardsComponent } from '../vehicle-cards/vehicle-cards.component';
 import { ServiceData } from '../models/serviceData';
 import { CardsComponent } from '../cards/cards.component';
+import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 
 
 @Component({
@@ -12,21 +13,22 @@ import { CardsComponent } from '../cards/cards.component';
 })
 export class EditServicesComponent implements OnInit {
 
-  constructor(private RentService: RentServices) { }
+  constructor(private btmNavMessageService: btmNavDataService, private RentService: RentServices) { }
 
   @ViewChild('RentServicescards') child: CardsComponent;
   @ViewChild('defaultUnchecked') checkBox1: ElementRef;
   @ViewChild('defaultUnchecked2') checkBox2: ElementRef;
-  pageSize: number = 6;
+  pageSize: number = 12;
   pageIndex: number = 1;
-  totalPagesNumber: number=1;
+  totalPagesNumber: number=0;
   private selectedLink: string = "Approved";
   noOffices: boolean = false;
   noVehicles: boolean = false;
   isApproved: boolean = true;
-  services: ServiceData[];
+  rentServices: ServiceData[];
   counter: number;
-
+  cardsVisible:boolean;
+  showProgress: boolean = true;
 
   set page(val: number){
     if(val!== this.pageIndex) {
@@ -36,7 +38,12 @@ export class EditServicesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress = message)
+    this.cardsVisible=false;
     this.getAllServices();
+  }
+  ngOnDestroy() {
+    this.btmNavMessageService.changeMessage(false);
   }
 
   setradio(value: string): void {
@@ -66,33 +73,33 @@ export class EditServicesComponent implements OnInit {
  */
   getAllServices() {
 
-
+    this.btmNavMessageService.changeMessage(true);
     this.RentService.GetAllServicesManager(this.isApproved, this.noOffices, this.noVehicles, this.pageIndex, this.pageSize).subscribe(
       data => {
-        this.services = data.body as ServiceData[];
+        this.rentServices = data.body as ServiceData[];
         //this.userData=this.users[0];
-        this.counter = 0;
+        this.cardsVisible = true;
+        
         let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
         this.pageIndex = jsonData.currentPage;
         this.pageSize = jsonData.pageSize;
         this.totalPagesNumber = jsonData.totalPages;
 
+        this.btmNavMessageService.changeMessage(false);
 
-        for (let item of this.services) {
-          /*   const factory = this.resolver.resolveComponentFactory(CardsComponent);
-           let componentReference = this.container.createComponent(factory); 
-           (<ProcessComponent>componentReference.instance).data=item; */
-          //this.Cards.toggle(this.counter);
+       /*  for (let item of this.services) {
+         
           this.child.rentServices[this.counter] = item;
           this.child.isVisible[this.counter++] = true;
         }
         for (let i = this.counter; i < this.pageSize; i++) {
           this.child.isVisible[i] = false;
 
-        }
+        } */
       },
       error => {
+        this.btmNavMessageService.changeMessage(false);
         console.log(error);
       })
   }

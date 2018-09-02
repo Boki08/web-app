@@ -7,17 +7,20 @@ import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
 import { Config } from '../../../node_modules/protractor';
 import { LogInData } from '../models/logInData';
+import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 
 
 @Injectable({
     providedIn: 'root'
 })
 export class LogInService {
-
-    constructor(private httpClient: HttpClient) { }
+    showProgress: boolean = true;
+    constructor(private btmNavMessageService: btmNavDataService,private httpClient: HttpClient) {
+        this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress = message) 
+    }
 
     getTheToken(user: LogInData): any {
-
+        this.btmNavMessageService.changeMessage(true);
         let headers = new HttpHeaders();
         headers = headers.append('Content-type', 'application/x-www-form-urlencoded');
 
@@ -45,8 +48,10 @@ export class LogInService {
                     localStorage.setItem('jwt', jwt)
                     localStorage.setItem('role', role);
 
+                    this.btmNavMessageService.changeMessage(false);
                 },
                 err => {
+                    this.btmNavMessageService.changeMessage(false);
                     console.log("Error occured");
                 },
                 () => {
@@ -60,10 +65,12 @@ export class LogInService {
 
             x.subscribe(
                 res => {
+                    this.btmNavMessageService.changeMessage(false);
                     console.log(res);
 
                 },
                 err => {
+                    this.btmNavMessageService.changeMessage(false);
                     console.log("Error occured");
                 }
             );
@@ -119,5 +126,7 @@ export class LogInService {
         } */
 
     }
-
+    ngOnDestroy() {
+        this.btmNavMessageService.changeMessage(false);
+      }
 }

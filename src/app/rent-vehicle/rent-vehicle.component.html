@@ -8,7 +8,7 @@
  -->
 
 <form #f="ngForm" (ngSubmit)="onSubmit(f.value,f)">
-  <div class="container">
+  <div class="container-fluid ">
     <div class="row">
       <div class="col-xs-6">
         <div class="wrapper ">
@@ -40,10 +40,11 @@
                 </div>
               </div>
             </li>
+           
           </nav>
         </div>
       </div>
-      <div class="col">
+      <div class="col" id="main">
         <div class="row justify-content-md-center">
           <div class="col-lg-5 col-md-6 mb-4">
             <div class="card h-70" style="max-height: 50">
@@ -68,33 +69,43 @@
                     <agm-map *ngIf="departureOffice!=null" [latitude]="departureOffice.Latitude" [longitude]="departureOffice.Longitude" [zoom]="18">
 
                       <agm-marker [latitude]="departureOffice.Latitude" [longitude]="departureOffice.Longitude">
-
+                        <agm-info-window [latitude]="departureOffice.centerLat" [longitude]="departureOffice.centerLong">
+                          <div class="row justify-content-md-center">
+                            <div class="col col-md-5">
+                              <!-- U info-window stavljamo html -->
+                              <span style="font-size: 16px;font-family:'Times New Roman'">{{departureOffice.Address}}</span>
+                              <br/>
+                              <img class="d-block w-50" style="width:50px; height:50px; margin-right: 0px" src='http://localhost:51680/api/office/getOfficePicture/?path={{departureOffice.Picture }}'
+                                alt="">
+                            </div>
+                          </div>
+                        </agm-info-window>
                       </agm-marker>
                     </agm-map>
                   </div>
                 </div>
               </div>
-            
-            <div class="card-footer">
-              <div class="form-group row justify-content-md-center">
 
-                <label for="DepartureDate" class="col-md-5 col-form-label ">Departure</label>
-                <div class="col-md-7">
-                  <!-- <div class="input-group">
+              <div class="card-footer">
+                <div class="form-group row justify-content-md-center">
+
+                  <label for="DepartureDate" class="col-md-5 col-form-label ">Departure</label>
+                  <div class="col-md-7">
+                    <!-- <div class="input-group">
                   <input class="form-control" type="date" (dateSelect)="departureDatePicked($event)" name="DepartureDate" min="minDate"  #DepartureDate="ngModel" placeholder="yyyy-MM-dd" ngModel>
 
                 </div> -->
-                  <div class="input-group">
-                    <input class="form-control" placeholder="yyyy-mm-dd" (dateSelect)="departureDatePicked($event)" #DepartureDate="ngModel"
-                      #d1="ngbDatepicker" ngModel name="DepartureDate" ngbDatepicker>
-                    <div class="input-group-append">
-                      <button class="btn btn-outline-secondary calendar" (click)="d1.toggle()" type="button"></button>
+                    <div class="input-group">
+                      <input class="form-control" placeholder="yyyy-mm-dd" (dateSelect)="departureDatePicked($event)" #DepartureDate="ngModel"
+                        #d1="ngbDatepicker" ngModel name="DepartureDate" ngbDatepicker>
+                      <div class="input-group-append">
+                        <button class="btn btn-outline-secondary calendar" (click)="d1.toggle()" type="button"></button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
           </div>
           <div class="col-lg-5 col-md-6 mb-4">
             <div class="card h-70" style="max-height: 50">
@@ -159,10 +170,10 @@
 
           <div class="col">
             <div class="row justify-content-md-center">
-              <p class="font-weight-normal" *ngIf="isDepartureDateBad!=true && isReturnDateBad!=true">Price: {{calcPrice}}</p>
+              <p class="font-weight-normal" *ngIf="isDepartureDateBad!=true && isReturnDateBad!=true && showDangerErrorMessage!=true">Price: {{calcPrice}}</p>
             </div>
             <div class="row justify-content-md-center">
-                <div class="loader" *ngIf="btnHidden"></div>
+              <div class="loader" *ngIf="btnHidden"></div>
               <button type="submit" class="btn btn-success" *ngIf="!btnHidden" [disabled]="!f.valid || isDepartureDateBad==true || isReturnDateBad==true || btnDisabled==true">Rent</button>
             </div>
 
@@ -184,5 +195,5 @@
 
     </div>
   </div>
-  
+
 </form>

@@ -20,7 +20,7 @@ import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 })
 export class RentVehicleComponent implements OnInit {
 
-  constructor(private btmNavMessageService: btmNavDataService,private router: Router, private orderServices: OrderServices, private officeServices: OfficeServices, private vehicleServices: VehicleServices, private activatedRoute: ActivatedRoute) {
+  constructor(private btmNavMessageService: btmNavDataService, private router: Router, private orderServices: OrderServices, private officeServices: OfficeServices, private vehicleServices: VehicleServices, private activatedRoute: ActivatedRoute) {
     activatedRoute.params.subscribe(params => { this.vehicleID = params["vehicleId"] });
     activatedRoute.params.subscribe(params => { this.rentServiceId = params["rentServiceId"] });
 
@@ -57,7 +57,7 @@ export class RentVehicleComponent implements OnInit {
   errMessage: string;
   //@Output() progressEvent = new EventEmitter<boolean>();
   firstLoad: boolean = false;
-  showProgress:boolean=false;
+  showProgress: boolean = false;
 
   //minDate="1900-1-1";
   //minDate = new Date(1850, 0, 1);
@@ -73,13 +73,13 @@ export class RentVehicleComponent implements OnInit {
       .subscribe(
         data => {
           this.vehicle = data.body as Vehicle;
-          /*  if(this.vehicle.Available!=true){
-             this.btnDisabled=true;
-             
-             this.dangerErrMessage = "This Vehicle is not Available!";
-             this.showDangerErrorMessage=true;
-             
-           } */
+          if (this.vehicle.Available != true) {
+            this.btnDisabled = true;
+
+            this.dangerErrMessage = "This Vehicle is not Available!";
+            this.showDangerErrorMessage = true;
+
+          }
           if (this.firstLoad == true) {
             this.btmNavMessageService.changeMessage(false);
           }
@@ -104,20 +104,29 @@ export class RentVehicleComponent implements OnInit {
       .subscribe(
         data => {
           this.offices = data.body as OfficeModel[];
-          this.selectedDepartureOffice = data.body[0].Address;
-          this.selectedReturnOffice = data.body[0].Address;
-          this.departureOfficeId = data.body[0].OfficeId;
-          this.returnOfficeId = data.body[0].OfficeId;
-          //this.office=data.body[0];
-          this.returnOffice = data.body[0];
-          this.departureOffice = data.body[0];
+          if (this.offices.length == 0) {
+            this.btnDisabled = true;
 
-          if (this.firstLoad == true) {
-            this.btmNavMessageService.changeMessage(false);
+            this.dangerErrMessage = "This Rent Service doesn't have any offices!";
+            this.showDangerErrorMessage = true;
           }
           else {
-            this.firstLoad = true;
+            this.selectedDepartureOffice = data.body[0].Address;
+            this.selectedReturnOffice = data.body[0].Address;
+            this.departureOfficeId = data.body[0].OfficeId;
+            this.returnOfficeId = data.body[0].OfficeId;
+            //this.office=data.body[0];
+            this.returnOffice = data.body[0];
+            this.departureOffice = data.body[0];
+
+            if (this.firstLoad == true) {
+              
+            }
+            else {
+              this.firstLoad = true;
+            }
           }
+          this.btmNavMessageService.changeMessage(false);
         },
         error => {
           if (this.firstLoad == true) {
@@ -130,6 +139,9 @@ export class RentVehicleComponent implements OnInit {
 
         }
       );
+  }
+  ngOnDestroy() {
+    this.btmNavMessageService.changeMessage(false);
   }
   GetSelectedDepartureOffice(office: OfficeModel) {
     this.selectedDepartureOffice = office.Address;
@@ -269,7 +281,7 @@ export class RentVehicleComponent implements OnInit {
         },
         error => {
           this.btnHidden = false;
-          alert("rentService.createRent(...) Error!");
+          alert(error.error.Message);
         })
   }
 }

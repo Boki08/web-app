@@ -1,64 +1,66 @@
-<form class="needs-validation pt-3 " #f="ngForm" (ngSubmit)="onSubmit(f.value, f)" novalidate>
-  <div class="form-group row pt-3 justify-content-md-center">
-    <div class="container">
-      <div class="row justify-content-md-center">
-        <div class="col col-md-5">
-          <div class="row">
-            <div class="col col-md-4">
-              <label for="AddressInput" class="col-sm-2 col-form-label ">Address:</label>
+<div class="container-fluid ">
+  <form class="needs-validation pt-3 " #f="ngForm" (ngSubmit)="onSubmit(f.value, f)" novalidate>
+    <div class="form-group row pt-3 justify-content-md-center">
+      <div class="container">
+        <div class="row justify-content-md-center">
+          <div class="col col-md-5">
+            <div class="row">
+              <div class="col col-md-4">
+                <label for="AddressInput" class="col-sm-2 col-form-label ">Address:</label>
+              </div>
+              <div class="col col-md-8">
+                <input type="text" name="Address" ngModel class="form-control  is-valid" id="AddressInput" placeholder="Address" required>
+              </div>
             </div>
-            <div class="col col-md-8">
-              <input type="text" name="Address" ngModel class="form-control  is-valid" id="AddressInput" placeholder="Address" required>
-            </div>
-          </div>
-          <!-- <label for="validationCustom01">First name</label>
+            <!-- <label for="validationCustom01">First name</label>
             <input type="text" class="form-control is-valid" id="validationCustom01" placeholder="First name" value="Mark" required>
              -->
-          <div class="invalid-feedback">
-            Please input a Address.
-          </div>
-          <div class="col col-md-8 mt-3">
-            <div class="row justify-content-md-center">
-              <!-- Kreiramo mapu -->
-              <div class="col col-md-8">
-                <agm-map #map [latitude]="lat" [longitude]="lng" [zoom]="18" (mapClick)="placeMarker($event)">
+            <div class="invalid-feedback">
+              Please input a Address.
+            </div>
+            <div class="col col-md-8 mt-3">
+              <div class="row justify-content-md-center">
+                <!-- Kreiramo mapu -->
+                <div class="col col-md-8">
+                  <agm-map #map [latitude]="lat" [longitude]="lng" [zoom]="18" (mapClick)="placeMarker($event)">
 
-                  <!-- Postavljamo markere -->
-                  <agm-marker #marker [latitude]="latMark" [longitude]="lngMark">
-                  </agm-marker>
-                </agm-map>
+                    <!-- Postavljamo markere -->
+                    <agm-marker #marker [latitude]="latMark" [longitude]="lngMark">
+                    </agm-marker>
+                  </agm-map>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="col">
+
+            <div class="form-group row pt-3 justify-content-md-center">
+              <div class="row">
+                <div class="col col-lg-4 col-lg-push-4">
+                  <img [src]="imageUrl" style="width:250px; height:150px">
+                  <br>
+                  <br>
+                  <input type="file" (change)="handleFileInput($event.target.files)" name="Picture" accept="image/*">
+                  <br>
+                </div>
               </div>
             </div>
           </div>
 
-        </div>
-
-        <div class="col">
-
-          <div class="form-group row pt-3 justify-content-md-center">
-            <div class="row">
-              <div class="col col-lg-4 col-lg-push-4">
-                <img [src]="imageUrl" style="width:250px; height:150px">
-                <br>
-                <br>
-                <input type="file" (change)="handleFileInput($event.target.files)" name="Picture" accept="image/*">
-                <br>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 
+          <!-- 
           <hr/>
           <pre>Model: {{ model | json }}</pre> 
       <hr/>-->
-       
+
+        </div>
       </div>
     </div>
-  </div>
-  <div class="form-group row pt-3 justify-content-md-center">
+    <div class="form-group row pt-3 justify-content-md-center">
       <button class="btn btn-primary justify-content-md-center" [routerLink]="['/manageOfficesVehiclesComponent',rentServiceId]">Back</button>
       <button class="btn btn-primary justify-content-md-center" [disabled]="isBtnDisabled" type="submit">Add</button>
-    
+
     </div>
-</form>
+  </form>
+</div>

@@ -25,7 +25,7 @@ export class CommentServices {
         return this.httpClient.get("http://localhost:51680/api/comments/getCanUserComment/" + order + "/" + userId, { observe: 'response' });
     }
     PostComment(comment: CommentModel): Observable<any> {
-        return this.httpClient.post("http://localhost:51680/api/comments/postComments", comment, { observe: 'response' });
+        return this.httpClient.post("http://localhost:51680/api/comments/postComment", comment, { observe: 'response' });
     }
     GetServiceComments(serviceId: number): Observable<any> {
         return this.httpClient.get("http://localhost:51680/api/comments/getServiceComments/" + serviceId, { observe: 'response' });

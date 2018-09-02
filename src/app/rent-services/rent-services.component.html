@@ -1,65 +1,103 @@
-<div class="container">
+<div class="container-fluid ">
   <div class="row">
     <div class="col-xs-6">
-      <div class="wrapper ">
+        <div class="wrapper ">
 
-        <nav id="sidebar">
-          <!-- Sidebar Header -->
-          <div class="sidebar-header">
-            <h3>Rent Services</h3>
+            <nav id="sidebar">
+              <!-- Sidebar Header -->
+              <div class="sidebar-header">
+                <h3>Selection</h3>
+              </div>
+    
+              <!-- Sidebar Links -->
+              <ul class="list-unstyled components">
+                <div class="container  justify-content-md-center">
+    
+                  <div class="col col-md-7">
+
+                      <div class="custom-control custom-radio">
+                          <input type="radio" class="custom-control-input" (click)="setRadio($event)" value="noSorting" id="defaultGroupExample1" name="groupOfDefaultRadios" checked>
+                          <label class="custom-control-label" for="defaultGroupExample1">No Sorting</label>
+                        </div>
+
+                    <div class="custom-control custom-radio mt-3">
+                      <input type="radio" class="custom-control-input" (click)="setRadio($event)" value="bestGades" id="defaultGroupExample2" name="groupOfDefaultRadios" >
+                      <label class="custom-control-label" for="defaultGroupExample2">Best Gades</label>
+                    </div>
+    
+    
+                    <div class="custom-control custom-radio mt-3">
+                      <input type="radio" class="custom-control-input" (click)="setRadio($event)" value="mostVehicles" id="defaultGroupExample3" name="groupOfDefaultRadios">
+                      <label class="custom-control-label" for="defaultGroupExample3">Most Vehicles</label>
+                    </div>
+
+                    <div class="custom-control custom-radio mt-3">
+                        <input type="radio" class="custom-control-input" (click)="setRadio($event)" value="mostOrders" id="defaultGroupExample4" name="groupOfDefaultRadios">
+                        <label class="custom-control-label" for="defaultGroupExample4">Most Orders</label>
+                      </div>
+    
+                  </div>
+                </div>
+              </ul>
+              
+              
+            </nav>
+    
           </div>
-
-          <!-- Sidebar Links -->
-          <ul class="list-unstyled components">
-            <li class="active">
-              <a href="#">Home</a>
-            </li>
-            <li>
-              <a href="#">About</a>
-            </li>
-
-
-            <!-- Link with dropdown items -->
-            <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Pages</a>
-            <ul class="collapse list-unstyled" id="homeSubmenu">
-              <li>
-                <a href="#">Page</a>
-              </li>
-              <li>
-                <a href="#">Page</a>
-              </li>
-              <li>
-                <a href="#">Page</a>
-              </li>
-            </ul>
-
-            <li>
-              <a href="#">Portfolio</a>
-            </li>
-            <li>
-              <a href="#">Contact</a>
-            </li>
-
-          </ul>
-        </nav>
-
-      </div>
     </div>
-    <div class="col-xl-9">
+    <div class="col-xl-9" id="main">
       <h4>
         <small>Available Rent Services</small>
       </h4>
       <hr>
       <!-- <app-cards #cards (sendServiceId)="getVehicles($event)" [isUser]="true"></app-cards> -->
-      <app-cards #cards [isUser]="true"></app-cards>
-      <div class="row">
-        <div #processContainer> </div>
+      <div class="row" *ngIf="cardsVisible ">
+        <div class="col-lg-3 col-md-5 mb-4" *ngFor="let service of rentServices; let j = index">
+          <div class="card h-100">
+            <a>
+              <!-- <img class="card-img-top" src="http://placehold.it/700x400" alt=""> -->
+              <img class="card-img-top d-block w-100"   style="width:250px; height:250px" src='http://localhost:51680/api/rentService/getServiceLogo/?path={{service.Logo }}' alt="">
+            </a>
+            <div class="card-body">
+              <h4 class="card-title ">
+                <a href="#" id="serviceName" class="text-primary"  [routerLink]="['/vehiclePage',service.RentServiceId]">{{service.Name}}</a>
+              </h4>
+              <div class="row">
+                <div class="container" id="rating">
+                <ng-template #t let-fill="fill">
+                    <span class="star" [class.full]="fill === 100">
+                      <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
+                    </span>
+                  </ng-template>
+                  
+                  <ngb-rating rate="{{service.Grade}}" [starTemplate]="t" [readonly]="true" max="5"></ngb-rating>
+                  
+                </div>
+              </div>
+            </div>
+            <!-- <div class="card-footer">
+               
+              </div> -->
+          </div>
+        </div>
+
+
+
+
+        <!-- <app-cards #cards [isUser]="true"></app-cards> -->
+<!--         <div class="row">
+          <div #processContainer> </div>
+        </div> -->
+        <!--  <div class=" row justify-content-md-center">
+
+        <app-pager [page]="pageNumber" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
+      </div> -->
       </div>
       <div class=" row justify-content-md-center">
 
-        <app-pager [page]="pageNumber" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
+        <app-pager [page]="pageIndex" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
+        
+              
       </div>
     </div>
-
   </div>
-</div>

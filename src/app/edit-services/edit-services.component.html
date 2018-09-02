@@ -1,74 +1,130 @@
-<div class="container  justify-content-md-center">
-  <div class="row">
-    <div class="col-xs-6">
-      <div class="wrapper ">
-
-        <nav id="sidebar">
-          <!-- Sidebar Header -->
-          <div class="sidebar-header">
-            <h3>Selection</h3>
-          </div>
-
-          <!-- Sidebar Links -->
-          <ul class="list-unstyled components">
-            <div class="container  justify-content-md-center">
-
-              <div class="col col-md-9">
-                <div class="custom-control custom-radio">
-                  <input type="radio" class="custom-control-input" (click)="setradio('Approved')" value="Approved" id="defaultGroupExample1"
-                    name="groupOfDefaultRadios" checked>
-                  <label class="custom-control-label" for="defaultGroupExample1">Approved</label>
-                </div>
-
-
-                <div class="custom-control custom-radio mt-3">
-                  <input type="radio" class="custom-control-input" (click)="setradio('NotApproved')" value="NotApproved" #defaultGroupExample2
-                    id="defaultGroupExample2" name="groupOfDefaultRadios">
-                  <label class="custom-control-label" for="defaultGroupExample2">Not Approved</label>
-                </div>
-
-
-
-
-                <div class="row">
-                  <div class="col mt-3">
-                    <ul>
-                      <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" (change)="setCheckBoxOffice($event)" [disabled]="!defaultGroupExample2.checked"
-                          #defaultUnchecked id="defaultUnchecked">
-                        <label class="custom-control-label" for="defaultUnchecked">Without Offices</label>
-                      </div>
-
-                      <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" (change)="setCheckBoxVehicle($event)" [disabled]="!defaultGroupExample2.checked"
-                          #defaultUnchecked2 id="defaultUnchecked2">
-                        <label class="custom-control-label" for="defaultUnchecked2">Without Vehicles</label>
-                      </div>
-                    </ul>
-
+<div class="container-fluid " > 
+    <div class="row">
+      <div class="col-xs-6">
+        <div class="wrapper ">
+  
+          <nav id="sidebar">
+            <!-- Sidebar Header -->
+            <div class="sidebar-header">
+              <h3>Selection</h3>
+            </div>
+  
+            <!-- Sidebar Links -->
+            <ul class="list-unstyled components">
+              <div class="container  justify-content-md-center">
+  
+                <div class="col col-md-9">
+                  <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input" (click)="setradio('Approved')" value="Approved" id="defaultGroupExample1"
+                      name="groupOfDefaultRadios" checked>
+                    <label class="custom-control-label" for="defaultGroupExample1">Approved</label>
+                  </div>
+  
+  
+                  <div class="custom-control custom-radio mt-3">
+                    <input type="radio" class="custom-control-input" (click)="setradio('NotApproved')" value="NotApproved" #defaultGroupExample2
+                      id="defaultGroupExample2" name="groupOfDefaultRadios">
+                    <label class="custom-control-label" for="defaultGroupExample2">Not Approved</label>
+                  </div>
+  
+  
+  
+  
+                  <div class="row">
+                    <div class="col mt-3">
+                      <ul>
+                        <div class="custom-control custom-checkbox">
+                          <input type="checkbox" class="custom-control-input" (change)="setCheckBoxOffice($event)" [disabled]="!defaultGroupExample2.checked"
+                            #defaultUnchecked id="defaultUnchecked">
+                          <label class="custom-control-label" for="defaultUnchecked">Without Offices</label>
+                        </div>
+  
+                        <div class="custom-control custom-checkbox">
+                          <input type="checkbox" class="custom-control-input" (change)="setCheckBoxVehicle($event)" [disabled]="!defaultGroupExample2.checked"
+                            #defaultUnchecked2 id="defaultUnchecked2">
+                          <label class="custom-control-label" for="defaultUnchecked2">Without Vehicles</label>
+                        </div>
+                      </ul>
+  
+                    </div>
                   </div>
                 </div>
               </div>
+            </ul>
+          </nav>
+  
+        </div>
+      </div>
+      <div class="col-xl-9" id="main">
+          <h4>
+            <small>Available Rent Services</small>
+          </h4>
+          <hr>
+          <!-- <app-cards #cards (sendServiceId)="getVehicles($event)" [isUser]="true"></app-cards> -->
+          <div class="row" *ngIf="cardsVisible ">
+            <div class="col-lg-3 col-md-5 mb-4" *ngFor="let service of rentServices; let j = index">
+              <div class="card h-100">
+                <a>
+                  <!-- <img class="card-img-top" src="http://placehold.it/700x400" alt=""> -->
+                  <img class="card-img-top d-block w-100"   style="width:250px; height:250px" src='http://localhost:51680/api/rentService/getServiceLogo/?path={{service.Logo }}' alt="">
+                </a>
+                <div class="card-body">
+                  <h4 class="card-title ">
+                    <a href="#" id="serviceName" class="text-primary"  [routerLink]="['/manageOfficesVehiclesComponent',service.RentServiceId]">{{service.Name}}</a>
+                  </h4>
+                  <div class="row">
+                    <div class="container" id="rating">
+                    <ng-template #t let-fill="fill">
+                        <span class="star" [class.full]="fill === 100">
+                          <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
+                        </span>
+                      </ng-template>
+                      
+                      <ngb-rating rate="{{service.Grade}}" [starTemplate]="t" [readonly]="true" max="5"></ngb-rating>
+                      
+                    </div>
+                  </div>
+                </div>
+                <!-- <div class="card-footer">
+                   
+                  </div> -->
+              </div>
             </div>
-          </ul>
-        </nav>
-
-      </div>
+    
+    
+    
+    
+            <!-- <app-cards #cards [isUser]="true"></app-cards> -->
+            <div class="row">
+              <div #processContainer> </div>
+            </div>
+            <!--  <div class=" row justify-content-md-center">
+    
+            <app-pager [page]="pageNumber" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
+          </div> -->
+          </div>
+          <div class=" row justify-content-md-center">
+    
+            <app-pager [page]="pageIndex" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
+            
+                  
+          </div>
+        </div>
+     <!--  <div class="col-xl-9">
+        <h4>
+          <small>Available Rent Services</small>
+        </h4>
+        <hr>
+        <app-cards #RentServicescards [isUser]="false"></app-cards>
+        <div class="row">
+          <div #processContainer> </div>
+        </div>
+  
+        <div class=" row justify-content-md-center">
+  
+          <app-pager [page]="pageIndex" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
+        </div>
+      </div> -->
     </div>
-    <div class="col-xl-9">
-      <h4>
-        <small>Available Rent Services</small>
-      </h4>
-      <hr>
-      <app-cards #RentServicescards [isUser]="false"></app-cards>
-      <div class="row">
-        <div #processContainer> </div>
-      </div>
-
-      <div class=" row justify-content-md-center">
-
-        <app-pager [page]="pageIndex" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
-      </div>
-    </div>>
   </div>
-</div>
+  

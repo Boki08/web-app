@@ -10,6 +10,7 @@ export class PagerComponent implements OnInit {
   @Input()
   private page: number=1;
 
+
   @Input()
   private totalPages: number=0;
   constructor() { }

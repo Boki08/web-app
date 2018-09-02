@@ -6,6 +6,7 @@ import { OfficeServices } from '../services/office-services';
 import { CommentServices } from '../services/comment-services';
 import { CommentModel } from '../models/commentData';
 import { Vehicle } from '../models/vehicles';
+import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 
 @Component({
   selector: 'app-view-orders',
@@ -14,11 +15,11 @@ import { Vehicle } from '../models/vehicles';
 })
 export class ViewOrdersComponent implements OnInit {
 
-  constructor(private commentServices: CommentServices, private orderServices: OrderServices, private officeServices: OfficeServices) { }
+  constructor(private btmNavMessageService: btmNavDataService,private commentServices: CommentServices, private orderServices: OrderServices, private officeServices: OfficeServices) { }
 
-  pageSize: number = 5;
+  pageSize: number = 9;
   pageIndex: number = 1;
-  totalPagesNumber: number;
+  totalPagesNumber: number=0;
   orders: OrderData[];
   departureOffice: OfficeModel;
   returnOffice: OfficeModel;
@@ -30,11 +31,20 @@ export class ViewOrdersComponent implements OnInit {
   selectedGrade: string = "Grade";
   btnDisabled: boolean = true;
   vehicleReturned:boolean=true;
+  showProgress:boolean=false;
+  stopNav: number = 0;
+  stopNavLockCount: number = 1;
+  showOrderProgress:boolean=false;
   
-  ngOnInit() {
+  ngOnInit() {    
+    this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress = message)
     this.getAlllOrders();
   }
+  ngOnDestroy() {
+    this.btmNavMessageService.changeMessage(false);
+  }
   public getAlllOrders() {
+    this.btmNavMessageService.changeMessage(true);
     this.orderServices.GetAllUserOrders(this.pageIndex, this.pageSize).subscribe(
       data => {
         this.orders = data.body as OrderData[];
@@ -45,9 +55,11 @@ export class ViewOrdersComponent implements OnInit {
         this.pageIndex = jsonData.currentPage;
         this.pageSize = jsonData.pageSize;
         this.totalPagesNumber = jsonData.totalPages;
+        this.btmNavMessageService.changeMessage(false);
       },
       error => {
-        console.log(error);
+        this.btmNavMessageService.changeMessage(false);
+        console.log(error.Message);
       })
 
     //this.RentServices = JSON.parse(temp);
@@ -57,26 +69,30 @@ export class ViewOrdersComponent implements OnInit {
 
   }
   OrderDetails(order: OrderData, i: number) {
-    
+    this.stopNavLockCount=1;
     this.displayComment = false;
     this.canComment = false
     this.order = order;
     this.vehicleReturned= this.order.VehicleReturned;
+    this.showOrderProgress=true;
     this.officeServices.GetOffice(order.DepartureOfficeId).subscribe(
       data => {
+        this.StopNav();
         this.departureOffice = data.body as OfficeModel;
-
       },
       error => {
+        this.StopNav();
         console.log(error);
       })
 
     this.officeServices.GetOffice(order.ReturnOfficeId).subscribe(
       data => {
+        this.StopNav();
         this.returnOffice = data.body as OfficeModel;
 
       },
       error => {
+        this.StopNav();
         console.log(error);
       })
 
@@ -92,6 +108,7 @@ export class ViewOrdersComponent implements OnInit {
     returnDate.setHours(0);
 
     if (returnDate <= today) {
+      this.stopNavLockCount+=1;
       this.commentServices.CanComment(order.OrderId, order.UserId).subscribe(
         data => {
           let infoString = data.body as string;
@@ -114,9 +131,10 @@ export class ViewOrdersComponent implements OnInit {
             this.canComment = false;
             this.displayComment = false;
           }
+          this.StopNav();
         },
         error => {
-
+           this.StopNav();
           console.log(error);
         })
 
@@ -154,5 +172,23 @@ export class ViewOrdersComponent implements OnInit {
 
         console.log(error);
       })
+  }  
+  set page(val: number) {
+    if (val !== this.pageIndex) {
+      this.pageIndex = val;
+      this.getAlllOrders();
+    }
   }
+
+  StopNav(){
+    if (this.stopNav == this.stopNavLockCount) {
+      this.showOrderProgress=false;
+  
+    }
+    else {
+      this.stopNav += 1;
+    }
+  }
+
+  
 }

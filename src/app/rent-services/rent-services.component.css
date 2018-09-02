@@ -1,4 +1,30 @@
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+
+
+.sidenav {
+    height: 100%;
+    width: 160px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 20px;
+  }
+
+  #main{
+    margin-left: 250px;
+    right: 0;
+    top: 0;
+}
+  
+  @media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+  }
+
+  
 .wrapper {
     display: flex;
     align-items: stretch;
@@ -8,6 +34,8 @@
     min-width: 250px;
     max-width: 250px;
     min-height: 100vh;
+    height: 100vh;
+    position: fixed;
 }
 
 #sidebar.active {
@@ -67,7 +95,7 @@ a, a:hover, a:focus {
 }
 
 #sidebar .sidebar-header {
-    padding: 20px;
+    padding: 10px;
     background: rgb(33, 37, 41);
 }
 
@@ -101,3 +129,58 @@ ul ul a {
     background: #030c35;
 }
 
+
+
+
+.container {
+    min-height: 100%;
+    overflow: hidden;
+}
+
+#nav, #content, #sidebar {
+    margin-bottom: -9999px;
+    padding-bottom: 9999px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#serviceName, #rating {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+
+
+
+
+.star {
+    font-size: 1.5rem;
+    color: #b0c4de;
+    position: relative;
+      display: inline-block;
+  }
+  /* .filled {
+    color: #1e90ff;
+  } */
+  .full {
+    color: #1e90ff;
+  }
+  .half {
+    position: absolute;
+    display: inline-block;
+    overflow: hidden;
+    color: #1e90ff;
+  }

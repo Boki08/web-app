@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container-fluid ">
   <div class="row">
     <div class="col-xs-6">
       <div class="wrapper ">
@@ -15,10 +15,14 @@
                 <p class="card-text">
 
                   <li>Description:
-                    <ul>{{rentService.Description}}</ul>
+                    <ul>
+                      <h5 style="font-size:0.95vw;">{{rentService.Description}}</h5>
+                    </ul>
                   </li>
                   <li>Email:
-                    <ul>{{rentService.Email}}</ul>
+                    <ul>
+                      <h5 style="font-size:0.95vw;">{{rentService.Email}}</h5>
+                    </ul>
                   </li>
 
                 </p>
@@ -27,16 +31,28 @@
                 <li>Rate: <b>{{rentService.Grade}}</b></li>
               </div>
             </div>
-            <button type="button" class="btn btn-primary" (click)="getComments()" data-toggle="modal" data-target="#commentsModal">
-                View Coments
-              </button>
+            <hr class="my-4">
+            <ul class="list-unstyled components" #linkList id="linkList">
+                <li>
+                  <span class="border border-primary"><a href="#" (click)="getComments()" data-toggle="modal" data-target="#commentsModal"
+                      class="text-center">View Coments</a></span>
+                </li>
+                
+              </ul>
+            <!-- <button type="button" style="
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: center;"  class="btn btn-primary" >
+              View Coments
+            </button> -->
           </li>
+       
         </nav>
 
       </div>
     </div>
 
-    <div class="col-sm-9 mb-1" id="cont">
+    <div class="col-sm-9 mb-1"  id="main">
       <div class="row mt-2 ml-1">
         <div class="col col-md-2">
           <h4>
@@ -94,7 +110,7 @@
 
 
       <div class="row" *ngIf="vehicles">
-        <div class=" col-lg-4 col-md-6 mb-4  " *ngFor="let vehicle of vehicles; let j = index">
+        <div class=" col-lg-3 col-md-5 mb-4  " *ngFor="let vehicle of vehicles; let j = index">
           <div [ngClass]="(vehicle.Available==true)?'card text-center h-70 border-success':'card text-center h-70 border-danger'">
             <a>
               <div id="carouselExampleIndicators{{vehicle.VehicleId}}" class="carousel slide" data-ride="carousel">
@@ -123,7 +139,7 @@
             </a>
             <div class="card-body border-primary">
               <h5 class="card-title">
-                <a href="#" (click)="vehicleDetails(vehicle,j)" data-toggle="modal" data-target="#vehicleModal"><p class="text-primary">{{vehicle.Model}}</p></a>
+                <a href="#" class="text-primary" (click)="vehicleDetails(vehicle,j)" data-toggle="modal" data-target="#vehicleModal">{{vehicle.Model}}</a>
               </h5>
               <p class="card-text"><b>{{(vehicle.Available==true)? 'Available':'Not Available'}}</b></p>
             </div>
@@ -144,7 +160,7 @@
 
 
       </div>
-      <div class=" row justify-content-md-center">
+      <div class=" row justify-content-md-center mb-3">
 
         <app-pager [page]="pageNumber" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
 
@@ -239,7 +255,8 @@
           <div class="container" *ngIf="vehicle!=null" style="display: flex;flex-flow: row wrap;justify-content: center;">
             <p class="text-warning" *ngIf="logedIn==false ">Please log in to rent this vehilcle</p>
             <p class="text-danger" *ngIf="logedIn==true && vehicle.Available==false">This Vehicle is not available</p>
-            <button type="button" class="btn btn-primary" data-dismiss="modal" *ngIf="logedIn==true && vehicle.Available==true" [routerLink]="['/rentVehicleComponent',rentServiceId,vehicle.VehicleId]">Rent this Vehicle</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" *ngIf="logedIn==true && vehicle.Available==true" [routerLink]="['/rentVehicleComponent',rentServiceId,vehicle.VehicleId]">Rent
+              this Vehicle</button>
 
           </div>
 
@@ -250,28 +267,40 @@
     </div>
   </div>
 
-<!--comment view-->
+  <!--comment view-->
   <div class="modal fade" id="commentsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Comments</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="jumbotron jumbotron-fluid" *ngFor="let comment of comments" style="padding:0px">
+            <div class="container">
+              <h3 class="display-4" style="font-size:1.5vw;">{{comment.User.FullName}}</h3>
+              <h4 class="lead" style="font-size:1.8vw;">{{comment.Review}}</h4>
+              <hr class="my-4">
+              <p>Date: {{comment.PostedDate.slice(0,10)}}, rented model: {{comment.Order.Vehicle.Model}}</p>
+            </div>
           </div>
-          <div class="modal-body">
-              <div class="jumbotron jumbotron-fluid">
-                  <div class="container">
-                    <h1 class="display-4">Fluid jumbotron</h1>
-                    <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+        </div>
+        <div class="modal-footer">
+            <div class="col col-md-5" style="margin-right:16%" >
+                <div class="progress" style="
+                display: flex;
+                flex-flow: row wrap;
+                justify-content: center;" *ngIf="showOrderProgress" >
+                  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0"
+                    aria-valuemax="100" style="width: 100%">
                   </div>
                 </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
-          </div>
+              </div>
+
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
+  </div>

@@ -14,8 +14,8 @@ export class Services {
  constructor(private httpClient: HttpClient) { }
 
   
-  getRentServiceInfo(pageIndex:number,pageSize:number):Observable<HttpResponse<Config>> {
-    return this.httpClient.get("http://localhost:51680/api/rentService/getAll/"+pageIndex+"/"+pageSize, { observe: 'response' }) ;
+  GetRentServiceInfo(pageIndex:number,pageSize:number,sortType:number):Observable<HttpResponse<Config>> {
+    return this.httpClient.get("http://localhost:51680/api/rentService/getAll/"+pageIndex+"/"+pageSize+"/"+sortType, { observe: 'response' }) ;
   }
 
 }
