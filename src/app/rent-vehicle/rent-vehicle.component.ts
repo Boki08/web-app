@@ -11,6 +11,11 @@ import { DlDateTimePickerModel } from 'angular-bootstrap-datetimepicker';
 import { formatDate, DatePipe } from '@angular/common';
 import { PlatformLocation } from '@angular/common';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
+import { finalize } from 'rxjs/operators'
+import { BsLocaleService, BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import { enGbLocale } from 'ngx-bootstrap/locale';
+import { defineLocale } from 'ngx-bootstrap/chronos';
+defineLocale('en-gb', enGbLocale);
 
 
 @Component({
@@ -20,19 +25,38 @@ import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 })
 export class RentVehicleComponent implements OnInit {
 
-  constructor(private btmNavMessageService: btmNavDataService, private router: Router, private orderServices: OrderServices, private officeServices: OfficeServices, private vehicleServices: VehicleServices, private activatedRoute: ActivatedRoute) {
+  constructor(private localeService: BsLocaleService,private btmNavMessageService: btmNavDataService, private router: Router, private orderServices: OrderServices, private officeServices: OfficeServices, private vehicleServices: VehicleServices, private activatedRoute: ActivatedRoute) {
     activatedRoute.params.subscribe(params => { this.vehicleID = params["vehicleId"] });
     activatedRoute.params.subscribe(params => { this.rentServiceId = params["rentServiceId"] });
 
-  }
+    this.bsConfigDeparture = Object.assign({}, {
+      containerClass: 'theme-dark-blue',
+      showWeekNumbers: false,
+      dateInputFormat: 'DD.MM.YYYY.',
+      minDate: new Date(),
 
+    });
+
+    this.bsConfigReturn = Object.assign({}, {
+      containerClass: 'theme-dark-blue',
+      showWeekNumbers: false,
+      dateInputFormat: 'DD.MM.YYYY.',
+      minDate: new Date(),
+
+    });
+   
+    this.localeService.use("en-gb");
+  }
+  
+  bsConfigDeparture: Partial<BsDatepickerConfig>;
+  bsConfigReturn: Partial<BsDatepickerConfig>;
   vehicleID: number;
   vehicle: Vehicle;
   offices: OfficeModel[];
   rentServiceId: number;
   departureDate: Date = null;
   returnDate: Date = null;
-  btnDisabled: boolean = false;
+  btnDisabled: boolean = true;
   dangerErrMessage: string;
   showDangerErrorMessage: boolean = false;
   btnHidden: boolean = false;
@@ -49,7 +73,7 @@ export class RentVehicleComponent implements OnInit {
   returnOffice: OfficeModel;
   selectedReturnOffice: string = "Return Office";
 
-  disableBtn: boolean = false;
+  
   isDepartureDateBad: boolean = false;
   isReturnDateBad: boolean = false;
 
@@ -159,51 +183,63 @@ export class RentVehicleComponent implements OnInit {
     //let d=$event.year +""+$event.month +""+$event.day +""+"T00:00:00";
     // let d=$event
     // d.hour
-    let dd = new Date();
+   /*  let dd = new Date();
     dd.setMilliseconds(0);
     dd.setSeconds(0);
     dd.setMinutes(0);
     dd.setHours(2);
 
-    dd.setFullYear($event.year, $event.month - 1, $event.day);
+    dd.setFullYear($event.year, $event.month - 1, $event.day); */
     //formatDate(new Date(d), 'yyyy/MM/dd', 'en');
     // let myDate = this.datePipe.transform(new Date(d), 'yyyy-MM-dd');
-    this.returnDate = dd;
+    this.returnDate = $event;
 
     this.testReturnDate();
     this.testDepartureDate();
+
+    let dateTemp=new Date(this.returnDate);
+    dateTemp.setHours(dateTemp.getHours()-24);
+    this.bsConfigDeparture = Object.assign({}, {
+      maxDate:dateTemp,
+      minDate: new Date(),
+    });
   }
   testReturnDate() {
     let today = new Date();
-    today.setMilliseconds(0);
+     today.setMilliseconds(0);
     today.setSeconds(0);
     today.setMinutes(0);
-    today.setHours(2);
+    today.setHours(0); 
 
     if (this.returnDate != null) {
       if (this.returnDate <= today) {
         this.errMessage = "Return date can't be before tommorow";
-        this.disableBtn = true;
+        this.btnDisabled = true;
         this.isReturnDateBad = true;
       }
       else if (this.departureDate != null) {
         if (this.departureDate >= this.returnDate) {
-          this.disableBtn = true;
+          this.btnDisabled = true;
           this.isReturnDateBad = true;
           this.errMessage = "Return date can't be before the Departure date";
         }
         else {
-          this.disableBtn = false;
+          this.btnDisabled = false;
           this.isReturnDateBad = false;
           this.calcPrice = this.vehicle.HourlyPrice * (this.returnDate.getTime() - this.departureDate.getTime()) / 3600000;
+
         }
+
+      
       }
       else {
-        this.disableBtn = true;
+        this.btnDisabled = true;
         this.isReturnDateBad = false;
+
+        
       }
     } else {
-      this.disableBtn = true;
+      this.btnDisabled = true;
       this.isReturnDateBad = true;
       this.errMessage = "Pick Return date";
     }
@@ -211,7 +247,7 @@ export class RentVehicleComponent implements OnInit {
 
   departureDatePicked($event) {
 
-    let dd = new Date();
+   /*  let dd = new Date();
     dd.setMilliseconds(0);
     dd.setSeconds(0);
     dd.setMinutes(0);
@@ -220,10 +256,18 @@ export class RentVehicleComponent implements OnInit {
     dd.setFullYear($event.year, $event.month - 1, $event.day);
     //formatDate(new Date(d), 'yyyy/MM/dd', 'en');
     // let myDate = this.datePipe.transform(new Date(d), 'yyyy-MM-dd');
-    this.departureDate = dd;
-
+    this.departureDate = dd; */
+    this.departureDate =$event;
     this.testDepartureDate();
     this.testReturnDate();
+
+    let dateTemp=new Date(this.departureDate);
+     dateTemp.setHours(dateTemp.getHours()+24);
+    this.bsConfigReturn = Object.assign({}, {
+      
+
+      minDate:dateTemp,
+    });
 
   }
   testDepartureDate() {
@@ -231,45 +275,45 @@ export class RentVehicleComponent implements OnInit {
     today.setMilliseconds(0);
     today.setSeconds(0);
     today.setMinutes(0);
-    today.setHours(2);
+    today.setHours(0); 
 
     if (this.departureDate != null) {
 
       if (this.departureDate < today) {
         this.errMessage = "Departure date can't be before today";
-        this.disableBtn = true;
+        this.btnDisabled = true;
         this.isDepartureDateBad = true;
       }
       else if (this.returnDate != null) {
         if (this.departureDate >= this.returnDate) {
-          this.disableBtn = true;
+          this.btnDisabled = true;
           this.isDepartureDateBad = true;
           this.errMessage = "Departure date can't be after the Return date";
         }
         else {
-          this.disableBtn = false;
+          this.btnDisabled = false;
           this.isDepartureDateBad = false;
           this.calcPrice = this.vehicle.HourlyPrice * (this.returnDate.getTime() - this.departureDate.getTime()) / 3600000;
         }
       }
       else {
-        this.disableBtn = true;
+        this.btnDisabled = true;
         this.isDepartureDateBad = false;
         this.errMessage = "Departure date can't be after the Return date";
       }
     } else {
-      this.disableBtn = true;
+      this.btnDisabled = true;
       this.isReturnDateBad = true;
       this.errMessage = "Pick Departure date";
     }
 
   }
 
-  onSubmit(order: OrderData, form: NgForm) {
+  onSubmit(order: any, form: NgForm) {
     //console.log(this.args, this.user.Id); 
     this.btnHidden = true;
-    order.DepartureDate = this.departureDate;
-    order.ReturnDate = this.returnDate;
+    order.DepartureDate = this.departureDate.toJSON();;
+    order.ReturnDate = this.returnDate.toJSON();;
     order.VehicleId = this.vehicleID;
     order.DepartureOfficeId = this.departureOfficeId;
     order.ReturnOfficeId = this.returnOfficeId;

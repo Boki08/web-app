@@ -1,5 +1,6 @@
 <div class="container-fluid ">
-  <form class="needs-validation pt-3 " #f="ngForm" (ngSubmit)="onSubmit(f.value, f)" novalidate>
+  <form class="needs-validation pt-3" [formGroup]="addOfficeForm" #f="ngForm" (ngSubmit)="onSubmit(f.value, f)"
+    novalidate>
     <div class="form-group row pt-3 justify-content-md-center">
       <div class="container">
         <div class="row justify-content-md-center">
@@ -9,7 +10,16 @@
                 <label for="AddressInput" class="col-sm-2 col-form-label ">Address:</label>
               </div>
               <div class="col col-md-8">
-                <input type="text" name="Address" ngModel class="form-control  is-valid" id="AddressInput" placeholder="Address" required>
+                <input type="text" name="Address" formControlName="Address" class="form-control  is-valid" id="AddressInput"
+                  placeholder="Address" [ngClass]="{
+                  'is-valid':Address.valid && (Address.dirty || Address.touched),
+                  'is-invalid':Address.invalid && (Address.dirty || Address.touched)
+                }">
+                <div class="invalid-feedback" *ngIf="Address.errors && (Address.dirty || Address.touched)">
+                  <p *ngIf="Address.errors.required">Address is required</p>
+                  <p *ngIf="Address.errors.maxlength">Address is too long, delete {{Address.errors.maxlength.actualLength
+                      - Address.errors.maxlength.requiredLength}} characters </p>
+                </div>
               </div>
             </div>
             <!-- <label for="validationCustom01">First name</label>
@@ -42,7 +52,14 @@
                   <img [src]="imageUrl" style="width:250px; height:150px">
                   <br>
                   <br>
-                  <input type="file" (change)="handleFileInput($event.target.files)" name="Picture" accept="image/*">
+                  <input type="file" formControlName="Picture" (change)="handleFileInput($event.target.files)" name="Picture"
+                    accept="image/*" [ngClass]="{
+                    'is-valid':Picture.valid && (Picture.dirty || Picture.touched),
+                    'is-invalid':Picture.invalid && (Picture.dirty || Picture.touched)
+                  }">
+                  <div class="invalid-feedback" *ngIf="Picture.errors && (Picture.dirty || Picture.touched)">
+                    <p *ngIf="Picture.errors.required">Picture is required</p>
+                  </div>
                   <br>
                 </div>
               </div>
@@ -58,9 +75,13 @@
       </div>
     </div>
     <div class="form-group row pt-3 justify-content-md-center">
-      <button class="btn btn-primary justify-content-md-center" [routerLink]="['/manageOfficesVehiclesComponent',rentServiceId]">Back</button>
-      <button class="btn btn-primary justify-content-md-center" [disabled]="isBtnDisabled" type="submit">Add</button>
-
+      <div class="col">
+        <button class="btn btn-primary ml-auto"  id="backBtn" [routerLink]="['/manageOfficesVehiclesComponent',rentServiceId]">Back</button>
+      </div>
+      <div class="col">
+        <button class="btn btn-primary"  id="addBtn" [disabled]=" !f.valid || isBtnDisabled" type="submit">Add
+          Office</button>
+      </div>
     </div>
   </form>
 </div>

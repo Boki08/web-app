@@ -9,6 +9,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AgmCoreModule } from '@agm/core';
 import { DlDateTimePickerDateModule } from 'angular-bootstrap-datetimepicker';
 
+
 //import { OwlModule } from 'ngx-owl-carousel';
 
 import { RouterModule, Routes } from '@angular/router';
@@ -43,6 +44,11 @@ import { RentVehicleComponent } from './rent-vehicle/rent-vehicle.component';
 import { ViewOrdersComponent } from './view-orders/view-orders.component';
 import { BottomNavbarComponent } from './bottom-navbar/bottom-navbar.component';
 import { btmNavDataService } from './bottom-navbar/btmNavDataService';
+import { VehicleTypeComponent } from './vehicle-type/vehicle-type.component';
+import { AdminOfficesVehiclesComponent } from './admin-offices-vehicles/admin-offices-vehicles.component';
+import { BsDatepickerModule, BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import { GetNotificationComponent } from './get-notification/get-notification.component';
+import { ToasterService } from './toaster-service/toaster-service.component';
 
 const Routes = [
   {
@@ -136,6 +142,19 @@ const Routes = [
     component: ViewOrdersComponent,
     canActivate: ['IsUserGuard']
   }
+  ,
+  {
+    path: "vehicleType",
+    component: VehicleTypeComponent,
+    canActivate: ['IsAdminGuard']
+  }
+  ,
+  {
+    path: "AdminOfficesVehicles/:rentServiceId",
+    component: AdminOfficesVehiclesComponent,
+    canActivate: ['IsAdminGuard']
+  }
+  
   
 ]
 
@@ -186,6 +205,14 @@ const Routes = [
 
     BottomNavbarComponent,
 
+    VehicleTypeComponent,
+
+    AdminOfficesVehiclesComponent,
+
+    GetNotificationComponent,
+
+    
+
   ],
   imports: [
     BrowserModule,
@@ -199,7 +226,7 @@ const Routes = [
     BrowserModule,
     AgmCoreModule.forRoot({apiKey: 'AIzaSyDnihJyw_34z5S1KZXp90pfTGAqhFszNJk'}),
     DlDateTimePickerDateModule,
-   
+    BsDatepickerModule.forRoot(),
   
     //OwlModule,
 
@@ -211,6 +238,7 @@ const Routes = [
   // Services
   //],
   providers: [
+   
     AdminManagerGuard,
     {
       provide: HTTP_INTERCEPTORS,
@@ -253,7 +281,8 @@ const Routes = [
       }
     },
     DataService,
-    btmNavDataService
+    btmNavDataService,
+    ToasterService
   ],
   bootstrap: [AppComponent],
 

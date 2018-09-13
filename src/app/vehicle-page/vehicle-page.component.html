@@ -14,164 +14,159 @@
               <div class="card-body">
                 <p class="card-text">
 
-                  <li>Description:
-                    <ul>
-                      <h5 style="font-size:0.95vw;">{{rentService.Description}}</h5>
-                    </ul>
-                  </li>
-                  <li>Email:
-                    <ul>
-                      <h5 style="font-size:0.95vw;">{{rentService.Email}}</h5>
-                    </ul>
-                  </li>
+          <li>Description:
+            <ul>
+              <h5 style="font-size:0.95vw;">{{rentService.Description}}</h5>
+            </ul>
+          </li>
+          <li>Email:
+            <ul>
+              <h5 style="font-size:0.95vw;">{{rentService.Email}}</h5>
+            </ul>
+          </li>
 
-                </p>
-              </div>
-              <div class="card-footer-unstyled ml-4">
-                <li>Rate: <b>{{rentService.Grade}}</b></li>
-              </div>
-            </div>
-            <hr class="my-4">
-            <ul class="list-unstyled components" #linkList id="linkList">
-                <li>
-                  <span class="border border-primary"><a href="#" (click)="getComments()" data-toggle="modal" data-target="#commentsModal"
-                      class="text-center">View Coments</a></span>
-                </li>
-                
-              </ul>
-            <!-- <button type="button" style="
+          </p>
+      </div>
+      <div class="card-footer-unstyled ml-4">
+        <li>Rate: <b>{{rentService.Grade}}</b></li>
+      </div>
+    </div>
+    <hr class="my-4">
+    <ul class="list-unstyled components" #linkList id="linkList">
+      <li>
+        <span class="border border-primary"><a href="#" (click)="getComments()" data-toggle="modal" data-target="#commentsModal"
+            class="text-center">View Coments</a></span>
+      </li>
+
+    </ul>
+    <!-- <button type="button" style="
             display: flex;
             flex-flow: row wrap;
             justify-content: center;"  class="btn btn-primary" >
               View Coments
             </button> -->
-          </li>
-       
-        </nav>
+    </li>
 
-      </div>
+    </nav>
+
+  </div>
+</div>
+
+<div class="col-sm-9 mb-1" id="main">
+  <div class="row mt-2 ml-1">
+    <div class="col col-md-2">
+      <h4>
+        <small>Vehicles</small>
+      </h4>
     </div>
-
-    <div class="col-sm-9 mb-1"  id="main">
-      <div class="row mt-2 ml-1">
-        <div class="col col-md-2">
-          <h4>
-            <small>Vehicles</small>
-          </h4>
-        </div>
-        <div class="col">
+    <div class="col">
+      <div class="row">
+        <div class="col col-md-4 justify-content-md-center">
           <div class="row">
-            <div class="col col-md-4 justify-content-md-center">
-              <div class="row">
-                <p><small>Available</small></p>
-                <label class="switch ml-2">
-                  <input type="checkbox" (change)="setCheckBoxAvailable($event)">
-                  <span class="slider round"></span>
-                </label>
-              </div>
+            <p><small>Available</small></p>
+            <label class="switch ml-2">
+              <input type="checkbox" (change)="setCheckBoxAvailable($event)">
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+        <div class="col col-md-4 justify-content-md-center">
+          <div class="form-group">
+            <button type="button" id="dLabel" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              {{selectedTypePrice}}
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dLabel">
+
+              <a class="dropdown-item" (click)="GetSelectedType('Low')">Price - Low to High</a>
+              <a class="dropdown-item" (click)="GetSelectedType('High')">Price - High to Low</a>
+              <a class="dropdown-item" (click)="GetSelectedType('Mixed')">Mixed</a>
             </div>
-            <div class="col col-md-4 justify-content-md-center">
-              <div class="form-group">
-                <button type="button" id="dLabel" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {{selectedTypePrice}}
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dLabel">
 
-                  <a class="dropdown-item" (click)="GetSelectedType('Low')">Price - Low to High</a>
-                  <a class="dropdown-item" (click)="GetSelectedType('High')">Price - High to Low</a>
-                  <a class="dropdown-item" (click)="GetSelectedType('Mixed')">Mixed</a>
-                </div>
+          </div>
+        </div>
+        <div class="col col-md-3  justify-content-md-center">
+          <div class="form-group">
+            <button type="button" id="dLabel" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              {{selectedTypeVehicle}}
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dLabel">
 
-              </div>
+              <a class="dropdown-item" *ngFor="let type of vehicleTypes" (click)="GetSelectedTypeVehicle(type)">{{type.Type}}</a>
             </div>
-            <div class="col col-md-3  justify-content-md-center">
-              <div class="form-group">
-                <button type="button" id="dLabel" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {{selectedTypeVehicle}}
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dLabel">
 
-                  <a class="dropdown-item" *ngFor="let type of vehicleTypes" (click)="GetSelectedTypeVehicle(type)">{{type.Type}}</a>
-                </div>
-
-              </div>
-            </div>
           </div>
         </div>
       </div>
-      <hr>
-      <!-- <app-vehicle-cards #vehicleCards (cardClick)="card=$event"></app-vehicle-cards> -->
-
-
-
-
-
-
-
-
-      <div class="row" *ngIf="vehicles">
-        <div class=" col-lg-3 col-md-5 mb-4  " *ngFor="let vehicle of vehicles; let j = index">
-          <div [ngClass]="(vehicle.Available==true)?'card text-center h-70 border-success':'card text-center h-70 border-danger'">
-            <a>
-              <div id="carouselExampleIndicators{{vehicle.VehicleId}}" class="carousel slide" data-ride="carousel">
-                <ol class="carousel-indicators">
-                  <li data-target="'#carouselExampleIndicators'+vehicle.VehicleId" *ngFor="let picture of vehicle.VehiclePictures; let i = index"
-                    data-slide-to="i" [class.active]="isFirst"></li>
-                </ol>
-                <div class="carousel-inner">
-                  <img *ngIf="vehicle.VehiclePictures[0]==undefined" class="d-block w-100" style="width:200px; height:200px" src="http://placehold.it/700x400"
-                    alt="">
-                  <div class="carousel-item" data-slide-to="i+1" *ngFor="let picture of vehicle.VehiclePictures; let isFirst = first" [class.active]="isFirst">
-                    <img class="d-block w-100" style="width:200px; height:200px" src='http://localhost:51680/api/vehicle/getVehiclePicture/?path={{picture.Data }}'
-                      alt="">
-                  </div>
-                </div>
-                <a class="carousel-control-prev" href="#carouselExampleIndicators{{vehicle.VehicleId}}" role="button" data-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carouselExampleIndicators{{vehicle.VehicleId}}" role="button" data-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Next</span>
-                </a>
-
-              </div>
-            </a>
-            <div class="card-body border-primary">
-              <h5 class="card-title">
-                <a href="#" class="text-primary" (click)="vehicleDetails(vehicle,j)" data-toggle="modal" data-target="#vehicleModal">{{vehicle.Model}}</a>
-              </h5>
-              <p class="card-text"><b>{{(vehicle.Available==true)? 'Available':'Not Available'}}</b></p>
-            </div>
-          </div>
-        </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      </div>
-      <div class=" row justify-content-md-center mb-3">
-
-        <app-pager [page]="pageNumber" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
-
-      </div>
-
     </div>
   </div>
+  <hr style="margin:0px">
+  <!-- <app-vehicle-cards #vehicleCards (cardClick)="card=$event"></app-vehicle-cards> -->
 
 
 
-  <div class="modal fade" id="vehicleModal" tabindex="-1" role="dialog" aria-labelledby="VehicleModalLabel" aria-hidden="true">
+
+
+
+
+  <div *ngIf="vehicles!=null && vehicles.length==0">
+    <p class="text-warning">There are no Vehicles</p>
+  </div>
+  <div class="row" *ngIf="vehicles">
+    <div class=" col-lg-3 col-md-5 mb-4  " *ngFor="let vehicle of vehicles; let j = index">
+      <div [ngClass]="(vehicle.Available==true)?'card text-center h-70 border-success':'card text-center h-70 border-danger'">
+        <a>
+          <div id="carouselExampleIndicators{{vehicle.VehicleId}}" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+              <li data-target="'#carouselExampleIndicators'+vehicle.VehicleId" *ngFor="let picture of vehicle.VehiclePictures; let i = index"
+                data-slide-to="i" [class.active]="isFirst"></li>
+            </ol>
+            <div class="carousel-inner">
+              <img *ngIf="vehicle.VehiclePictures[0]==undefined" class="d-block w-100" style="width:200px; height:200px"
+                src="http://placehold.it/700x400" alt="">
+              <div class="carousel-item" data-slide-to="i+1" *ngFor="let picture of vehicle.VehiclePictures; let isFirst = first"
+                [class.active]="isFirst">
+                <img class="d-block w-100" style="width:200px; height:200px" src='http://localhost:51680/api/vehicle/getVehiclePicture/?path={{picture.Data }}'
+                  alt="">
+              </div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators{{vehicle.VehicleId}}" role="button"
+              data-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators{{vehicle.VehicleId}}" role="button"
+              data-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+            </a>
+
+          </div>
+        </a>
+        <div class="card-body border-primary">
+          <h5 class="card-title">
+            <a href="#" class="text-primary" (click)="vehicleDetails(vehicle,j)" data-toggle="modal" data-target="#vehicleModal">{{vehicle.Model}}</a>
+          </h5>
+          <p class="card-text"><b>{{(vehicle.Available==true)? 'Available':'Not Available'}}</b></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class=" row justify-content-md-center mb-3" *ngIf="vehicles!=null && vehicles.length>0">
+
+    <app-pager [page]="pageIndex" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
+
+  </div>
+
+</div>
+</div>
+</div>
+
+
+
+
+<div class="modal fade" id="vehicleModal" tabindex="-1" role="dialog" aria-labelledby="VehicleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -183,7 +178,7 @@
         <div class="modal-body">
           <div class="container">
             <div class="row justify-content-center">
-
+  
               <div class="col">
                 <table class="table">
                   <thead>
@@ -191,7 +186,7 @@
                       <th scope="col">Vehicle Info</th>
                       <th scope="col"></th>
                     </tr>
-
+  
                   </thead>
                   <tbody>
                     <tr>
@@ -217,7 +212,7 @@
                       <th scope="row">Description:</th>
                       <td>{{null != vehicle ? vehicle.Description: 'no data' }}</td>
                     </tr>
-
+  
                   </tbody>
                 </table>
               </div>
@@ -225,15 +220,17 @@
                 <span class="border border-primary">
                   <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                     <ol class="carousel-indicators">
-                      <li data-target="#carouselExampleIndicators" *ngFor="let picture of vehiclePictures; let i = index" data-slide-to="i" [class.active]="isFirst"></li>
+                      <li data-target="#carouselExampleIndicators" *ngFor="let picture of vehiclePictures; let i = index"
+                        data-slide-to="i" [class.active]="isFirst"></li>
                     </ol>
                     <div class="carousel-inner">
-
-                      <div class="carousel-item" data-slide-to="i+1" *ngFor="let picture of vehiclePictures; let isFirst = first" [class.active]="isFirst">
+  
+                      <div class="carousel-item" data-slide-to="i+1" *ngFor="let picture of vehiclePictures; let isFirst = first"
+                        [class.active]="isFirst">
                         <img class="d-block w-100" style="width:250px; height:250px" src='http://localhost:51680/api/vehicle/getVehiclePicture/?path={{picture.Data }}'
                           alt="">
                       </div>
-
+  
                     </div>
                     <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
                       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -246,29 +243,31 @@
                   </div>
                 </span>
               </div>
-
+  
             </div>
           </div>
-
+  
         </div>
         <div class="modal-footer">
           <div class="container" *ngIf="vehicle!=null" style="display: flex;flex-flow: row wrap;justify-content: center;">
             <p class="text-warning" *ngIf="logedIn==false ">Please log in to rent this vehilcle</p>
             <p class="text-danger" *ngIf="logedIn==true && vehicle.Available==false">This Vehicle is not available</p>
-            <button type="button" class="btn btn-primary" data-dismiss="modal" *ngIf="logedIn==true && vehicle.Available==true" [routerLink]="['/rentVehicleComponent',rentServiceId,vehicle.VehicleId]">Rent
+            <button type="button" class="btn btn-primary" data-dismiss="modal" *ngIf="logedIn==true && vehicle.Available==true"
+              [routerLink]="['/rentVehicleComponent',rentServiceId,vehicle.VehicleId]">Rent
               this Vehicle</button>
-
+  
           </div>
-
+  
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-
+  
         </div>
       </div>
     </div>
   </div>
-
+  
   <!--comment view-->
-  <div class="modal fade" id="commentsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal fade" id="commentsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -278,6 +277,9 @@
           </button>
         </div>
         <div class="modal-body">
+          <div *ngIf="comments!=null && comments.length==0">
+            <p class="text-warning text-center">There are no Comments</p>
+          </div>
           <div class="jumbotron jumbotron-fluid" *ngFor="let comment of comments" style="padding:0px">
             <div class="container">
               <h3 class="display-4" style="font-size:1.5vw;">{{comment.User.FullName}}</h3>
@@ -288,17 +290,18 @@
           </div>
         </div>
         <div class="modal-footer">
-            <div class="col col-md-5" style="margin-right:16%" >
-                <div class="progress" style="
-                display: flex;
-                flex-flow: row wrap;
-                justify-content: center;" *ngIf="showOrderProgress" >
-                  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0"
-                    aria-valuemax="100" style="width: 100%">
-                  </div>
-                </div>
+          <div class="col col-md-5" style="margin-right:16%">
+            <div class="progress" style="
+                  display: flex;
+                  flex-flow: row wrap;
+                  justify-content: center;"
+              *ngIf="showOrderProgress">
+              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100"
+                aria-valuemin="0" aria-valuemax="100" style="width: 100%">
               </div>
-
+            </div>
+          </div>
+  
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>

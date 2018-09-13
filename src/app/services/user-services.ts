@@ -46,12 +46,20 @@ export class UserServices {
     return this.httpClient.post(endpoint, formData);
   }
 
-  GetAllUsers(type:string,pageIndex:number,pageSize:number): Observable<any> {
-    return this.httpClient.get("http://localhost:51680/api/appUser/allUsers/"+pageIndex+"/"+pageSize+"/"+type, { observe: 'response' }) ;
+  GetAllUsers(type:string,pageIndex:number,pageSize:number,editedFirst:boolean,approvedFirst:boolean): Observable<any> {
+    return this.httpClient.get("http://localhost:51680/api/appUser/allUsers/"+pageIndex+"/"+pageSize+"/"+type+"/"+editedFirst+"/"+approvedFirst, { observe: 'response' }) ;
     
   }
   ActivateUser(userId:number,activated:boolean): Observable<any> {
     return this.httpClient.get("http://localhost:51680/api/appUser/activateUser/"+userId+"/"+activated) ;
+    
+  }
+  DeleteUser(userId:number): Observable<any> {
+    return this.httpClient.get("http://localhost:51680/api/appUser/deleteUser/"+userId) ;
+    
+  }
+  CanUserOrder(): Observable<any> {
+    return this.httpClient.get("http://localhost:51680/api/appUser/canUserOrder/", { observe: 'response' }) ;
     
   }
 }

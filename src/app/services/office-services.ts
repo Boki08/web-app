@@ -20,7 +20,9 @@ export class OfficeServices {
   GetOffice(rentServiceId: number): Observable<any> {
     return this.httpClient.get("http://localhost:51680/api/office/getOffice/" + rentServiceId, { observe: 'response' });
   }
-
+  DeleteOffice(officeId: number) {
+    return this.httpClient.get("http://localhost:51680/api/office/deleteOffice/" + officeId);
+  }
 
   AddOffice(office: OfficeModel, fileToUpload: File) {
     const formData: FormData = new FormData();

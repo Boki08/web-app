@@ -1,81 +1,97 @@
 <div class="container-fluid">
-<form class="needs-validation pt-3 " #f="ngForm" (ngSubmit)="onSubmit(f.value, f)" novalidate>
-  <div class="form-group row pt-3 justify-content-md-center">
-
-    <label for="NameInput" class="col-sm-2 col-form-label ">Name of the RentService</label>
-    <div class="col-sm-3">
-      <input type="text" name="Name" ngModel class="form-control  is-valid" id="NameInput" placeholder="RentService" required>
-    </div>
-    <!-- <label for="validationCustom01">First name</label>
-          <input type="text" class="form-control is-valid" id="validationCustom01" placeholder="First name" value="Mark" required>
-           -->
-    <div class="invalid-feedback">
-      Please input a name.
-    </div>
-    <div class="col-lg-offset-2">
-
-    </div>
-
-  </div>
-
-  <div class="form-group row pt-3 justify-content-md-center">
-    <label for="emailInput" class="col-sm-2 col-form-label ">Email</label>
-
-
-    <!-- <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroupPrepend">@</span>
-            </div> -->
-    <div class="col-sm-3">
-      <input type="email" name="Email" ngModel class="form-control" id="emailInput" placeholder="Email" aria-describedby="inputGroupPrepend"
-        required>
-    </div>
-    <div class="invalid-feedback">
-      Please choose a username.
-
-    </div>
-  </div>
-
-
-
-
-
-  <div class="form-group row pt-3 justify-content-md-center">
-    <label for="descriptionInput" class="col-sm-2 col-form-label ">Description of the RentService</label>
-
-
-    <!-- <div class="input-group-prepend">
-                <span class="input-group-text" id="inputGroupPrepend">@</span>
-              </div> -->
-    <div class="col-sm-3">
-      <input type="text" name="Description" ngModel class="form-control" id="descriptionInput" placeholder="Description" aria-describedby="inputGroupPrepend"
-        required>
-    </div>
-    <div class="invalid-feedback">
-      Please input a Description.
-
-    </div>
-  </div>
-
-
-  <div class="form-group row pt-3 justify-content-md-center">
+  <form class="needs-validation pt-3" [formGroup]="addServiceForm" #f="ngForm" (ngSubmit)="onSubmit(f.value, f)"
+    novalidate>
     <div class="row">
-      <div class="col col-lg-4 col-lg-push-4">
-        <img [src]="imageUrl" style="width:250px; height:150px">
-        <br>
-        <br>
-        <input type="file" (change)="handleFileInput($event.target.files)" name="Logo" accept="image/*">
-        <br>
+      <div class="col col-md-8">
+        <div class="form-group row pt-3 justify-content-md-center">
+
+          <label for="NameInput" class="col-sm-2 col-form-label ">Name</label>
+          <div class="col-sm-4">
+            <input type="text" name="Name" formControlName="Name" class="form-control  is-valid" id="NameInput"
+              placeholder="RentService" [ngClass]="{
+          'is-valid':Name.valid && (Name.dirty || Name.touched),
+          'is-invalid':Name.invalid && (Name.dirty || Name.touched)
+        }">
+            <div class="invalid-feedback" *ngIf="Name.errors && (Name.dirty || Name.touched)">
+              <p *ngIf="Name.errors.required">Name is required</p>
+              <p *ngIf="Name.errors.maxlength">Name is too long, delete {{Name.errors.maxlength.actualLength
+                  - Name.errors.maxlength.requiredLength}} characters </p>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row pt-3 justify-content-md-center">
+          <label for="emailInput" class="col-sm-2 col-form-label ">Email</label>
+          <div class="col-sm-4">
+            <input type="email" name="Email" formControlName="Email" class="form-control" id="emailInput" placeholder="Email"
+              aria-describedby="inputGroupPrepend" [ngClass]="{
+              'is-valid':Email.valid && (Email.dirty || Email.touched),
+              'is-invalid':Email.invalid && (Email.dirty || Email.touched)
+            }">
+            <div class="invalid-feedback" *ngIf="Email.errors && (Email.dirty || Email.touched)">
+              <p *ngIf="Email.errors.required">Email is required</p>
+              <p *ngIf="Email.errors.pattern">Email format in not correct</p>
+              <p *ngIf="Email.errors.maxlength">Email is too long, delete {{Email.errors.maxlength.actualLength
+                  - Email.errors.maxlength.requiredLength}} characters </p>
+
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+        <div class="form-group row pt-3 justify-content-md-center">
+          <label for="descriptionInput" class="col-sm-2 col-form-label ">Description</label>
+          <div class="col-sm-4">
+            <input type="text" name="Description" formControlName="Description" class="form-control" id="descriptionInput"
+              placeholder="Description" aria-describedby="inputGroupPrepend" [ngClass]="{
+                'is-valid':Description.valid && (Description.dirty || Description.touched),
+                'is-invalid':Description.invalid && (Description.dirty || Description.touched)
+              }">
+            <div class="invalid-feedback" *ngIf="Description.errors && (Description.dirty || Description.touched)">
+              <p *ngIf="Description.errors.required">Description is required</p>
+              <p *ngIf="Description.errors.maxlength">Description is too long, delete {{Description.errors.maxlength.actualLength
+                  - Description.errors.maxlength.requiredLength}} characters </p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="col  col-md-4">
+        <div class="form-group row pt-3 justify-content-md-center">
+          <div class="row">
+            <div class="col col-lg-4 col-lg-push-4">
+              <img [src]="imageUrl" style="width:250px; height:150px">
+              <br>
+              <br>
+              <input type="file" formControlName="Logo" (change)="handleFileInput($event.target.files)" name="Logo"
+                accept="image/*" [ngClass]="{
+                    'is-valid':Logo.valid && (Logo.dirty || Logo.touched),
+                    'is-invalid':Logo.invalid && (Logo.dirty || Logo.touched)
+                  }">
+              <div class="invalid-feedback" *ngIf="Logo.errors && (Logo.dirty || Logo.touched)">
+                <p *ngIf="Logo.errors.required">Logo is required</p>
+
+              </div>
+              <br>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-
-  <!-- 
+    <!-- 
         <hr/>
         <pre>Model: {{ model | json }}</pre> 
     <hr/>-->
-  <div class="form-group row pt-3 justify-content-md-center">
-    <button class="btn btn-primary justify-content-md-center" type="submit">Add</button>
-  </div>
-</form>
+    <div class="form-group row pt-3 justify-content-md-center">
+      <button class="btn btn-primary justify-content-md-center" [disabled]="!f.valid" type="submit">Add</button>
+    </div>
+  </form>
 </div>

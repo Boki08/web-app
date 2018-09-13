@@ -8,6 +8,7 @@ import { User } from '../models/user.model';
 import { Config } from '../../../node_modules/protractor';
 import { LogInData } from '../models/logInData';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
+import { finalize } from 'rxjs/operators'
 
 
 @Injectable({
@@ -28,7 +29,13 @@ export class LogInService {
             //let x = this.httpClient.post('http://localhost:51680/oauth/token',`username=admin&password=admin&grant_type=password`, {"headers": headers}) as Observable<any>
             //let x = this.httpClient.post('http://localhost:51680/oauth/token',dataString, {"headers": headers}) as Observable<any>
             let x = this.httpClient.post('http://localhost:51680/oauth/token', `username=${user.Username}&password=${user.Password}&grant_type=password`, { "headers": headers }) as Observable<any>
-            return x.subscribe(
+            return x.pipe(finalize(
+                () => {
+                    this.btmNavMessageService.changeMessage(false);
+                    let win = (window as any);
+                    win.location.reload();
+                }))
+                .subscribe(
                 res => {
                     console.log(res.access_token);
 
@@ -48,29 +55,29 @@ export class LogInService {
                     localStorage.setItem('jwt', jwt)
                     localStorage.setItem('role', role);
 
-                    this.btmNavMessageService.changeMessage(false);
+                   
                 },
                 err => {
-                    this.btmNavMessageService.changeMessage(false);
+                   
                     console.log("Error occured");
-                },
-                () => {
-                    let win = (window as any);
-                    win.location.reload();
                 }
             );
         }
         else {
             let x = this.httpClient.get('http://localhost:51680/api/rentService/getAll') as Observable<any>
 
-            x.subscribe(
+            x.pipe(finalize(
+                () => {
+                  this.btmNavMessageService.changeMessage(false);
+                }))
+                .subscribe(
                 res => {
-                    this.btmNavMessageService.changeMessage(false);
+                    
                     console.log(res);
 
                 },
                 err => {
-                    this.btmNavMessageService.changeMessage(false);
+                    
                     console.log("Error occured");
                 }
             );

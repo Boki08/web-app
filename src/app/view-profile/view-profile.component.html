@@ -11,27 +11,27 @@
     <tbody>
       <tr>
         <th scope="row">Name:</th>
-        <td>{{userData.FullName}}</td>
+        <td>{{userData!=NULL?userData.FullName :'no data'}}</td>
       </tr>
       <tr>
         <th scope="row">Email:</th>
-        <td>{{userData.Email}}</td>
+        <td>{{userData!=NULL?userData.Email:'no data'}}</td>
       </tr>
       <tr>
         <th scope="row">BirthDate:</th>
-        <td>{{userData.BirthDate}}</td>
+        <td>{{userData!=NULL?userData.BirthDate:'no data'}}</td>
       </tr>
       <tr>
         <th scope="row">Document Picture:</th>
         <td>
-          <p [ngStyle]="{'color': userData.DocumentPicture!=NULL? 'green' : 'red'}">{{userData.DocumentPicture!=NULL? 'Added'
+          <p [ngStyle]="{'color': userData!=NULL && userData.DocumentPicture!=NULL? 'green' : 'red'}">{{userData!=NULL && userData.DocumentPicture!=NULL? 'Added'
             : 'Not added' }}</p>
         </td>
       </tr>
       <tr>
         <th scope="row">Activated:</th>
         <td>
-          <p [ngStyle]="{'color': userData.Activated? 'green' : 'red'}">{{true == userData.Activated ? 'Yes' : 'No' }}</p>
+          <p [ngStyle]="{'color': userData!=NULL && userData.Activated? 'green' : 'red'}">{{userData!=NULL && userData.Activated == true ? 'Yes' : 'No' }}</p>
         </td>
       </tr>
     </tbody>

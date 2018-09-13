@@ -13,17 +13,45 @@
           <ul class="list-unstyled components">
             <div class="container  justify-content-md-center">
 
-              <div class="col col-md-7">
+              <div class="col col-md-7" *ngIf="isUser">
                 <div class="custom-control custom-radio">
-                  <input type="radio" class="custom-control-input" (click)="setradio('Manager')" value="Managers" id="defaultGroupExample1"
+                  <input type="radio" class="custom-control-input" (click)="setRadioUser('No')" value="No" id="defaultGroupExample1"
                     name="groupOfDefaultRadios" checked>
-                  <label class="custom-control-label" for="defaultGroupExample1">Managers</label>
+                  <label class="custom-control-label" for="defaultGroupExample1">No Sorting</label>
                 </div>
 
 
                 <div class="custom-control custom-radio mt-3">
-                  <input type="radio" class="custom-control-input" (click)="setradio('AppUser')" value="Users" id="defaultGroupExample2" name="groupOfDefaultRadios">
-                  <label class="custom-control-label" for="defaultGroupExample2">Users</label>
+                  <input type="radio" class="custom-control-input" (click)="setRadioUser('Edited')" value="Edited" id="defaultGroupExample2"
+                    name="groupOfDefaultRadios">
+                  <label class="custom-control-label" for="defaultGroupExample2">Edited First</label>
+                </div>
+
+                <div class="custom-control custom-radio mt-3">
+                  <input type="radio" class="custom-control-input" (click)="setRadioUser('Approved')" value="Approved"
+                    id="defaultGroupExample3" name="groupOfDefaultRadios">
+                  <label class="custom-control-label" for="defaultGroupExample3">Approved First</label>
+                </div>
+
+              </div>
+              <div class="col col-md-7" *ngIf="!isUser">
+                <div class="custom-control custom-radio">
+                  <input type="radio" class="custom-control-input" (click)="setRadioManager('No')" value="No" id="defaultGroupExample4"
+                    name="groupOfDefaultRadios" checked>
+                  <label class="custom-control-label" for="defaultGroupExample4">No Sorting</label>
+                </div>
+
+
+                <div class="custom-control custom-radio mt-3">
+                  <input type="radio" class="custom-control-input" (click)="setRadioManager('Enabled')" value="Enabled"
+                    id="defaultGroupExample5" name="groupOfDefaultRadios">
+                  <label class="custom-control-label" for="defaultGroupExample5">Enabled First</label>
+                </div>
+
+                <div class="custom-control custom-radio mt-3">
+                  <input type="radio" class="custom-control-input" (click)="setRadioManager('Disabled')" value="Disabled"
+                    id="defaultGroupExample6" name="groupOfDefaultRadios">
+                  <label class="custom-control-label" for="defaultGroupExample6">Disabled First</label>
                 </div>
 
               </div>
@@ -33,158 +61,357 @@
 
       </div>
     </div>
-    <div class="col " id="main">
-      <div class="text-left  mt-3" *ngIf="isSelected('Manager')">
-        <p>List of Managers </p>
+
+    <div class="col" id="main">
+      <div class="row">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" (click)="setTab('AppUser')">
+            <a class="nav-link active" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users"
+              aria-selected="true">Users</a>
+          </li>
+          <li class="nav-item" (click)="setTab('Manager')">
+            <a class="nav-link" id="managers-tab" data-toggle="tab" href="#managers" role="tab" aria-controls="managers"
+              aria-selected="false">Managers</a>
+          </li>
+        </ul>
+        <h4  class="text-primary mt-1" style="margin-left:25%">
+          <small>Registered Users</small>
+        </h4>
       </div>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
+          <div *ngIf="users!=null && !showUsers && users.length==0">
+            <p class="text-warning">There are no Users</p>
+          </div>
+          <div *ngIf="showUsers">
+            <table class="table  table-hover mt-2">
+              <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">BirthDate</th>
+                  <th scope="col">Picture uploaded</th>
+                  <th scope="col">Profile Edited</th>
+                  <th scope="col">Approved</th>
+                </tr>
 
-      <div class="text-left  mt-3" *ngIf="isSelected('AppUser')">
-        <p>List of Users </p>
-      </div>
-      <table class="table  table-hover mt-2">
-        <thead>
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">BirthDate</th>
-            <th scope="col">Picture uploaded</th>
-            <th scope="col">Profile Edited</th>
-            <th scope="col">Approved</th>
-          </tr>
-
-        </thead>
-        <tbody>
-          <tr *ngFor="let user of users ; let i = index" (click)="userDetails(user,i)" data-toggle="modal" data-target="#userModal">
-            <th scope="row">{{i+1}}</th>
-            <td>{{user.FullName}}</td>
-            <td>{{user.Email}}</td>
-            <td>{{user.BirthDate}}</td>
-            <td>
-              <p [ngStyle]="{'color': user.DocumentPicture!=NULL? 'green' : 'red'}">{{user.DocumentPicture!=NULL? 'Added'
-                : 'Not added' }}</p>
-            </td>
-            <td>
-              <p [ngStyle]="{'color': user.ProfileEdited? 'green' : 'red'}">{{true == user.ProfileEdited ? 'Yes' : 'No' }}</p>
-            </td>
-            <td>
-              <p [ngStyle]="{'color': user.Activated? 'green' : 'red'}">{{true == user.Activated ? 'Yes' : 'No' }}</p>
-            </td>
-          </tr>
-
-
-        </tbody>
-      </table>
-      <div class=" row justify-content-md-center">
-
-        <app-pager [page]="pageIndex" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
-      </div>
-
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of users ; let i = index" (click)="userDetails(user,i)" data-toggle="modal"
+                  data-target="#userModal">
+                  <th scope="row">{{i+1}}</th>
+                  <td>{{user.FullName}}</td>
+                  <td>{{user.Email}}</td>
+                  <td>{{user.BirthDate.slice(0,10)}}</td>
+                  <td>
+                    <p [ngStyle]="{'color': user.DocumentPicture!=NULL? 'green' : 'red'}">{{user.DocumentPicture!=NULL?
+                      'Added'
+                      : 'Not added' }}</p>
+                  </td>
+                  <td>
+                    <p [ngStyle]="{'color': user.ProfileEdited? 'green' : 'red'}">{{true == user.ProfileEdited ? 'Yes'
+                      :
+                      'No' }}</p>
+                  </td>
+                  <td>
+                    <p [ngStyle]="{'color': user.Activated? 'green' : 'red'}">{{true == user.Activated ? 'Yes' : 'No'
+                      }}</p>
+                  </td>
+                </tr>
 
 
-      <!-- Modal -->
-      <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">{{null != userData ? userData.FullName: 'no data' }}</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+              </tbody>
+            </table>
+            <div class=" row justify-content-md-center" *ngIf="users!=null && users.length>0">
+
+              <app-pager [page]="pageIndexU" [totalPages]="totalPagesNumberU" (changePage)="pageU=$event"></app-pager>
             </div>
-            <div class="modal-body">
+          </div>
+        </div>
+        <div class="tab-pane fade" id="managers" role="tabpanel" aria-labelledby="managers-tab">
+          <div *ngIf="managers!=null && !showManagers && managers.length==0">
+            <p class="text-warning">There are no Managers</p>
+          </div>
+          <div *ngIf="showManagers">
+            <table class="table  table-hover mt-2">
+              <thead>
+                <tr>
+                  <th scope="col">Num</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">BirthDate</th>
+                  <th scope="col">Approved</th>
+                </tr>
+
+              </thead>
+              <tbody>
+                <tr *ngFor="let manager of managers ; let i = index" (click)="managerDetails(manager,i)" data-toggle="modal"
+                  data-target="#managerModal">
+                  <th scope="row">{{i+1}}</th>
+                  <td>{{manager.FullName}}</td>
+                  <td>{{manager.Email}}</td>
+                  <td>{{manager.BirthDate.slice(0,10)}}</td>
+                  <td>
+                    <p [ngStyle]="{'color': manager.Activated? 'green' : 'red'}">{{true == manager.Activated ? 'Yes' :
+                      'No'
+                      }}
+                    </p>
+                  </td>
+                </tr>
+
+
+              </tbody>
+            </table>
+            <div class=" row justify-content-md-center" *ngIf="managers!=null && managers.length>0">
+
+              <app-pager [page]="pageIndexM" [totalPages]="totalPagesNumberM" (changePage)="pageM=$event"></app-pager>
+            </div>
+          </div>
+        </div>
+       <!--  <div class=" row justify-content-md-center">
+
+            <app-pager [page]="pageIndexM" [totalPages]="totalPagesNumberM" (changePage)="pageM=$event"></app-pager>
+          </div> -->
+      </div>
+      
+    </div>
+
+  </div>
+</div>
+
+<!-- UserModal -->
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{null != userData ? userData.FullName: 'no data' }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row justify-content-center">
+
+            <div class="col">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Profile Data</th>
+                    <th scope="col"></th>
+                  </tr>
+
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">User ID:</th>
+                    <td>{{null != userData ? userData.UserId: 'no data' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Email:</th>
+                    <td>{{null != userData ? userData.Email: 'no data' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">BirthDate:</th>
+                    <td>{{null != userData ? userData.BirthDate.slice(0,10): 'no data' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Document Picture:</th>
+                    <td>
+                      <p [ngStyle]="{'color': (userData!=null && userData.DocumentPicture!=NULL)? 'green' : 'red'}">{{(userData!=null
+                        && userData.DocumentPicture!=NULL)?'Added' : 'Not added' }}</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Profile Edited:</th>
+                    <td>
+                      <p [ngStyle]="{'color': (userData!=null && true == userData.ProfileEdited) ? 'green' : 'red'}">{{(userData!=null
+                        && true == userData.ProfileEdited) ? 'Yes': 'No'}}</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Approved:</th>
+                    <td>
+                      <p [ngStyle]="{'color': (userData!=null && true == userData.Activated) ? 'green' : 'red'}">{{(userData!=null
+                        && true == userData.Activated) ? 'Yes': 'No'}}</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="col">
               <div class="container">
                 <div class="row justify-content-center">
+                  <span class="border border-primary">
+                    <div class="col">
 
-                  <div class="col">
-                    <table class="table">
-                      <thead>
-                        <tr>
-                          <th scope="col">Profile Data</th>
-                          <th scope="col"></th>
-                        </tr>
+                      <div class="thumbnail">
+                        <img class="group list-group-image" src='http://localhost:51680/api/appUser/getDocumentPicture?path={{userData!=null ? userData.DocumentPicture:"" }}'
+                          alt="" />
+                        <div class="caption">
 
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">User ID:</th>
-                          <td>{{null != userData ? userData.UserId: 'no data' }}</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Email:</th>
-                          <td>{{null != userData ? userData.Email: 'no data' }}</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">BirthDate:</th>
-                          <td>{{null != userData ? userData.BirthDate: 'no data' }}</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Document Picture:</th>
-                          <td>
-                            <p [ngStyle]="{'color': (userData!=null && userData.DocumentPicture!=NULL)? 'green' : 'red'}">{{(userData!=null
-                              && userData.DocumentPicture!=NULL)?'Added' : 'Not added' }}</p>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Profile Edited:</th>
-                          <td>
-                            <p [ngStyle]="{'color': (userData!=null && true == userData.ProfileEdited) ? 'green' : 'red'}">{{(userData!=null
-                              && true == userData.ProfileEdited) ? 'Yes': 'No'}}</p>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Activated:</th>
-                          <td>
-                            <p [ngStyle]="{'color': (userData!=null && true == userData.Activated) ? 'green' : 'red'}">{{(userData!=null
-                              && true == userData.Activated) ? 'Yes': 'No'}}</p>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="col">
-                    <div class="container">
-                      <div class="row justify-content-center">
-                        <span class="border border-primary">
-                          <div class="col">
-
-                            <div class="thumbnail">
-                              <img class="group list-group-image" src='http://localhost:51680/api/appUser/getDocumentPicture?path={{userData!=null ? userData.DocumentPicture:"" }}'
-                                alt="" />
-                              <div class="caption">
-
-                              </div>
-                            </div>
-
-                          </div>
-                        </span>
-                      </div>
-                      <div class="row justify-content-center mt-4">
-
-                        <div class="col col-md-3" style="display: flex;flex-flow: row wrap;justify-content: center;">
-                          <button class="btn btn-danger" (click)="acceptUser(counter,userData.UserId,false)" [disabled]="(userData==null || userData.DocumentPicture==null|| userData.ProfileEdited==false || userData.Activated==true  || disableButtons==true)">
-                            <span class="glyphicon glyphicon-remove"></span> Decline
-                          </button>
-                        </div>
-                        <div class="col col-md-3" style="display: flex;flex-flow: row wrap;justify-content: center;">
-                          <button class="btn btn-success" (click)="acceptUser(counter,userData.UserId,true)" [disabled]="(userData==null || userData.DocumentPicture==null || userData.ProfileEdited==false || userData.Activated==true || disableButtons==true)">
-                            <span class="glyphicon glyphicon-ok"></span> Accept
-                          </button>
                         </div>
                       </div>
 
                     </div>
+                  </span>
+                </div>
+                <div class="row justify-content-center mt-4">
+
+                  <div class="col col-md-3" style="display: flex;flex-flow: row wrap;justify-content: center;">
+                    <button class="btn btn-danger" (click)="acceptUser(counter,userData.UserId,false)" [disabled]="(userData==null || userData.DocumentPicture==null|| userData.ProfileEdited==false || userData.Activated==true  || disableButtons==true)">
+                      <span class="glyphicon glyphicon-remove"></span> Decline
+                    </button>
+                  </div>
+                  <div class="col col-md-3" style="display: flex;flex-flow: row wrap;justify-content: center;">
+                    <button class="btn btn-success" (click)="acceptUser(counter,userData.UserId,true)" [disabled]="(userData==null || userData.DocumentPicture==null || userData.ProfileEdited==false || userData.Activated==true || disableButtons==true)">
+                      <span class="glyphicon glyphicon-ok"></span> Accept
+                    </button>
                   </div>
                 </div>
+
               </div>
-
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-
             </div>
           </div>
         </div>
+
+      </div>
+      <div class="modal-footer">
+        <div class="progress" style="
+          display: flex;
+          flex-flow: row wrap;
+          justify-content: center;"
+          *ngIf="userProgress">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100"
+            aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="DeleteUser()" data-dismiss="modal">Delete User</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ManagerModal -->
+<div class="modal fade" id="managerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{null != managerData ? managerData.FullName: 'no data' }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row justify-content-center">
+
+            <div class="col">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Profile Data</th>
+                    <th scope="col"></th>
+                  </tr>
+
+                </thead>
+                <tbody>
+                  <!-- <tr>
+                    <th scope="row">Manager ID:</th>
+                    <td>{{null != userData ? userData.UserId: 'no data' }}</td>
+                  </tr> -->
+                  <tr>
+                    <th scope="row">Email:</th>
+                    <td>{{null != managerData ? managerData.Email: 'no data' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">BirthDate:</th>
+                    <td>{{null != managerData ? managerData.BirthDate.slice(0,10): 'no data' }}</td>
+                  </tr>
+                  <!-- <tr>
+                    <th scope="row">Document Picture:</th>
+                    <td>
+                      <p [ngStyle]="{'color': (managerData!=null && managerData.DocumentPicture!=NULL)? 'green' : 'red'}">{{(managerData!=null
+                        && managerData.DocumentPicture!=NULL)?'Added' : 'Not added' }}</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Profile Edited:</th>
+                    <td>
+                      <p [ngStyle]="{'color': (managerData!=null && true == managerData.ProfileEdited) ? 'green' : 'red'}">{{(managerData!=null
+                        && true == managerData.ProfileEdited) ? 'Yes': 'No'}}</p>
+                    </td>
+                  </tr> -->
+                  <tr>
+                    <th scope="row">Approved:</th>
+                    <td>
+                      <p [ngStyle]="{'color': (managerData!=null && true == managerData.Activated) ? 'green' : 'red'}">{{(managerData!=null
+                        && true == managerData.Activated) ? 'Yes': 'No'}}</p>
+                      <label class="switch">
+                        <input type="checkbox" [disabled]="disableCheckButton" (change)="setCheckBoxManager($event)"
+                          [checked]="(managerData!=null && managerData.Activated==true)">
+                        <span class="slider round"></span>
+                      </label>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- <div class="col">
+              <div class="container">
+                <div class="row justify-content-center">
+                  <span class="border border-primary">
+                    <div class="col">
+
+                      <div class="thumbnail">
+                        <img class="group list-group-image" src='http://localhost:51680/api/appUser/getDocumentPicture?path={{userData!=null ? userData.DocumentPicture:"" }}'
+                          alt="" />
+                        <div class="caption">
+
+                        </div>
+                      </div>
+
+                    </div>
+                  </span>
+                </div>
+                <div class="row justify-content-center mt-4">
+
+                  <div class="col col-md-3" style="display: flex;flex-flow: row wrap;justify-content: center;">
+                    <button class="btn btn-danger" (click)="acceptUser(counter,userData.UserId,false)" [disabled]="(userData==null || userData.DocumentPicture==null|| userData.ProfileEdited==false || userData.Activated==true  || disableButtons==true)">
+                      <span class="glyphicon glyphicon-remove"></span> Decline
+                    </button>
+                  </div>
+                  <div class="col col-md-3" style="display: flex;flex-flow: row wrap;justify-content: center;">
+                    <button class="btn btn-success" (click)="acceptUser(counter,userData.UserId,true)" [disabled]="(userData==null || userData.DocumentPicture==null || userData.ProfileEdited==false || userData.Activated==true || disableButtons==true)">
+                      <span class="glyphicon glyphicon-ok"></span> Accept
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div> -->
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <div class="col col-md-5" style="margin-right:16%">
+          <div class="progress" style="
+          display: flex;
+          flex-flow: row wrap;
+          justify-content: center;"
+            *ngIf="managerProgress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100"
+              aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
       </div>
     </div>
   </div>

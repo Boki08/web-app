@@ -1,0 +1,319 @@
+<div class="container-fluid ">
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="wrapper ">
+
+        <nav id="sidebar">
+          <div class="sidebar-header">
+            <h4>{{rentServiceTemp!=null?rentServiceTemp.Name:'no data'}}</h4>
+          </div>
+
+          <li class="list-unstyled components">
+            <div class="card-unstyled " id="list" #list>
+              <h5 class="card-header">Info:</h5>
+              <div class="card-body">
+                <p class="card-text">
+          <li>Email:
+            <ul>{{rentServiceTemp!=null?rentServiceTemp.Email:'no data'}}</ul>
+          </li>
+          <li>Description:
+            <ul>{{rentServiceTemp!=null?rentServiceTemp.Description:'no data'}}</ul>
+          </li>
+
+
+          </p>
+      </div>
+      <div class="card-footer-unstyled">
+        <div class="ml-4">
+          <li>Rate: <b>{{rentServiceTemp!=null?rentServiceTemp.Grade:'no data'}}</b></li>
+        </div>
+        <hr class="bg-primary">
+        <div class="row justify-content-md-center">
+          <p>Activated:</p>
+
+        </div>
+        <div class="row justify-content-md-center">
+          <label class="switch">
+            <input type="checkbox" [disabled]=" checkBoxDisabled" (change)="setCheckBoxService($event)" [checked]="(rentServiceTemp!=null && rentServiceTemp.Activated==true)">
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+      </div>
+    </div>
+    </li>
+
+
+    </nav>
+
+  </div>
+</div>
+<div class="col" id="main">
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" (click)="getServiceOffices()">
+      <a class="nav-link active" id="offices-tab" data-toggle="tab" href="#offices" role="tab" aria-controls="offices"
+        aria-selected="true">Offices</a>
+    </li>
+    <li class="nav-item" (click)="getServiceVehicles()">
+      <a class="nav-link" id="vehicles-tab" data-toggle="tab" href="#vehicles" role="tab" aria-controls="vehicles"
+        aria-selected="false">Vehicles</a>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="offices" role="tabpanel" aria-labelledby="offices-tab">
+      <div *ngIf="offices!=null && !showOffices && offices.length==0">
+        <p class="text-warning">This Rent Service has no Offices</p>
+      </div>
+      <div *ngIf="showOffices">
+        <table class="table  table-hover mt-2">
+          <thead>
+            <tr>
+              <th scope="col">Num</th>
+              <th scope="col">Address</th>
+            </tr>
+
+          </thead>
+          <tbody>
+            <tr *ngFor="let office of offices ; let i = index" (click)="officeDetails(office,i)" data-toggle="modal"
+              data-target="#officeModal">
+              <th scope="row">{{i+1}}</th>
+              <td>{{office.Address}}</td>
+            </tr>
+
+
+          </tbody>
+        </table>
+        <div class=" row justify-content-md-center" *ngIf="offices!=null && offices.length>0">
+
+          <app-pager [page]="pageIndexO" [totalPages]="totalPagesNumberO" (changePage)="pageO=$event"></app-pager>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="vehicles" role="tabpanel" aria-labelledby="vehicles-tab">
+      <div *ngIf="vehicles!=null && !showVehicles && vehicles.length==0">
+        <p class="text-warning">This Rent Service has no Vehicles</p>
+      </div>
+      <div *ngIf="showVehicles">
+        <table class="table  table-hover mt-2">
+          <thead>
+            <tr>
+              <th scope="col">Num</th>
+              <th scope="col">Model</th>
+              <th scope="col">Year of Manifacturing</th>
+              <th scope="col">Manufacturer</th>
+              <th scope="col">Available</th>
+            </tr>
+
+          </thead>
+          <tbody>
+            <tr *ngFor="let vehicle of vehicles ; let i = index" (click)="vehicleDetails(vehicle,i)" data-toggle="modal"
+              data-target="#vehicleModal">
+              <th scope="row">{{i+1}}</th>
+              <td>{{vehicle.Model}}</td>
+              <td>{{vehicle.YearOfManufacturing}}</td>
+              <td>{{vehicle.Manufacturer}}</td>
+              <td>
+                <p [ngStyle]="{'color': (vehicle!=null && vehicle.Available==true)? 'green' : 'red'}">{{(vehicle!=null
+                  && vehicle.Available==true)?'Yes' : 'No' }}</p>
+              </td>
+          </tbody>
+        </table>
+        <div class=" row justify-content-md-center" *ngIf="vehicles==null || vehicles.length==0">
+
+          <app-pager [page]="pageIndexV" [totalPages]="totalPagesNumberV" (changePage)="pageV=$event"></app-pager>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+</div>
+<!-- Vehicle Modal -->
+<div class="modal fade" id="vehicleModal" tabindex="-1" role="dialog" aria-labelledby="VehicleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="VehicleModalLabel">{{null != vehicle ? vehicle.Model: 'no data' }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row justify-content-center">
+
+            <div class="col">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Vehicle Data</th>
+                    <th scope="col"></th>
+                  </tr>
+
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Manufacturer:</th>
+                    <td>{{null != vehicle ? vehicle.Manufacturer: 'no data' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Year of Manufacturing:</th>
+                    <td>{{null != vehicle ? vehicle.YearOfManufacturing: 'no data' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Available:</th>
+                    <td>
+                      <p [ngStyle]="{'color': (vehicle!=null && vehicle.Available==true)? 'green' : 'red'}">{{(vehicle!=null
+                        && vehicle.Available==true)?'Yes' : 'No' }}</p>
+                    </td>
+
+                  </tr>
+                  <tr>
+                    <th scope="row">Enabled:</th>
+                    <td>
+                      <p [ngStyle]="{'color': (vehicle!=null && vehicle.Enabled==true)? 'green' : 'red'}">{{(vehicle!=null
+                        && vehicle.Enabled==true)?'Yes' : 'No' }}</p>
+
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Description:</th>
+                    <td>{{null != vehicle ? vehicle.Description: 'no data' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+
+
+            <div class="col">
+              <div class="shadow p-3 mb-5 bg-white rounded">
+                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+
+                  <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators" *ngFor="let picture of vehiclePictures; let i = index"
+                      data-slide-to="i" [class.active]="isFirst"></li>
+                  </ol>
+
+                  <div class="carousel-inner">
+
+                    <div class="carousel-item" data-slide-to="i+1" *ngFor="let picture of vehiclePictures; let isFirst = first"
+                      [class.active]="isFirst">
+
+                      <img class="d-block w-100" style="width:250px; height:250px" src='http://localhost:51680/api/vehicle/getVehiclePicture/?path={{picture.Data }}'
+                        alt="">
+
+                    </div>
+
+                  </div>
+
+                  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                  </a>
+
+                </div>
+              </div>
+            </div>
+
+
+
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <div class="col col-md-5" style="margin-right:16%">
+          <div class="progress" style="
+                display: flex;
+                flex-flow: row wrap;
+                justify-content: center;"
+            *ngIf="showVehicleProgress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100"
+              aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Office Modal -->
+<div class="modal fade" id="officeModal" tabindex="-1" role="dialog" aria-labelledby="OfficeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="OfficeModalLabel">Office: {{null != office ? office.Address: 'no data' }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container" *ngIf="mapVisible">
+
+          <div class="row justify-content-center">
+            <div class="shadow p-3 mb-5 bg-white rounded">
+              <!-- <div class="col"> -->
+
+              <!-- Kreiramo mapu -->
+              <!-- ng-class="{latitude:((null != office)? office.Latitude: 1) }" ng-class="{longitude:((null != office) ? office.Longitude: 1 )}  -->
+              <agm-map [latitude]="office!=null?office.Latitude:1" [longitude]="office!=null?office.Longitude:1" [zoom]="18">
+
+                <!-- Postavljamo markere -->
+                <agm-marker [latitude]="office!=null?office.Latitude:1" [longitude]="office!=null?office.Longitude:1"
+                  [title]="mapInfo.title" [label]="mapInfo.label">
+
+                  <!-- Svakom markeru dodajemo info-window (Nije obavezno!)-->
+                  <agm-info-window [latitude]="office!=null?office.Latitude:1" [longitude]="office!=null?office.Longitude:1">
+
+                    <!-- U info-window stavljamo html -->
+                    <span style="font-size: 16px;font-family:'Times New Roman'">{{office.Address}}</span>
+                    <br />
+                    <div class="container">
+                      <div class="row justify-content-center">
+                        <div class="shadow p-3 mb-5 bg-white rounded">
+                          <div class="col">
+
+                            <div class="thumbnail">
+                              <img class="group list-group-image" style="width:250px; height:250px" src='http://localhost:51680/api/office/getOfficePicture?path={{office!=null ? office.Picture:"" }}'
+                                alt="" />
+                              <div class="caption">
+
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </agm-info-window>
+
+                </agm-marker>
+              </agm-map>
+
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+      </div>
+    </div>
+  </div>
+</div>

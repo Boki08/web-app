@@ -1,0 +1,107 @@
+<div class="container-fluid   justify-content-md-center">
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="wrapper ">
+
+        <nav id="sidebar">
+          <!-- Sidebar Header -->
+          <div class="sidebar-header">
+            <h3>Selection</h3>
+          </div>
+
+          <!-- Sidebar Links -->
+
+          <ul class="list-unstyled components" #linkList id="linkList">
+            <li>
+              <span class="border border-primary"><a href="#" data-toggle="modal" data-target="#addTypeModal" class="text-center">Add
+                  Vehicle Type</a></span>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+    <div class="col " id="main">
+      <h4 class=" text-primary text-center mt-1">
+        <small>List of Vehicle Types </small>
+      </h4>
+      <table class="table  table-hover mt-2">
+        <thead>
+          <tr>
+            <th scope="col">Num</th>
+            <th scope="col">Vehicle Type</th>
+            <th scope="col">Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let vehicleTypes of vehicleTypes ; let i = index">
+            <th scope="row">{{i+1}}</th>
+            <td>{{vehicleTypes.Type}}</td>
+            <td><button type="button" (click)="DeleteVehicleTypes(vehicleTypes.TypeId)" class="btn btn-danger">Delete</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class=" row justify-content-md-center" *ngIf="vehicleTypes!=null && vehicleTypes.length>0">
+
+        <app-pager [page]="pageIndex" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="addTypeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add New Vehicle Type</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row justify-content-center">
+            <form class="needs-validation pt-3 " [formGroup]="addVehicleTypeForm" #f="ngForm" (ngSubmit)="onSubmit(f.value, f)">
+              <div class="form-group row pt-3 justify-content-md-center">
+
+                <label for="Type" class="col-md-5 col-form-label ">Vehicle Type</label>
+                <div class="col-md-7">
+                  <input type="text" name="Type" formControlName="Type" class="form-control " id="Type" placeholder="Vehicle Type"
+                    [ngClass]="{
+                    'is-valid':Type.valid && (Type.dirty || Type.touched),
+                    'is-invalid':Type.invalid && (Type.dirty || Type.touched)
+                  }">
+                  <div class="invalid-feedback" *ngIf="Type.errors && (Type.dirty || Type.touched)">
+                    <p *ngIf="Type.errors.required">Type is required</p>
+                    <p *ngIf="Type.errors.maxlength">Type is too long, delete {{Type.errors.maxlength.actualLength
+                      - Type.errors.maxlength.requiredLength}} characters </p>
+                  </div>
+                </div>
+
+              </div>
+              <div class="form-group row pt-3 justify-content-md-center">
+                <button class="btn btn-primary justify-content-md-center" [disabled]="!f.valid || addDisabled" type="submit">Add</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <div class="col col-md-5" style="margin-right:16%">
+          <div class="progress" style="
+              display: flex;
+              flex-flow: row wrap;
+              justify-content: center;"
+            *ngIf="showTypeProgress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100"
+              aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

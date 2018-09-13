@@ -29,6 +29,7 @@
     "core-js": "^2.5.4",
     "jquery": "^3.3.1",
     "moment": "^2.22.2",
+    "ngx-bootstrap": "^3.0.1",
     "ngx-owl-carousel": "^2.0.7",
     "ngx-paypal": "^3.0.0",
     "open-iconic": "^1.1.1",
@@ -36,6 +37,7 @@
     "popper.js": "^1.14.4",
     "rxjs": "^6.0.0",
     "script-loader": "^0.7.2",
+    "signalr": "^2.3.0",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {

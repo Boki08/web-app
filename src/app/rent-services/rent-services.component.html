@@ -46,10 +46,13 @@
           </div>
     </div>
     <div class="col-xl-9" id="main">
-      <h4>
-        <small>Available Rent Services</small>
-      </h4>
+        <h4  class="text-primary text-center mt-1">
+            <small>Available Rent Services</small>
+          </h4>
       <hr>
+      <div *ngIf="rentServices!=null && rentServices.length==0">
+          <p class="text-warning">There are no Rent Services</p>
+        </div>
       <!-- <app-cards #cards (sendServiceId)="getVehicles($event)" [isUser]="true"></app-cards> -->
       <div class="row" *ngIf="cardsVisible ">
         <div class="col-lg-3 col-md-5 mb-4" *ngFor="let service of rentServices; let j = index">
@@ -93,7 +96,7 @@
         <app-pager [page]="pageNumber" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
       </div> -->
       </div>
-      <div class=" row justify-content-md-center">
+      <div class=" row justify-content-md-center" *ngIf="rentServices!=null && rentServices.length!=0"> 
 
         <app-pager [page]="pageIndex" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
         

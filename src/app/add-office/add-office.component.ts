@@ -5,7 +5,8 @@ import { AgmMarker } from '@agm/core';
 import { OfficeModel } from '../models/office-model';
 import { ActivatedRoute } from '@angular/router';
 import { OfficeServices } from '../services/office-services';
-import { NgForm } from '@angular/forms';
+import { NgForm, Validators, FormControl, FormGroup } from '@angular/forms';
+import { finalize } from 'rxjs/operators'
 
 @Component({
   selector: 'app-add-office',
@@ -25,12 +26,37 @@ export class AddOfficeComponent implements OnInit {
   rentServiceId: number;
   isBtnDisabled: boolean;
 
+  addOfficeForm: FormGroup;
+  Address: FormControl;
+  Picture: FormControl;
+  
+
+
   constructor(private activatedRoute: ActivatedRoute, private officeServices: OfficeServices) {
     activatedRoute.params.subscribe(params => { this.rentServiceId = params["rentServiceId"] });
 
   }
   ngOnInit() {
-    this.isBtnDisabled = false;
+    this.CreateFormControls();
+    this.CreateForm();
+    this.isBtnDisabled = true;
+  }
+
+  CreateFormControls() {
+    this.Address = new FormControl('', [
+      Validators.required,
+      Validators.maxLength(200),
+    ]);
+    this.Picture = new FormControl('', [
+      Validators.required,
+    ]);
+
+  }
+  CreateForm() {
+    this.addOfficeForm = new FormGroup({
+      Address: this.Address,
+      Picture: this.Picture,
+    });
   }
 
   handleFileInput(file: FileList) {
@@ -45,6 +71,7 @@ export class AddOfficeComponent implements OnInit {
 
 
   placeMarker($event) {
+    this.isBtnDisabled = false;
     console.log($event.coords.lat);
     console.log($event.coords.lng);
     this.latMark = $event.coords.lat
@@ -60,16 +87,19 @@ export class AddOfficeComponent implements OnInit {
 
     office.Picture = null;
     office.RentServiceId = this.rentServiceId;
-    this.officeServices.AddOffice(office, this.fileToUpload)
+    this.officeServices.AddOffice(office, this.fileToUpload).pipe(finalize(
+      () => {
+        this.isBtnDisabled=false;
+      }))
       .subscribe(
         data => {
           alert("Your changes updated successfully");
           form.reset();
-          this.isBtnDisabled=false;
+         
         },
         error => {
           alert(error.error.ModelState[""][0]);
-          this.isBtnDisabled = false;
+         
         }
       );
 

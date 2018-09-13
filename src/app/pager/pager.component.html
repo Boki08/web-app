@@ -1,6 +1,6 @@
 <!-- <nav aria-label="Page navigation example"> -->
   <ul class="pagination " >
-    <li class="page-item"  [class.disabled]="page === 1 "><a class="page-link" (click)="prev()" >Previous</a></li>
-    <li class="page-item"  [class.disabled]="page === totalPages || totalPages===0 "><a class="page-link" (click)="next()" >Next</a></li>
+    <li class="page-item"  [class.disabled]="page === 1 "><a class="page-link bg-primary text-white" (click)="prev()" ><<</a></li>
+    <li class="page-item"  [class.disabled]="page === totalPages || totalPages===0 "><a class="page-link  bg-primary text-white" (click)="next()" >>></a></li>
   </ul>
 <!-- </nav> -->

@@ -30,13 +30,18 @@ export class VehicleServices {
     return this.httpClient.get("http://localhost:51680/api/vehicle/disableVehicle/" + vehicleId + "/" + enabled);
   }
 
+  DeleteVehicle(vehicleId: number) {
+    return this.httpClient.get("http://localhost:51680/api/vehicle/deleteVehicle/" + vehicleId);
+  }
+
+
   GetVehiclePictures(vehicleId: number) {
     return this.httpClient.get('http://localhost:51680/api/vehicle/getVehiclePictures/' + vehicleId);
   }
 
-  GetVehicleTypes(): Observable<any> {
+ /*  GetVehicleTypes(): Observable<any> {
     return this.httpClient.get('http://localhost:51680/api/typeOfVehicle/getVehicleTypes', { observe: 'response' });
-  }
+  } */
 
   AddVehicle(vehicle: Vehicle, photos: File[]): Observable<any> {
 

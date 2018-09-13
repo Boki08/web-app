@@ -89,12 +89,8 @@
               <div class="card-footer">
                 <div class="form-group row justify-content-md-center">
 
-                  <label for="DepartureDate" class="col-md-5 col-form-label ">Departure</label>
-                  <div class="col-md-7">
-                    <!-- <div class="input-group">
-                  <input class="form-control" type="date" (dateSelect)="departureDatePicked($event)" name="DepartureDate" min="minDate"  #DepartureDate="ngModel" placeholder="yyyy-MM-dd" ngModel>
-
-                </div> -->
+                  <!-- <label for="DepartureDate" class="col-md-5 col-form-label ">Departure</label> -->
+                  <!-- <div class="col-md-7">
                     <div class="input-group">
                       <input class="form-control" placeholder="yyyy-mm-dd" (dateSelect)="departureDatePicked($event)" #DepartureDate="ngModel"
                         #d1="ngbDatepicker" ngModel name="DepartureDate" ngbDatepicker>
@@ -102,7 +98,25 @@
                         <button class="btn btn-outline-secondary calendar" (click)="d1.toggle()" type="button"></button>
                       </div>
                     </div>
-                  </div>
+                  </div> -->
+
+                      <label for="birthDateInput" class="col-sm-4 col-form-label ">Departure</label>
+                      <div class="col-sm-6">
+                        <div class="input-group">
+                          <input type="text" [bsConfig]="bsConfigDeparture" (bsValueChange)="departureDatePicked($event)" placement="right" placeholder="Datepicker" 
+                            id="birthDateInput" class="form-control" bsDatepicker><!--  [ngClass]="{ ????? formControlName="BirthDate"
+                                  'is-valid':BirthDate.valid && (BirthDate.dirty || BirthDate.touched),
+                                  'is-invalid':BirthDate.invalid && (BirthDate.dirty || BirthDate.touched)
+                                }">
+                          <div class="invalid-feedback" *ngIf="BirthDate.errors && (BirthDate.dirty || BirthDate.touched)">
+                            <p *ngIf="BirthDate.errors.required">Birthday is required</p>
+                          </div> -->
+                        </div>
+                      </div>
+                    
+
+
+
                 </div>
               </div>
             </div>
@@ -139,14 +153,8 @@
 
                 <div class="form-group row justify-content-md-center">
 
-                  <label for="ReturnDate" class="col-md-5 col-form-label ">Return</label>
+                  <!-- <label for="ReturnDate" class="col-md-5 col-form-label ">Return</label>
                   <div class="col-md-7">
-                    <!-- <div class="input-group">
-                            <input class="form-control" ngbDatepicker  (dateSelect)="returnDatePicked($event)" name="ReturnDate" min="minDate" placeholder="yyyy-MM-dd" #ReturnDate="ngModel" ngModel>
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
-                              </div>
-                          </div> -->
                     <div class="input-group">
                       <input class="form-control" placeholder="yyyy-mm-dd" (dateSelect)="returnDatePicked($event)" #ReturnDate="ngModel" #d="ngbDatepicker"
                         ngModel name="ReturnDate" ngbDatepicker>
@@ -155,7 +163,23 @@
                       </div>
                     </div>
 
-                  </div>
+                  </div> -->
+
+                 
+                      <label for="birthDateInput" class="col-sm-4 col-form-label ">Return</label>
+                      <div class="col-sm-6">
+                        <div class="input-group">
+                          <input type="text" [bsConfig]="bsConfigReturn" (bsValueChange)="returnDatePicked($event)" placement="left" placeholder="Datepicker" 
+                            id="birthDateInput" class="form-control" bsDatepicker><!--  [ngClass]="{ ????? formControlName="BirthDate"
+                                  'is-valid':BirthDate.valid && (BirthDate.dirty || BirthDate.touched),
+                                  'is-invalid':BirthDate.invalid && (BirthDate.dirty || BirthDate.touched)
+                                }">
+                          <div class="invalid-feedback" *ngIf="BirthDate.errors && (BirthDate.dirty || BirthDate.touched)">
+                            <p *ngIf="BirthDate.errors.required">Birthday is required</p>
+                          </div> -->
+                        </div>
+                      </div>
+                    
 
                 </div>
               </div>
@@ -182,12 +206,6 @@
               <p class="text-danger" *ngIf="showDangerErrorMessage">{{dangerErrMessage}}</p>
             </div>
           </div>
-
-          <br>
-          <br>
-          <br>
-          <br>
-          <br><br><br><br><br><br>
         </div>
 
       </div>

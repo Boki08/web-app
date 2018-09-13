@@ -6,6 +6,7 @@ import { ProcessComponent } from './process';
 import { Services } from '../services/services.component';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 //import { PagerServices } from '../services/pagerService';
+import { finalize } from 'rxjs/operators'
 
 
 
@@ -52,7 +53,11 @@ option:number=1;
   }
   public getRentServices() {
     this.btmNavMessageService.changeMessage(true);
-    this.Service.GetRentServiceInfo(this.pageIndex, this.pageSize,this.option).subscribe(
+    this.Service.GetRentServiceInfo(this.pageIndex, this.pageSize,this.option) .pipe(finalize(
+      () => {
+        this.btmNavMessageService.changeMessage(false);
+      }))
+    .subscribe(
       data => {
 
         this.rentServices = data.body;
@@ -62,7 +67,6 @@ option:number=1;
         this.pageIndex = jsonData.currentPage;
         this.pageSize = jsonData.pageSize;
         this.totalPagesNumber = jsonData.totalPages;
-        this.btmNavMessageService.changeMessage(false);
         /*   for (let item of this.rentServices) {
            
             this.child.rentServices[this.counter] = item;
@@ -75,7 +79,6 @@ option:number=1;
         //alert("GET: id: " + this.methodResult.id + ", userId: " + this.methodResult.userId + ", title: " + this.methodResult.title + ", body: " + this.methodResult.body);
       },
       error => {
-        this.btmNavMessageService.changeMessage(false);
         console.log(error);
       })
 

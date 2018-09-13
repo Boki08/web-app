@@ -7,6 +7,7 @@ import { CommentServices } from '../services/comment-services';
 import { CommentModel } from '../models/commentData';
 import { Vehicle } from '../models/vehicles';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
+import { finalize } from 'rxjs/operators'
 
 @Component({
   selector: 'app-view-orders',
@@ -35,6 +36,7 @@ export class ViewOrdersComponent implements OnInit {
   stopNav: number = 0;
   stopNavLockCount: number = 1;
   showOrderProgress:boolean=false;
+  orderPosition:number;
   
   ngOnInit() {    
     this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress = message)
@@ -45,7 +47,11 @@ export class ViewOrdersComponent implements OnInit {
   }
   public getAlllOrders() {
     this.btmNavMessageService.changeMessage(true);
-    this.orderServices.GetAllUserOrders(this.pageIndex, this.pageSize).subscribe(
+    this.orderServices.GetAllUserOrders(this.pageIndex, this.pageSize).pipe(finalize(
+      () => {
+        this.btmNavMessageService.changeMessage(false);
+      }))
+    .subscribe(
       data => {
         this.orders = data.body as OrderData[];
         //this.userData=this.users[0];
@@ -55,10 +61,10 @@ export class ViewOrdersComponent implements OnInit {
         this.pageIndex = jsonData.currentPage;
         this.pageSize = jsonData.pageSize;
         this.totalPagesNumber = jsonData.totalPages;
-        this.btmNavMessageService.changeMessage(false);
+        
       },
       error => {
-        this.btmNavMessageService.changeMessage(false);
+        
         console.log(error.Message);
       })
 
@@ -68,33 +74,15 @@ export class ViewOrdersComponent implements OnInit {
     //(<ProcessComponent>componentRef.instance).data=step.desc;
 
   }
-  OrderDetails(order: OrderData, i: number) {
+  OrderDetails(order: OrderData, orderPosition: number) {
     this.stopNavLockCount=1;
     this.displayComment = false;
     this.canComment = false
     this.order = order;
     this.vehicleReturned= this.order.VehicleReturned;
     this.showOrderProgress=true;
-    this.officeServices.GetOffice(order.DepartureOfficeId).subscribe(
-      data => {
-        this.StopNav();
-        this.departureOffice = data.body as OfficeModel;
-      },
-      error => {
-        this.StopNav();
-        console.log(error);
-      })
-
-    this.officeServices.GetOffice(order.ReturnOfficeId).subscribe(
-      data => {
-        this.StopNav();
-        this.returnOffice = data.body as OfficeModel;
-
-      },
-      error => {
-        this.StopNav();
-        console.log(error);
-      })
+    this.orderPosition=orderPosition;
+    
 
     let today = new Date();
     today.setMilliseconds(0);
@@ -113,11 +101,17 @@ export class ViewOrdersComponent implements OnInit {
         data => {
           let infoString = data.body as string;
           if (infoString == "canComment") {
+
+            this.StopNav();
             this.canComment = true;
           }
           else if (infoString == "commentExists") {
             this.canComment = false;
-            this.commentServices.GetComment(order.OrderId, order.UserId).subscribe(
+            this.commentServices.GetComment(order.OrderId, order.UserId).pipe(finalize(
+              () => {
+                this.StopNav();
+              }))
+            .subscribe(
               data => {
                 this.commentModel = data.body as CommentModel;
                 this.displayComment = true;
@@ -125,13 +119,15 @@ export class ViewOrdersComponent implements OnInit {
               error => {
 
                 console.log(error);
-              })
+              }
+            )
           }
           else{
+            this.StopNav();
             this.canComment = false;
             this.displayComment = false;
           }
-          this.StopNav();
+          
         },
         error => {
            this.StopNav();
@@ -139,15 +135,50 @@ export class ViewOrdersComponent implements OnInit {
         })
 
     }
-    
+    this.officeServices.GetOffice(order.DepartureOfficeId).pipe(finalize(
+      () => {
+        this.StopNav();
+      }))
+    .subscribe(
+      data => {
+        
+        this.departureOffice = data.body as OfficeModel;
+      },
+      error => {
+        
+        console.log(error);
+      }
+    )
+
+    this.officeServices.GetOffice(order.ReturnOfficeId).pipe(finalize(
+      () => {
+        this.StopNav();
+      }))
+    .subscribe(
+      data => {
+       
+        this.returnOffice = data.body as OfficeModel;
+
+      },
+      error => {
+      
+        console.log(error);
+      }
+    )
 
 
   }
 
-  onSubmit(comment: CommentModel) {
+  onSubmit(comment: CommentModel) {//////////????????
+    this.showOrderProgress=true;
     comment.Grade = Number(this.selectedGrade);
     comment.OrderId = this.order.OrderId;
-    this.commentServices.PostComment(comment).subscribe(
+
+    this.commentServices.PostComment(comment).pipe(finalize(
+      () => {
+        this.showOrderProgress=false;
+      }))
+    .subscribe(
       data => {
         this.commentModel = data.body as CommentModel;
         this.displayComment = true;
@@ -164,9 +195,16 @@ export class ViewOrdersComponent implements OnInit {
     this.btnDisabled = false;
   }
   returnVehicle() {
-    this.orderServices.ReturnVehicle(this.order.OrderId).subscribe(
+    this.showOrderProgress=true;
+    this.orderServices.ReturnVehicle(this.order.OrderId).pipe(finalize(
+      () => {
+        this.showOrderProgress=false;
+      }))
+    .subscribe(
       data => {
         this.order.Vehicle = data.body as Vehicle;
+        this.order.VehicleReturned=true;
+        this.OrderDetails(this.order,1);
       },
       error => {
 
@@ -183,7 +221,7 @@ export class ViewOrdersComponent implements OnInit {
   StopNav(){
     if (this.stopNav == this.stopNavLockCount) {
       this.showOrderProgress=false;
-  
+      this.stopNav=0;
     }
     else {
       this.stopNav += 1;

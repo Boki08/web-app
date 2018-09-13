@@ -12,6 +12,8 @@ import { VehicleTypes } from '../models/vehicleTypes';
 import { CommentServices } from '../services/comment-services';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 import { CommentModel } from '../models/commentData';
+import { VehicleTypeServices } from '../services/vehicleType-services';
+import { finalize } from 'rxjs/operators'
 
 @Component({
   selector: 'app-vehicle-page',
@@ -26,7 +28,7 @@ export class VehiclePageComponent implements OnInit {
   counter: number;
   rentServiceTemp: ServiceData;
   rentService: ServiceData = new ServiceData(1, " ", " ", " ", " ", 1, true, true);
-  pageNumber: number = 1;
+  pageIndex: number = 1;
   pageSize: number = 9;
   totalPagesNumber: number = 0;
   rentServiceId: number;
@@ -45,7 +47,7 @@ export class VehiclePageComponent implements OnInit {
   comments:CommentModel[];
   showOrderProgress:boolean=false;
 
-  constructor(private btmNavMessageService: btmNavDataService, private commentServices: CommentServices, private vehicleServices: VehicleServices, private rentServices: RentServices, private dataRentService: DataService, private Service: Services, private router: Router, private activatedRoute: ActivatedRoute) {
+  constructor(private vehicleTypeServices:VehicleTypeServices,private btmNavMessageService: btmNavDataService, private commentServices: CommentServices, private vehicleServices: VehicleServices, private rentServices: RentServices, private dataRentService: DataService, private Service: Services, private router: Router, private activatedRoute: ActivatedRoute) {
     activatedRoute.params.subscribe(params => { this.rentServiceId = params["rentServiceId"] });
 
     if (localStorage.role != null && localStorage.role == "AppUser") {
@@ -55,16 +57,19 @@ export class VehiclePageComponent implements OnInit {
       this.logedIn = false;
     }
     this.btmNavMessageService.changeMessage(true);
-    this.vehicleServices.GetVehicleTypes()
+    this.vehicleTypeServices.GetVehicleTypes().pipe(finalize(
+      () => {
+        this.StopNav();
+      }))
       .subscribe(
         data => {
           this.vehicleTypes = data.body as VehicleTypes[];
           this.vehicleTypes.push(new VehicleTypes(-1, "All"))
           
-          this.StopNav();
+         
         },
         error => {
-          this.StopNav();
+       
           alert(error.error.ModelState[""][0]);
 
         }
@@ -80,15 +85,17 @@ export class VehiclePageComponent implements OnInit {
 
     /*  this.dataRentService.currentMessage.subscribe(rentService => this.rentServiceTemp = rentService) */
     this.btmNavMessageService.changeMessage(true);
-    this.rentServices.GetRentService(this.rentServiceId).subscribe(
+    this.rentServices.GetRentService(this.rentServiceId).pipe(finalize(
+      () => {
+        this.StopNav();
+      }))
+    .subscribe(
       data => {
         this.rentService = data.body[0];
 
-       
-        this.StopNav();
       },
       error => {
-        this.StopNav();
+      
         console.log(error);
       })
     //this.rentService=this.rentServiceTemp;
@@ -120,7 +127,11 @@ export class VehiclePageComponent implements OnInit {
 
   public getVehicles() {
     this.btmNavMessageService.changeMessage(true);
-    this.vehicleServices.GetRentVehiclesUser(this.rentServiceId, this.pageNumber, this.pageSize, this.availableCheckedToServer, this.typePriceToServer, this.selectedTypeVehicleIdToServer).subscribe(
+    this.vehicleServices.GetRentVehiclesUser(this.rentServiceId, this.pageIndex, this.pageSize, this.availableCheckedToServer, this.typePriceToServer, this.selectedTypeVehicleIdToServer).pipe(finalize(
+      () => {
+        this.StopNav();
+      }))
+    .subscribe(
       data => {
         this.counter = 0;
 
@@ -129,16 +140,15 @@ export class VehiclePageComponent implements OnInit {
 
         let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
-        this.pageNumber = jsonData.currentPage;
+        this.pageIndex = jsonData.currentPage;
         this.pageSize = jsonData.pageSize;
         this.totalPagesNumber = jsonData.totalPages;
 
        
-        this.StopNav();
         //alert("GET: id: " + this.methodResult.id + ", userId: " + this.methodResult.userId + ", title: " + this.methodResult.title + ", body: " + this.methodResult.body);
       },
       error => {
-        this.StopNav();
+       
         console.log(error);
       })
 
@@ -160,8 +170,8 @@ StopNav(){
 }
 
   set page(val: number) {
-    if (val !== this.pageNumber) {
-      this.pageNumber = val;
+    if (val !== this.pageIndex) {
+      this.pageIndex = val;
       this.getVehicles();
     }
   }
@@ -197,17 +207,21 @@ StopNav(){
   }
   getComments() {
     this.showOrderProgress=true;
-    this.commentServices.GetServiceComments(this.rentServiceId).subscribe(
+    this.commentServices.GetServiceComments(this.rentServiceId).pipe(finalize(
+      () => {
+        this.showOrderProgress=false;
+      }))
+    .subscribe(
       data => {
         this.counter = 0;
 
         this.comments = data.body as CommentModel[];
-        this.showOrderProgress=false;
+       
 
         //alert("GET: id: " + this.methodResult.id + ", userId: " + this.methodResult.userId + ", title: " + this.methodResult.title + ", body: " + this.methodResult.body);
       },
       error => {
-        this.showOrderProgress=false;
+     
         console.log(error);
       })
   }

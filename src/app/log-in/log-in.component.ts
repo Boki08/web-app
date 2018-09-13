@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter, AfterContentInit } from '@angular/core';
 import { User } from '../models/user.model';
 import { NgForm } from '@angular/forms';
 import { LogInService } from '../services/log-in-service';
 import { LogInData } from '../models/logInData';
 import { UserServices } from '../services/user-services';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
+import { finalize } from 'rxjs/operators'
 
 
 @Component({
@@ -13,25 +14,36 @@ import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
   styleUrls: ['./log-in.component.css'],
   providers: [LogInService]
 })
-export class LogInComponent implements AfterViewInit {
+export class LogInComponent implements AfterContentInit {
 
-  isVisibleNotLogged: boolean;
-  isVisibleLogged: boolean;
-  name: string = "-1";
+  isVisibleNotLogged: boolean = false;
+  isVisibleLogged: boolean = false;
+  name: string = "";
   @ViewChild('loggedButton') loggedButton: ElementRef;
-  showProgress1:boolean=false;
+  showProgress1: boolean = false;
 
   @Output()
-  private loggedOutEvent:EventEmitter<number>= new EventEmitter<number>();
+  private loggedOutEvent: EventEmitter<number> = new EventEmitter<number>();
 
- 
 
-  constructor(private btmNavMessageService: btmNavDataService,private LogInService: LogInService, private UserService: UserServices) {
+
+  constructor(private btmNavMessageService: btmNavDataService, private LogInService: LogInService, private UserService: UserServices) {
   }
 
   ngOnInit() {
     this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress1 = message)
     this.btmNavMessageService.changeMessage(false);
+   // this.testJwt();??
+  }
+  ngOnDestroy() {
+    this.btmNavMessageService.changeMessage(false);
+  }
+  ngAfterContentInit() {
+
+    this.setUp();
+
+  }
+ /*  testJwt() {
     if (!localStorage.jwt) {
       this.isVisibleNotLogged = true;
       this.isVisibleLogged = false;
@@ -40,15 +52,7 @@ export class LogInComponent implements AfterViewInit {
       this.isVisibleNotLogged = false;
       this.isVisibleLogged = true;
     }
-  }
-  ngOnDestroy() {
-    this.btmNavMessageService.changeMessage(false);
-  }
-  ngAfterViewInit() {
-
-    this.setUp();
-
-  }
+  } */
   setUp() {
     if (!localStorage.jwt) {
       this.isVisibleNotLogged = true;
@@ -56,16 +60,21 @@ export class LogInComponent implements AfterViewInit {
     }
     else {
       this.isVisibleNotLogged = false;
-      this.isVisibleLogged = true;
+      
 
       let jwtData = localStorage.jwt.split('.')[1]
       let decodedJwtJsonData = window.atob(jwtData)
       let decodedJwtData = JSON.parse(decodedJwtJsonData)
 
-      this.name = decodedJwtData.UserFullName
+      if (decodedJwtData.UserFullName != null && decodedJwtData.UserFullName != "") {
+        this.name = decodedJwtData.UserFullName
+      }
+      else {
+        this.name = decodedJwtData.role;
+      }
+      this.isVisibleLogged = true;
 
-
-      this.loggedButton.nativeElement.innerHTML = this.name;
+      //this.loggedButton.nativeElement.innerHTML = this.name;
     }
 
   }
@@ -75,35 +84,38 @@ export class LogInComponent implements AfterViewInit {
     form.reset();
     this.setUp();
   }
-/*   getUser() {
-    this.UserService.getProfile().subscribe(
-      res => {
-        let data = res;
-
-      });
-  } */
-  logOut(){
+  /*   getUser() {
+      this.UserService.getProfile().subscribe(
+        res => {
+          let data = res;
+  
+        });
+    } */
+  logOut() {
     this.btmNavMessageService.changeMessage(true);
-    this.UserService.LogOut()
-    .subscribe(
-      data=>{
+    this.UserService.LogOut().pipe(finalize(
+      () => {
+        this.btmNavMessageService.changeMessage(false);
+      }))
+      .subscribe(
+        data => {
 
-        localStorage.removeItem("jwt");
-        localStorage.removeItem("role");
-        this.setUp();
-        this.loggedOutEvent.emit();
-        alert("Logged out");
-        this.btmNavMessageService.changeMessage(false);
-      },
-      error=>{
-        if (localStorage.jwt) {  localStorage.removeItem("jwt");}
-        if (localStorage.role) {localStorage.removeItem("role");}
-        alert(error.error.Message);
-        this.setUp();
-        this.loggedOutEvent.emit();
-        this.btmNavMessageService.changeMessage(false);
-      }
-    );
+          localStorage.removeItem("jwt");
+          localStorage.removeItem("role");
+          this.setUp();
+          this.loggedOutEvent.emit();
+          alert("Logged out");
+
+        },
+        error => {
+          if (localStorage.jwt) { localStorage.removeItem("jwt"); }
+          if (localStorage.role) { localStorage.removeItem("role"); }
+          alert(error.error.Message);
+          this.setUp();
+          this.loggedOutEvent.emit();
+
+        }
+      );
   }
 }
 

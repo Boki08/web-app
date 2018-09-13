@@ -4,6 +4,7 @@ import { VehicleCardsComponent } from '../vehicle-cards/vehicle-cards.component'
 import { ServiceData } from '../models/serviceData';
 import { CardsComponent } from '../cards/cards.component';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
+import { finalize } from 'rxjs/operators'
 
 
 @Component({
@@ -74,7 +75,12 @@ export class EditServicesComponent implements OnInit {
   getAllServices() {
 
     this.btmNavMessageService.changeMessage(true);
-    this.RentService.GetAllServicesManager(this.isApproved, this.noOffices, this.noVehicles, this.pageIndex, this.pageSize).subscribe(
+    this.RentService.GetAllServicesManager(this.isApproved, this.noOffices, this.noVehicles, this.pageIndex, this.pageSize) .pipe(finalize(
+      () => {
+        this.btmNavMessageService.changeMessage(false);
+        
+      }))
+    .subscribe(
       data => {
         this.rentServices = data.body as ServiceData[];
         //this.userData=this.users[0];
@@ -86,7 +92,7 @@ export class EditServicesComponent implements OnInit {
         this.pageSize = jsonData.pageSize;
         this.totalPagesNumber = jsonData.totalPages;
 
-        this.btmNavMessageService.changeMessage(false);
+        
 
        /*  for (let item of this.services) {
          
@@ -99,7 +105,7 @@ export class EditServicesComponent implements OnInit {
         } */
       },
       error => {
-        this.btmNavMessageService.changeMessage(false);
+      
         console.log(error);
       })
   }

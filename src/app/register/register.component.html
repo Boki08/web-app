@@ -1,99 +1,137 @@
-<form class="needs-validation pt-3 " #f="ngForm" (ngSubmit)="onSubmit(f.value, f)" novalidate>
-  <div class="form-group row pt-3 justify-content-md-center">
+<div class="container-fluid">
+  <form class=" pt-3 " #f="ngForm" [formGroup]="regForm" (ngSubmit)="onSubmit(f.value, f)" novalidate>
 
-    <label for="fullNameInput" class="col-sm-2 col-form-label ">First name</label>
-    <div class="col-sm-3">
-      <input type="text" name="FullName" ngModel class="form-control  is-valid" id="fullNameInput" placeholder="Full name" required>
-    </div>
-    <!-- <label for="validationCustom01">First name</label>
-        <input type="text" class="form-control is-valid" id="validationCustom01" placeholder="First name" value="Mark" required>
-         -->
-    <div class="invalid-feedback">
-      Please input a name.
-    </div>
-    <div class="col-lg-offset-2">
+    <div class="form-group row pt-3 justify-content-md-center">
 
-    </div>
-  </div>
-  <!-- <div class="form-group row pt-3 justify-content-md-center">
-    <label for="lastNameInput" class="col-sm-2 col-form-label ">Last name</label>
-    <div class="col-sm-3">
-      <input type="text" name="Surname" ngModel class="form-control  is-valid" id="lastNameInput" placeholder="Last name" required>
-    </div>
-     <label for="validationCustom02">Last name</label>
-      <input type="text" class="form-control" id="validationCustom02" placeholder="Last name" value="Otto" required>
-      
-    <div class="invalid-feedback">
-      Please choose a last name.
+      <label for="fullNameInput" class="col-sm-2 col-form-label ">First name</label>
+      <div class="col-sm-3">
+        <input type="text" name="FullName" formControlName="FullName" class="form-control " id="fullNameInput"
+          placeholder="Full name" [ngClass]="{
+          'is-valid':FullName.valid && (FullName.dirty || FullName.touched),
+          'is-invalid':FullName.invalid && (FullName.dirty || FullName.touched)
+        }">
+        <div class="invalid-feedback" *ngIf="FullName.errors && (FullName.dirty || FullName.touched)">
+          <p *ngIf="FullName.errors.required">Name is required</p>
+          <p *ngIf="FullName.errors.maxlength">Name is too long, delete {{FullName.errors.maxlength.actualLength
+            - FullName.errors.maxlength.requiredLength}} characters </p>
+        </div>
+        <!--  <p>FullName.dirty {{FullName.dirty}}</p>
+        <p>FullName.valid {{FullName.valid}}</p>
+        <p>FullName.invalid {{FullName.invalid}}</p>
+        <p>FullName.touched {{FullName.touched}}</p> -->
 
-    </div>
-  </div> -->
-  <div class="form-group row pt-3 justify-content-md-center">
-    <label for="passwordInput" class="col-sm-2 col-form-label ">Password</label>
-    <div class="col-sm-3">
-      <input type="password" name="Password" ngModel class="form-control  is-valid" id="passwordInput" placeholder="Password" required #passwordInput="ngModel">
-    </div>
-    <!-- <label for="validationCustom02">Last name</label>
-      <input type="text" class="form-control" id="validationCustom02" placeholder="Last name" value="Otto" required>
-      -->
-    <div class="invalid-feedback">
-      Please choose a password.
-
-    </div>
-  </div>
-  <div class="form-group row pt-3 justify-content-md-center">
-    <label for="repeatedPassword" class="col-sm-2 col-form-label ">Repeat Password</label>
-    <div class="col-sm-3">
-      <input type="password" name="RepeatedPassword" ngModel class="form-control  is-valid" id="repeatedPassword" placeholder="Repeat Password" required #repeatedPassword="ngModel">
-      <div *ngIf="(repeatedPassword.dirty || repeatedPassword.touched)"
-           class="alert alert-danger">  
-            <div [hidden]="passwordInput.value == repeatedPassword.value">
-              <p id="errPasswordMatch">Password doesn't match</p>
-            </div>
-          </div>
-    </div>
-    
-    <div class="invalid-feedback">
-      Please choose a password.
-
-    </div>
-  </div>
-  <div class="form-group row pt-3 justify-content-md-center">
-    <label for="emailInput" class="col-sm-2 col-form-label ">Email</label>
-
-
-    <!-- <div class="input-group-prepend">
-          <span class="input-group-text" id="inputGroupPrepend">@</span>
-        </div> -->
-    <div class="col-sm-3">
-      <input type="email" name="Email" ngModel class="form-control" id="emailInput" placeholder="Email" aria-describedby="inputGroupPrepend" required>
-    </div>
-    <div class="invalid-feedback">
-      Please choose a username.
-
-    </div>
-  </div>
-
-  <div class="form-group row pt-3 justify-content-md-center">
-    <label for="birthDate" class="col-sm-2 col-form-label ">Birthday</label>
-    <div class="col-sm-3">
-      <div class="input-group">
-        <input class="form-control" type="date" name="BirthDate" min="minDate" max="maxDate" placeholder="yyyy-MM-dd" [(ngModel)]="model" >
-          <!-- ngbDatepicker #d="ngbDatepicker"
-         <div class="input-group-append">
-          <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
-            <img src="img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
-          </button>
-        </div> -->
-       
       </div>
     </div>
-  </div>
-  <!-- 
-      <hr/>
-      <pre>Model: {{ model | json }}</pre> 
-  <hr/>-->
-  <div class="form-group row pt-3 justify-content-md-center">
-  <button class="btn btn-primary justify-content-md-center" type="submit">Register</button>
+
+    <div class="form-group row pt-3 justify-content-md-center">
+      <label for="EmailInput" class="col-sm-2 col-form-label ">Email</label>
+
+
+      <div class="col-sm-3">
+        <input type="email" name="Email" formControlName="Email" class="form-control" id="EmailInput" placeholder="Email"
+          required [ngClass]="{
+            'is-valid':Email.valid && (Email.dirty || Email.touched),
+            'is-invalid':Email.invalid && (Email.dirty || Email.touched)
+          }">
+        <div class="invalid-feedback" *ngIf="Email.errors && (Email.dirty || Email.touched)">
+          <p *ngIf="Email.errors.required">Email is required</p>
+          <p *ngIf="Email.errors.pattern">Email format in not correct</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div formGroupName="Matching_passwords_group">
+      <div class="form-group row pt-3 justify-content-md-center">
+        <label for="passwordInput" class="col-sm-2 col-form-label ">Password</label>
+        <div class="col-sm-3">
+          <input type="password" name="Password" formControlName="Password" pattern='^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,}$'
+            class="form-control" id="passwordInput" placeholder="Password" [ngClass]="{
+            'is-valid':Password.valid && (Password.dirty || Password.touched),
+            'is-invalid':Password.invalid && (Password.dirty || Password.touched)
+          }">
+          <div class="invalid-feedback" *ngIf="Password.errors && (Password.dirty || Password.touched)">
+            <p *ngIf="Password.errors.required">Password is required</p>
+            <p *ngIf="Password.errors.pattern">Password must contain a number, lowercase and uppercase letter</p>
+            <p *ngIf="Password.errors.minlength">Password must be 6 characters long, we need another
+              {{Password.errors.minlength.requiredLength
+              - Password.errors.minlength.actualLength}} characters </p>
+            <p *ngIf="Password.errors.maxlength">Password is too long, delete {{Password.errors.maxlength.actualLength
+              - Password.errors.maxlength.requiredLength}} characters </p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="form-group row pt-3 justify-content-md-center">
+        <label for="repeatedPasswordInput" class="col-sm-2 col-form-label ">Repeat Password</label>
+        <div class="col-sm-3">
+          <input type="password" name="RepeatedPassword" formControlName="RepeatedPassword" class="form-control  " id="repeatedPasswordInput"
+            placeholder="Repeat Password" [ngClass]="{
+              'is-valid':RepeatedPassword.valid && (RepeatedPassword.dirty || RepeatedPassword.touched),
+              'is-invalid':RepeatedPassword.invalid && (RepeatedPassword.dirty || RepeatedPassword.touched)
+            }">
+          <div class="invalid-feedback" *ngIf="RepeatedPassword.errors && (RepeatedPassword.dirty || RepeatedPassword.touched)">
+            <p *ngIf="RepeatedPassword.errors.required">Repeated Password is required</p>
+            <p *ngIf="RepeatedPassword.errors.MatchPassword">Passwords must be the same</p>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <div class="form-group row pt-3 justify-content-md-center">
+      <label for="birthDateInput" class="col-sm-2 col-form-label ">Birthday</label>
+      <div class="col-sm-3">
+        <div class="input-group">
+          <input type="text" [bsConfig]="bsConfig" placement="right" placeholder="Datepicker" formControlName="BirthDate"
+            id="birthDateInput" class="form-control" bsDatepicker [ngClass]="{
+                  'is-valid':BirthDate.valid && (BirthDate.dirty || BirthDate.touched),
+                  'is-invalid':BirthDate.invalid && (BirthDate.dirty || BirthDate.touched)
+                }">
+          <div class="invalid-feedback" *ngIf="BirthDate.errors && (BirthDate.dirty || BirthDate.touched)">
+            <p *ngIf="BirthDate.errors.required">Birthday is required</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!--  
+    <div class="form-group row pt-3 justify-content-md-center">
+      <label for="repeatedPassword" class="col-sm-2 col-form-label ">Repeat Password</label>
+      <div class="col-sm-3">
+        <input type="password" name="RepeatedPassword" ngModel class="form-control  is-valid" id="repeatedPassword" placeholder="Repeat Password"
+          required #repeatedPassword="ngModel">
+        <div *ngIf="(repeatedPassword.dirty || repeatedPassword.touched)" class="alert alert-danger">
+          <div [hidden]="passwordInput.value == repeatedPassword.value">
+            <p id="errPasswordMatch">Password doesn't match</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="invalid-feedback">
+        Please choose a password.
+
+      </div>
+    </div>
+    
+
+    <div class="form-group row pt-3 justify-content-md-center">
+      <label for="birthDate" class="col-sm-2 col-form-label ">Birthday</label>
+      <div class="col-sm-3">
+        <div class="input-group">
+          <input class="form-control" type="date" name="BirthDate" min="minDate" max="maxDate" placeholder="yyyy-MM-dd" [(ngModel)]="model">
+
+
+        </div>
+      </div>
+    </div> -->
+
+    <div class="form-group row pt-3 justify-content-md-center">
+      <button class="btn btn-primary justify-content-md-center" [disabled]="!f.valid" type="submit">Register</button>
+    </div>
+  </form>
 </div>
-</form>

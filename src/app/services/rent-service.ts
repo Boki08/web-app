@@ -14,17 +14,16 @@ import 'rxjs/add/operator/map'; */
 })
 export class RentServices {
 
-  constructor( private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) { }
 
-  
-  AddRentService(serviceData:ServiceData, fileToUpload:File){
+
+  AddRentService(serviceData: ServiceData, fileToUpload: File) {
     const endpoint = 'http://localhost:51680/api/rentService/addRentService';
     const formData: FormData = new FormData();
-    if(!serviceData.Logo)
-    {
+    if (!serviceData.Logo) {
       formData.append('Logo', fileToUpload, fileToUpload.name);
     }
-    
+
     formData.append('Name', serviceData.Name.toString());
     formData.append('Email', serviceData.Email.toString());
     formData.append('Description', serviceData.Description.toString());
@@ -32,14 +31,25 @@ export class RentServices {
     return this.httpClient.post(endpoint, formData);
   }
 
-  GetAllServicesManager(isApproved:boolean,noOffices:boolean,noVehicles:boolean,pageIndex:number,pageSize:number): Observable<any> {
-    return this.httpClient.get("http://localhost:51680/api/rentService/getAllRentServicesManager/"+pageIndex+"/"+pageSize+"/"+isApproved+"/"+noOffices+"/"+noVehicles, { observe: 'response' }) ;
-    
+  GetAllServicesManager(isApproved: boolean, noOffices: boolean, noVehicles: boolean, pageIndex: number, pageSize: number): Observable<any> {
+    return this.httpClient.get("http://localhost:51680/api/rentService/getAllRentServicesManager/" + pageIndex + "/" + pageSize + "/" + isApproved + "/" + noOffices + "/" + noVehicles, { observe: 'response' });
+
   }
-  
-GetRentService(sericeId:number):Observable<any>{
-  return this.httpClient.get("http://localhost:51680/api/rentService/getRentService/"+sericeId, { observe: 'response' }) ;
-    
-}
-  
+  GetAllServicesAdmin(approved: boolean, notApproved: boolean, edited: boolean, notEdited: boolean, sort: string, pageIndex: number, pageSize: number): Observable<any> {
+    return this.httpClient.get("http://localhost:51680/api/rentService/getAllRentServicesAdmin/" + pageIndex + "/" + pageSize + "/" + approved + "/" + notApproved + "/" + edited + "/" + notEdited + "/" + sort, { observe: 'response' });
+
+  }
+
+  GetRentService(sericeId: number): Observable<any> {
+    return this.httpClient.get("http://localhost:51680/api/rentService/getRentService/" + sericeId, { observe: 'response' });
+
+  }
+  ActivateRentService(sericeId: number, activated: boolean): Observable<any> {
+    return this.httpClient.get("http://localhost:51680/api/rentService/activateRentService/" + sericeId + "/" + activated, { observe: 'response' });
+
+  }
+  DeleteRentService(sericeId: number) {
+    return this.httpClient.get("http://localhost:51680/api/rentService/deleteRentService/" + sericeId);
+
+  }
 }

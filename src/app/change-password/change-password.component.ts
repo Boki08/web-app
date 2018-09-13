@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { EditPassword } from '../models/editPassword';
 import { UserServices } from '../services/user-services';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ChangePasswordValidator } from 'src/app/change-password/password-validator';
+import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
+import { finalize } from 'rxjs/operators'
 
 @Component({
   selector: 'app-change-password',
@@ -9,21 +13,76 @@ import { UserServices } from '../services/user-services';
 })
 export class ChangePasswordComponent implements OnInit {
 
-  constructor(private userServices: UserServices) { }
+  constructor(private btmNavMessageService: btmNavDataService, private userServices: UserServices) { }
+
+
+  editPasswordForm: FormGroup;
+  OldPassword: FormControl;
+  NewPassword: FormControl;
+  ConfirmPassword: FormControl;
+  Matching_passwords_group: FormGroup;
+
+  disableBtn: boolean = false;
+  showProgress: boolean = false;
+
 
   ngOnInit() {
+
+    this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress = message)
+
+
+    this.CreateFormControls();
+    this.CreateForm();
   }
-  onSubmitPassword(newPassword:EditPassword){
+  CreateFormControls() {
+    this.OldPassword = new FormControl('', [
+      Validators.required
+    ]);
+
+    this.NewPassword = new FormControl('', [
+      Validators.maxLength(30),
+      Validators.minLength(6),
+      // Validators.pattern('^(?=.*\d)(?=.*[!@#$%^*/\._?])(?=.*[a-z])(?=.*[A-Z]).{7,}$'),
+      Validators.required
+    ]);
+    this.ConfirmPassword = new FormControl('', Validators.required);
+
+    this.Matching_passwords_group = new FormGroup({
+      NewPassword: this.NewPassword,
+      ConfirmPassword: this.ConfirmPassword,
+    }, {
+        validators: ChangePasswordValidator.MatchPassword
+      });
+
+  }
+  CreateForm() {
+    this.editPasswordForm = new FormGroup({
+      OldPassword: this.OldPassword,
+      Matching_passwords_group: this.Matching_passwords_group,
+    });
+  }
+  onSubmitPassword(newPassword: any) {
+    this.disableBtn = true;
+    this.btmNavMessageService.changeMessage(true);
     console.log(newPassword);
-    
+
+    newPassword.NewPassword = newPassword.Matching_passwords_group.NewPassword;
+    newPassword.ConfirmPassword = newPassword.Matching_passwords_group.ConfirmPassword;
+    delete newPassword.Matching_passwords_group;
+
     this.userServices.EditPassword1(newPassword)
-    .subscribe(
-      data=>{
-        alert("Your changes updated successfully");
-      },
-      error=>{
-        alert(error.error.ModelState[""][0]);
-      }
-    );
+      .pipe(finalize(
+        () => {
+          this.btmNavMessageService.changeMessage(false);
+          this.disableBtn = false;
+        }))
+      .subscribe(
+        data => {
+          alert("Your changes updated successfully");
+        },
+        error => {
+          alert(error.error.Message);
+        }
+      );
   }
 }

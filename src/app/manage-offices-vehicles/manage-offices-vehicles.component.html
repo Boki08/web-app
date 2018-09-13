@@ -14,112 +14,124 @@
               <div class="card-body">
                 <p class="card-text">
 
-                  <li>Description:
-                    <ul>{{rentServiceTemp.Description}}</ul>
-                  </li>
-                  <li>Email:
-                    <ul>{{rentServiceTemp.Email}}</ul>
-                  </li>
-
-                </p>
-              </div>
-              <div class="card-footer-unstyled ml-4">
-                <li>Rate: <b>{{rentServiceTemp.Grade}}</b></li>
-              </div>
-            </div>
+          <li>Email:
+            <ul>{{rentServiceTemp.Email}}</ul>
           </li>
-
-          <ul class="list-unstyled components" #linkList id="linkList">
-            <li>
-              <span class="border border-primary"><a href="#" [routerLink]="['/addOfficeComponent',rentServiceTemp.RentServiceId]"
-                  class="text-center">Add Office</a></span>
-            </li>
-            <li>
-              <span class="border border-primary mt-3"> <a href="#" [routerLink]="['/addVehicleComponent',rentServiceTemp.RentServiceId]"
-                  class="text-center">Add Vehicle</a></span>
-            </li>
-          </ul>
-        </nav>
-
+          <li>Description:
+            <ul>{{rentServiceTemp.Description}}</ul>
+          </li>
+          </p>
+      </div>
+      <div class="card-footer-unstyled ml-4">
+        <li>Rate: <b>{{rentServiceTemp.Grade}}</b></li>
       </div>
     </div>
-    <div class="col" id="main">
-      <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" (click)="getServiceOffices()">
-          <a class="nav-link active" id="offices-tab" data-toggle="tab" href="#offices" role="tab" aria-controls="offices" aria-selected="true">Offices</a>
-        </li>
-        <li class="nav-item" (click)="getServiceVehicles()">
-          <a class="nav-link" id="vehicles-tab" data-toggle="tab" href="#vehicles" role="tab" aria-controls="vehicles" aria-selected="false">Vehicles</a>
-        </li>
-      </ul>
+    </li>
 
-      <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="offices" role="tabpanel" aria-labelledby="offices-tab">
-          <div *ngIf="offices!=null && !showOffices && offices.length==0">
-            <p class="text-warning">This Rent Service has no Offices</p>
-          </div>
-          <div *ngIf="showOffices">
-            <table class="table  table-hover mt-2">
-              <thead>
-                <tr>
-                  <th scope="col">Num</th>
-                  <th scope="col">Address</th>
-                </tr>
+    <ul class="list-unstyled components" #linkList id="linkList">
+      <li>
+        <span class="border border-primary"><a href="#" [routerLink]="['/addOfficeComponent',rentServiceTemp.RentServiceId]"
+            class="text-center">Add Office</a></span>
+      </li>
+      <li>
+        <span class="border border-primary mt-3"> <a href="#" [routerLink]="['/addVehicleComponent',rentServiceTemp.RentServiceId]"
+            class="text-center">Add Vehicle</a></span>
+      </li>
+      <li>
+        <span class="border border-primary mt-3 "> <a (click)="deleteService($event,rentServiceTemp.RentServiceId)"
+            class="text-center delete-service">Delete Service</a></span>
+      </li>
+    </ul>
+    </nav>
 
-              </thead>
-              <tbody>
-                <tr *ngFor="let office of offices ; let i = index" (click)="officeDetails(office,i)" data-toggle="modal" data-target="#officeModal">
-                  <th scope="row">{{i+1}}</th>
-                  <td>{{office.Address}}</td>
-                </tr>
-
-
-              </tbody>
-            </table>
-            <div class=" row justify-content-md-center">
-
-              <app-pager [page]="pageIndexO" [totalPages]="totalPagesNumberO" (changePage)="pageO=$event"></app-pager>
-            </div>
-          </div>
-        </div>
-        <div class="tab-pane fade" id="vehicles" role="tabpanel" aria-labelledby="vehicles-tab">
-            <div *ngIf="vehicles!=null && !showVehicles && vehicles.length==0">
-                <p class="text-warning">This Rent Service has no Vehicles</p>
-              </div>
-              <div *ngIf="showVehicles">
-          <table class="table  table-hover mt-2">
-            <thead>
-              <tr>
-                <th scope="col">Num</th>
-                <th scope="col">Model</th>
-                <th scope="col">Year of Manifacturing</th>
-                <th scope="col">Manufacturer</th>
-                <th scope="col">Available</th>
-              </tr>
-
-            </thead>
-            <tbody>
-              <tr *ngFor="let vehicle of vehicles ; let i = index" (click)="vehicleDetails(vehicle,i)" data-toggle="modal" data-target="#vehicleModal">
-                <th scope="row">{{i+1}}</th>
-                <td>{{vehicle.Model}}</td>
-                <td>{{vehicle.YearOfManufacturing}}</td>
-                <td>{{vehicle.Manufacturer}}</td>
-                <td>
-                  <p [ngStyle]="{'color': (vehicle!=null && vehicle.Available==true)? 'green' : 'red'}">{{(vehicle!=null
-                    && vehicle.Available==true)?'Yes' : 'No' }}</p>
-                </td>
-            </tbody>
-          </table>
-          <div class=" row justify-content-md-center">
-
-            <app-pager [page]="pageIndexV" [totalPages]="totalPagesNumberV" (changePage)="pageV=$event"></app-pager>
-          </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
   </div>
+</div>
+<div class="col" id="main">
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" (click)="getServiceOffices()">
+      <a class="nav-link active" id="offices-tab" data-toggle="tab" href="#offices" role="tab" aria-controls="offices"
+        aria-selected="true">Offices</a>
+    </li>
+    <li class="nav-item" (click)="getServiceVehicles()">
+      <a class="nav-link" id="vehicles-tab" data-toggle="tab" href="#vehicles" role="tab" aria-controls="vehicles"
+        aria-selected="false">Vehicles</a>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="offices" role="tabpanel" aria-labelledby="offices-tab">
+      <div *ngIf="offices!=null && !showOffices && offices.length==0">
+        <p class="text-warning">This Rent Service has no Offices</p>
+      </div>
+      <div *ngIf="showOffices">
+        <table class="table  table-hover mt-2">
+          <thead>
+            <tr>
+              <th scope="col">Num</th>
+              <th scope="col">Address</th>
+            </tr>
+
+          </thead>
+          <tbody>
+            <tr *ngFor="let office of offices ; let i = index" (click)="officeDetails(office,i)" data-toggle="modal"
+              data-target="#officeModal">
+              <th scope="row">{{i+1}}</th>
+              <td>{{office.Address}}</td>
+            </tr>
+
+
+          </tbody>
+        </table>
+        <div class=" row justify-content-md-center" *ngIf="offices!=null && offices.length>0">
+
+          <app-pager [page]="pageIndexO" [totalPages]="totalPagesNumberO" (changePage)="pageO=$event"></app-pager>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="vehicles" role="tabpanel" aria-labelledby="vehicles-tab">
+      <div *ngIf="vehicles!=null && !showVehicles && vehicles.length==0">
+        <p class="text-warning">This Rent Service has no Vehicles</p>
+      </div>
+      <div *ngIf="showVehicles">
+        <table class="table  table-hover mt-2">
+          <thead>
+            <tr>
+              <th scope="col">Num</th>
+              <th scope="col">Model</th>
+              <th scope="col">Year of Manifacturing</th>
+              <th scope="col">Manufacturer</th>
+              <th scope="col">Available</th>
+              <th scope="col">Enabled</th>
+            </tr>
+
+          </thead>
+          <tbody>
+            <tr *ngFor="let vehicle of vehicles ; let i = index" (click)="vehicleDetails(vehicle,i)" data-toggle="modal"
+              data-target="#vehicleModal">
+              <th scope="row">{{i+1}}</th>
+              <td>{{vehicle.Model}}</td>
+              <td>{{vehicle.YearOfManufacturing}}</td>
+              <td>{{vehicle.Manufacturer}}</td>
+              <td>
+                <p [ngStyle]="{'color': (vehicle!=null && vehicle.Available==true)? 'green' : 'red'}">{{(vehicle!=null
+                  && vehicle.Available==true)?'Yes' : 'No' }}</p>
+              </td>
+              <td>
+                <p [ngStyle]="{'color': (vehicle!=null && vehicle.Enabled==true)? 'green' : 'red'}">{{(vehicle!=null
+                  && vehicle.Enabled==true)?'Yes' : 'No' }}</p>
+              </td>
+          </tbody>
+        </table>
+        <div class=" row justify-content-md-center" *ngIf="vehicles!=null && vehicles.length>0">
+
+          <app-pager [page]="pageIndexV" [totalPages]="totalPagesNumberV" (changePage)="pageV=$event"></app-pager>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
 </div>
 <!-- Vehicle Modal -->
 <div class="modal fade" id="vehicleModal" tabindex="-1" role="dialog" aria-labelledby="VehicleModalLabel" aria-hidden="true">
@@ -188,12 +200,14 @@
                 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
 
                   <ol class="carousel-indicators">
-                    <li data-target="#carouselExampleIndicators" *ngFor="let picture of vehiclePictures; let i = index" data-slide-to="i" [class.active]="isFirst"></li>
+                    <li data-target="#carouselExampleIndicators" *ngFor="let picture of vehiclePictures; let i = index"
+                      data-slide-to="i" [class.active]="isFirst"></li>
                   </ol>
 
                   <div class="carousel-inner">
 
-                    <div class="carousel-item" data-slide-to="i+1" *ngFor="let picture of vehiclePictures; let isFirst = first" [class.active]="isFirst">
+                    <div class="carousel-item" data-slide-to="i+1" *ngFor="let picture of vehiclePictures; let isFirst = first"
+                      [class.active]="isFirst">
 
                       <img class="d-block w-100" style="width:250px; height:250px" src='http://localhost:51680/api/vehicle/getVehiclePicture/?path={{picture.Data }}'
                         alt="">
@@ -226,12 +240,15 @@
           <div class="progress" style="
               display: flex;
               flex-flow: row wrap;
-              justify-content: center;" *ngIf="showVehicleProgress">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0"
-              aria-valuemax="100" style="width: 100%">
+              justify-content: center;"
+            *ngIf="showVehicleProgress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100"
+              aria-valuemin="0" aria-valuemax="100" style="width: 100%">
             </div>
           </div>
         </div>
+        <button type="button" [disabled]="vehicle==null || !vehicle.Available" class="btn btn-danger" (click)="deleteVehicle($event,vehicle.VehicleId)"
+          data-dismiss="modal">Delete Vehicle</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 
       </div>
@@ -271,7 +288,7 @@
 
                     <!-- U info-window stavljamo html -->
                     <span style="font-size: 16px;font-family:'Times New Roman'">{{office.Address}}</span>
-                    <br/>
+                    <br />
                     <div class="container">
                       <div class="row justify-content-center">
                         <div class="shadow p-3 mb-5 bg-white rounded">
@@ -302,6 +319,8 @@
 
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="deleteOffice($event,office.OfficeId)" data-dismiss="modal">Delete
+          Office</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 
       </div>

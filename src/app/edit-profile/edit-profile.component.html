@@ -1,80 +1,125 @@
-<form class="needs-validation pt-3 " #f="ngForm" (ngSubmit)="onSubmit(f.value)" novalidate>
-  <div class="form-group row pt-3 justify-content-md-center">
+<div class="container-fluid  ">
+  <form class="needs-validation pt-3"  [formGroup]="editForm" #f="ngForm" (ngSubmit)="onSubmit(f.value)" novalidate>
 
-    <label for="fullNameInput" class="col-sm-2 col-form-label ">First name</label>
-    <div class="col-sm-3">
-      <input type="text" name="FullName" ngModel [(ngModel)]="this.userData.FullName" class="form-control  is-valid" id="fullNameInput"
-        placeholder="Full name" required>
-    </div>
-    <!-- <label for="validationCustom01">First name</label>
-          <input type="text" class="form-control is-valid" id="validationCustom01" placeholder="First name" value="Mark" required>
-           -->
-    <div class="invalid-feedback">
-      Please input a name.
-    </div>
-    <div class="col-lg-offset-2">
-
-    </div>
-  </div>
-  <!-- <div class="form-group row pt-3 justify-content-md-center">
-      <label for="lastNameInput" class="col-sm-2 col-form-label ">Last name</label>
+    <div class="form-group row pt-3 justify-content-md-center">
+      <label for="fullNameInput" class="col-sm-2 col-form-label ">Full name</label>
       <div class="col-sm-3">
-        <input type="text" name="Surname" ngModel class="form-control  is-valid" id="lastNameInput" placeholder="Last name" required>
+        <input type="text" name="FullName" formControlName="FullName" [(ngModel)]="userData.FullName" class="form-control  is-valid" id="fullNameInput" [ngClass]="{
+            'is-valid':FullName.valid && (FullName.dirty || FullName.touched),
+            'is-invalid':FullName.invalid && (FullName.dirty || FullName.touched)
+          }">
+        <div class="invalid-feedback" *ngIf="FullName.errors && (FullName.dirty || FullName.touched)">
+          <p *ngIf="FullName.errors.required">Name is required</p>
+          <p *ngIf="FullName.errors.maxlength">FullName is too long, delete {{FullName.errors.maxlength.actualLength
+              - FullName.errors.maxlength.requiredLength}} characters </p>
+        </div>
       </div>
-       <label for="validationCustom02">Last name</label>
-        <input type="text" class="form-control" id="validationCustom02" placeholder="Last name" value="Otto" required>
-        
+    </div>
+
+    <div class="form-group row pt-3 justify-content-md-center">
+      <label for="emailInput" class="col-sm-2 col-form-label ">Email</label>
+      <div class="col-sm-3">
+        <input type="email" name="Email" formControlName="Email" class="form-control" [(ngModel)]="userData.Email" id="emailInput" placeholder="Email" [ngClass]="{
+            'is-valid':Email.valid && (Email.dirty || Email.touched),
+            'is-invalid':Email.invalid && (Email.dirty || Email.touched)
+          }">
+        <div class="invalid-feedback" *ngIf="Email.errors && (Email.dirty || Email.touched)">
+          <p *ngIf="Email.errors.required">Email is required</p>
+          <p *ngIf="Email.errors.pattern">Email format in not correct</p>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="form-group row pt-3 justify-content-md-center">
+      <label for="birthDateInput" class="col-sm-2 col-form-label ">Birthday</label>
+      <div class="col-sm-3">
+        <div class="input-group">
+          <input type="text" [bsConfig]="bsConfig" placement="right" placeholder="Datepicker" [(ngModel)]="userData.BirthDate" formControlName="BirthDate" id="birthDateInput"
+            class="form-control" bsDatepicker [ngClass]="{
+                    'is-valid':BirthDate.valid && (BirthDate.dirty || BirthDate.touched),
+                    'is-invalid':BirthDate.invalid && (BirthDate.dirty || BirthDate.touched)
+                  }">
+          <div class="invalid-feedback" *ngIf="BirthDate.errors && (BirthDate.dirty || BirthDate.touched)">
+            <p *ngIf="BirthDate.errors.required">Birthday is required</p>
+            <!-- <p *ngIf="BirthDate.errors.pattern">Birthday format in not correct</p> -->
+
+          </div>
+
+        </div>
+      </div>
+
+
+    </div>
+    <div class="form-group row pt-3 justify-content-md-center">
+      <div *ngIf="userData!=null && userData.DocumentPicture==null" class="row">
+        <div class="col col-lg-4 col-lg-push-4">
+          <img [src]="imageUrl" style="width:250px; height:150px">
+          <br>
+          <br>
+          <input type="file" (change)="handleFileInput($event.target.files)" name="DocumentPicture"
+            #DocumentPicture accept="image/*"><!--  [ngClass]="{
+                'is-valid':DocumentPicture.valid && (DocumentPicture.dirty || DocumentPicture.touched),
+                'is-invalid':DocumentPicture.invalid && (DocumentPicture.dirty || DocumentPicture.touched)
+              }">
+          <div class="invalid-feedback" *ngIf="DocumentPicture.errors && (DocumentPicture.dirty || DocumentPicture.touched)">
+            <p *ngIf="DocumentPicture.errors.required">DocumentPicture is required</p>
+          </div> -->
+          <br>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="form-group row pt-3 justify-content-md-center">
+
+      <label for="fullNameInput" class="col-sm-2 col-form-label ">First name</label>
+      <div class="col-sm-3">
+        <input type="text" name="FullName" ngModel [(ngModel)]="this.userData.FullName" class="form-control  is-valid" id="fullNameInput"
+          placeholder="Full name" required>
+      </div>
       <div class="invalid-feedback">
-        Please choose a last name.
-  
+        Please input a name.
       </div>
+      <div class="col-lg-offset-2">
+      </div>
+    </div>
+
+    <div class="form-group row pt-3 justify-content-md-center">
+      <label for="emailInput" class="col-sm-2 col-form-label ">Email</label>
+      <div class="col-sm-3">
+        <input type="email" name="Email" ngModel [(ngModel)]="this.userData.Email" class="form-control" id="emailInput" placeholder="Email"
+          aria-describedby="inputGroupPrepend" required>
+      </div>
+      <div class="invalid-feedback">
+        Please choose a username.
+      </div>
+    </div>
+
+    <div class="form-group row pt-3 justify-content-md-center">
+      <label for="birthDate" class="col-sm-2 col-form-label ">Birthday</label>
+      <div class="col-sm-3">
+        <div class="input-group">
+          <input class="form-control" type="date" name="BirthDate" required min="minDate" max="maxDate" placeholder="yyyy-MM-dd" ngModel
+            [(ngModel)]="this.userData.BirthDate">
+        </div>
+      </div>
+    </div>
+    <div class="form-group row pt-3 justify-content-md-center">
+      <div *ngIf="userData.DocumentPicture==null" class="row">
+        <div class="col col-lg-4 col-lg-push-4">
+          <img [src]="imageUrl" style="width:250px; height:150px">
+          <br>
+          <br>
+          <input type="file" (change)="handleFileInput($event.target.files)" name="DocumentPicture" #DocumentPicture accept="image/*">
+          <br>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row pt-3 justify-content-md-center">
+      <button class="btn btn-primary justify-content-md-center" [disabled]="!f.valid" type="submit">Edit</button>
     </div> -->
-
-  <div class="form-group row pt-3 justify-content-md-center">
-    <label for="emailInput" class="col-sm-2 col-form-label ">Email</label>
-
-
-    <!-- <div class="input-group-prepend">
-            <span class="input-group-text" id="inputGroupPrepend">@</span>
-          </div> -->
-    <div class="col-sm-3">
-      <input type="email" name="Email" ngModel [(ngModel)]="this.userData.Email" class="form-control" id="emailInput" placeholder="Email"
-        aria-describedby="inputGroupPrepend" required>
+    <div class="form-group row pt-3 justify-content-md-center">
+      <button class="btn btn-primary justify-content-md-center" [disabled]="!f.valid" type="submit">Edit</button>
     </div>
-    <div class="invalid-feedback">
-      Please choose a username.
-
-    </div>
-  </div>
-
-  <div class="form-group row pt-3 justify-content-md-center">
-    <label for="birthDate" class="col-sm-2 col-form-label ">Birthday</label>
-    <div class="col-sm-3">
-      <div class="input-group">
-        <input class="form-control" type="date" name="BirthDate" required min="minDate" max="maxDate" placeholder="yyyy-MM-dd" ngModel
-          [(ngModel)]="this.userData.BirthDate">
-        <!-- ngbDatepicker #d="ngbDatepicker"
-           <div class="input-group-append">
-            <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
-              <img src="img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
-            </button>
-          </div> -->
-
-      </div>
-    </div>
-  </div>
-  <div class="form-group row pt-3 justify-content-md-center">
-    <div *ngIf="userData.DocumentPicture==null" class="row">
-      <div class="col col-lg-4 col-lg-push-4">
-        <img [src]="imageUrl" style="width:250px; height:150px">
-        <br>
-        <br>
-        <input type="file" (change)="handleFileInput($event.target.files)" name="DocumentPicture" #DocumentPicture accept="image/*">
-        <br>
-      </div>
-    </div>
-  </div>
-  <div class="form-group row pt-3 justify-content-md-center">
-    <button class="btn btn-primary justify-content-md-center" [disabled]="!f.valid" type="submit">Edit</button>
-  </div>
-</form>
+  </form>
+</div>

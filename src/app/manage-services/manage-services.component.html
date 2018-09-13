@@ -1,3 +1,214 @@
-<p>
-  manage-services works!
-</p>
+<div class="container-fluid ">
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="wrapper ">
+
+        <nav id="sidebar">
+          <!-- Sidebar Header -->
+          <div class="sidebar-header">
+            <h3>Selection</h3>
+          </div>
+
+          <!-- Sidebar Links -->
+          <ul class="list-unstyled components">
+            <div class="container  justify-content-md-center">
+
+              <div class="col col-md-7 ml-3">
+                <div class="row justify-content-md-center">
+                  <!-- <ul style="padding-left:0px"> -->
+                  <div class="custom-control custom-checkbox mb-3  mr-auto">
+                    <input type="checkbox" class="custom-control-input" (change)="setCheckBox1($event)"
+                      #defaultUnchecked id="defaultUnchecked">
+                    <label class="custom-control-label" for="defaultUnchecked">Approved</label>
+                  </div>
+
+                  <div class="custom-control custom-checkbox mb-3  mr-auto">
+                    <input type="checkbox" class="custom-control-input" (change)="setCheckBox2($event)"
+                      #defaultUnchecked2 id="defaultUnchecked2">
+                    <label class="custom-control-label" for="defaultUnchecked2">Not Approved</label>
+                  </div>
+                  <div class="custom-control custom-checkbox mb-3  mr-auto">
+                    <input type="checkbox" class="custom-control-input" (change)="setCheckBox3($event)"
+                      #defaultUnchecked3 id="defaultUnchecked3">
+                    <label class="custom-control-label" for="defaultUnchecked3">Edited</label>
+                  </div>
+                  <div class="custom-control custom-checkbox mb-3  mr-auto">
+                    <input type="checkbox" class="custom-control-input" (change)="setCheckBox4($event)"
+                      #defaultUnchecked4 id="defaultUnchecked4">
+                    <label class="custom-control-label" for="defaultUnchecked4">Not Edited</label>
+                  </div>
+                  <!-- </ul> -->
+                </div>
+                <div class="row justify-content-md-center mb-3">
+                  <div class="form-group">
+                    <button type="button" id="dLabel" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                      {{selectedSortTemp}}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dLabel">
+                      <a class="dropdown-item" (click)="GetSelectedType('Mixed')">No Sorting</a>
+                      <a class="dropdown-item" (click)="GetSelectedType('approvedFirst')">Approved First</a>
+                      <a class="dropdown-item" (click)="GetSelectedType('notApprovedFirst')">Unapproved First</a>
+                      <a class="dropdown-item" (click)="GetSelectedType('editedFirst')">Edited First</a>
+                      <a class="dropdown-item" (click)="GetSelectedType('notEditedFirst')">Not Edited First</a>
+                    </div>
+
+                  </div>
+                </div>
+
+
+
+
+              </div>
+            </div>
+          </ul>
+        </nav>
+
+      </div>
+    </div>
+    <div class="col justify-content-md-center"id="main">
+
+      <h4  class="text-primary text-center mt-1">
+        <small>Available Rent Services</small>
+      </h4>
+      <hr>
+      <!-- <app-cards #cards (sendServiceId)="getVehicles($event)" [isUser]="true"></app-cards> -->
+
+      <div *ngIf="rentServices!=null && rentServices.length==0">
+        <p class="text-warning">There are no Rent Services</p>
+      </div>
+      <div *ngIf="tableVisible">
+        <table class="table  table-hover mt-2">
+          <thead>
+            <tr>
+              <th scope="col">Num</th>
+              <th scope="col">Name</th>
+              <th scope="col">Edited</th>
+              <th scope="col">Activated</th>
+            </tr>
+
+          </thead>
+          <tbody>
+            <tr *ngFor="let service of rentServices ; let i = index" (click)="serviceDetails(service,i)" data-toggle="modal"
+              data-target="#serviceModal">
+              <th scope="row">{{i+1}}</th>
+              <td>{{service.Name}}</td>
+              <td>
+                <p [ngStyle]="{'color': (service!=null && service.ServiceEdited==true)? 'green' : 'red'}">{{(service!=null
+                  && service.ServiceEdited==true)?'Yes' : 'No' }}</p>
+              </td>
+              <td>
+                <p [ngStyle]="{'color': (service!=null && service.Activated==true)? 'green' : 'red'}">{{(service!=null
+                  && service.Activated==true)?'Yes' : 'No' }}</p>
+              </td>
+          </tbody>
+        </table>
+
+
+
+
+      </div>
+      <div class=" row justify-content-md-center" *ngIf="tableVisible">
+
+        <app-pager [page]="pageIndex" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
+
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="ServiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ServiceModalLabel">{{null != selectedService ? selectedService.Name: 'no data' }}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="row justify-content-center">
+
+              <div class="col">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Service Data</th>
+                      <th scope="col"></th>
+                    </tr>
+
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Email:</th>
+                      <td>{{null != selectedService ? selectedService.Email: 'no data' }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Description:</th>
+                      <td>{{null != selectedService ? selectedService.Description: 'no data' }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Edited:</th>
+                      <td>
+                        <p [ngStyle]="{'color': (selectedService!=null && selectedService.ServiceEdited==true)? 'green' : 'red'}">{{(selectedService!=null
+                          && selectedService.ServiceEdited==true)?'Yes' : 'No' }}</p>
+                      </td>
+
+                    </tr>
+                    <tr>
+                      <th scope="row">Activated:</th>
+                      <td>
+                        <p [ngStyle]="{'color': (selectedService!=null && selectedService.Activated==true)? 'green' : 'red'}">{{(selectedService!=null
+                          && selectedService.Activated==true)?'Yes' : 'No' }}</p>
+                        <label class="switch">
+                          <input type="checkbox" [disabled]="selectedService==null && checkBoxDisabled" (change)="setCheckBoxService($event)"
+                            [checked]="(selectedService!=null && selectedService.Activated==true)">
+                          <span class="slider round"></span>
+                        </label>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+
+
+              <div class="col" *ngIf="selectedService!=null">
+                <div class="shadow p-3 mb-5 bg-white rounded">
+
+                  <img class="d-block w-100" style="width:250px; height:250px" src='http://localhost:51680/api/rentService/GetServiceLogo/?path={{selectedService.Logo }}'
+                    alt="">
+
+                </div>
+              </div>
+
+
+
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <div class="col col-md-5" style="margin-right:16%">
+            <div class="progress" style="
+                display: flex;
+                flex-flow: row wrap;
+                justify-content: center;"
+              *ngIf="showServiceProgress">
+              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100"
+                aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+              </div>
+            </div>
+          </div>
+          <button type="button" *ngIf="selectedService!=null" class="btn btn-secondary" data-dismiss="modal" href="#"
+            [routerLink]="['/AdminOfficesVehicles',selectedService.RentServiceId]">View More</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+        </div>
+      </div>
+    </div>
+  </div>

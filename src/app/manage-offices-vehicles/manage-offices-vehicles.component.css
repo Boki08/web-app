@@ -187,9 +187,12 @@ a, a:hover, a:focus {
     color: rgb(33, 37, 41);
     background: #fff;
 }
-
+#sidebar  .delete-service:hover {
+    color: rgb(33, 37, 41) !important;
+    background: rgb(255, 0, 0) !important;
+}
 #list   ul li a:hover {
-    color: 1d77a3;
+    color: rgb(33, 37, 41);
     background: #fff;
 }
 
