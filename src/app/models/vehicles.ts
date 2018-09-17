@@ -1,4 +1,5 @@
 import { VehiclePictures } from "./vehicle-pictures";
+import { VehicleTypes } from "./vehicleTypes";
 
 
 export class Vehicle {
@@ -13,6 +14,7 @@ export class Vehicle {
         public TypeId :number,
         public Available :boolean,
         public Enabled:boolean,
+        public TypeOfVehicle: VehicleTypes,
     public VehiclePictures:VehiclePictures[],) {
       
     }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 //import { Http, Response } from '@angular/http';
 import { Headers, RequestOptions } from '@angular/http';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
@@ -32,6 +32,23 @@ export class OfficeServices {
     formData.append('Longitude', office.Longitude.toString());
     formData.append('RentServiceId', office.RentServiceId.toString());
     return this.httpClient.post("http://localhost:51680/api/office/addOffice/", formData);
+
+  }
+
+  EditOffice(office: OfficeModel, fileToUpload: File,ETag:string) {
+
+
+    let headers = new HttpHeaders();
+    headers = headers.append('if-match', ETag);
+
+    const formData: FormData = new FormData();
+    formData.append('OfficeId', office.OfficeId.toString());
+    formData.append('Picture', fileToUpload, fileToUpload.name);
+    formData.append('Address', office.Address.toString());
+    formData.append('Latitude', office.Latitude.toString());
+    formData.append('Longitude', office.Longitude.toString());
+    formData.append('RentServiceId', office.RentServiceId.toString());
+    return this.httpClient.post("http://localhost:51680/api/office/editOffice/", formData, { "headers": headers });
 
   }
   GetRentOffices(serviceId: number, pageIndex: number, pageSize: number) {

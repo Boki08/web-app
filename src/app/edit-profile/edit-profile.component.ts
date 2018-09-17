@@ -6,6 +6,7 @@ import { EditPassword } from '../models/editPassword';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 import { BsDatepickerConfig, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { finalize } from 'rxjs/operators'
+import { ToasterService } from '../toaster-service/toaster-service.component';
 
 @Component({
   selector: 'app-edit-profile',
@@ -14,7 +15,7 @@ import { finalize } from 'rxjs/operators'
 })
 export class EditProfileComponent implements OnInit {
 
-  constructor(private btmNavMessageService: btmNavDataService, private localeService: BsLocaleService, private userServices: UserServices) {
+  constructor(private toasterService:ToasterService,private btmNavMessageService: btmNavDataService, private localeService: BsLocaleService, private userServices: UserServices) {
     this.bsConfig = Object.assign({}, {
       containerClass: 'theme-dark-blue',
       showWeekNumbers: false,
@@ -30,6 +31,7 @@ export class EditProfileComponent implements OnInit {
   userData: User = new User('no data', 'Full name', 'Email', new Date, 'no dara', 'no data', 'no data', true, true);
   fileToUpload: File = null;
   imageUrl: string = "/assets/images/default-placeholder.png"
+  ETag:string;
   showProgress: boolean = false;
   btnDisabled: boolean = true;
 
@@ -57,12 +59,14 @@ export class EditProfileComponent implements OnInit {
       }))
       .subscribe(
         data => {
-          this.userData = data;
-          this.userData.BirthDate = new Date(data.BirthDate);
+          this.ETag = JSON.parse(data.headers.get('ETag'));
+          this.userData = data.body;
+          this.userData.BirthDate = new Date(data.body.BirthDate);
           this.btnDisabled = false;
         },
         error => {
-          alert(error.error.Message);
+          //alert(error.error.Message);
+          this.toasterService.Error(error.error.Message,'Error');
         }
       )
   }
@@ -111,17 +115,19 @@ export class EditProfileComponent implements OnInit {
 
     appUser.UserId = this.userData.UserId;
     appUser.DocumentPicture = this.userData.DocumentPicture;
-    this.userServices.EditUser(appUser, this.fileToUpload).pipe(finalize(
+    this.userServices.EditUser(appUser, this.fileToUpload,this.ETag).pipe(finalize(
       () => {
         this.btmNavMessageService.changeMessage(false);
 
       }))
       .subscribe(
         data => {
-          alert("Your changes updated successfully");
+          this.toasterService.Info("Your changes updated successfully",'Info');
+          //alert("Your changes updated successfully");
         },
         error => {
-          alert(error.error.Message);
+          this.toasterService.Error(error.error.Message,'Error');
+          //alert(error.error.Message);
         }
       );
   }

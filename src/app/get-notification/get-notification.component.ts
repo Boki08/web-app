@@ -39,9 +39,9 @@ export class GetNotificationComponent implements OnInit {
   }
  
   public onNotification(notif: string) {
-    debugger
+    
          this._ngZone.run(() => {
-           debugger;
+      
            if(localStorage.role == 'Admin'){
              //alert(notif);
              this.toasterService.Info(notif,'Info');

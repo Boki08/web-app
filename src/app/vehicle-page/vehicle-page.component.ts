@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { VehicleCardsComponent } from '../vehicle-cards/vehicle-cards.component';
+
 import { Services } from '../services/services.component';
 import { ServiceData } from '../models/serviceData';
-import { DataService } from '../cards/dataRentService';
+
 import { RentServices } from '../services/rent-service';
 import { VehicleServices } from '../services/vehicle-services';
 import { Vehicle } from '../models/vehicles';
@@ -14,6 +14,7 @@ import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 import { CommentModel } from '../models/commentData';
 import { VehicleTypeServices } from '../services/vehicleType-services';
 import { finalize } from 'rxjs/operators'
+import { ToasterService } from '../toaster-service/toaster-service.component';
 
 @Component({
   selector: 'app-vehicle-page',
@@ -46,8 +47,9 @@ export class VehiclePageComponent implements OnInit {
   stopNav: number = 0;
   comments:CommentModel[];
   showOrderProgress:boolean=false;
+  showWarning:boolean=false;
 
-  constructor(private vehicleTypeServices:VehicleTypeServices,private btmNavMessageService: btmNavDataService, private commentServices: CommentServices, private vehicleServices: VehicleServices, private rentServices: RentServices, private dataRentService: DataService, private Service: Services, private router: Router, private activatedRoute: ActivatedRoute) {
+  constructor(private toasterService:ToasterService,private vehicleTypeServices:VehicleTypeServices,private btmNavMessageService: btmNavDataService, private commentServices: CommentServices, private vehicleServices: VehicleServices, private rentServices: RentServices,  private Service: Services, private router: Router, private activatedRoute: ActivatedRoute) {
     activatedRoute.params.subscribe(params => { this.rentServiceId = params["rentServiceId"] });
 
     if (localStorage.role != null && localStorage.role == "AppUser") {
@@ -66,11 +68,13 @@ export class VehiclePageComponent implements OnInit {
           this.vehicleTypes = data.body as VehicleTypes[];
           this.vehicleTypes.push(new VehicleTypes(-1, "All"))
           
-         
         },
         error => {
-       
-          alert(error.error.ModelState[""][0]);
+          
+            this.toasterService.Error(error.error.Message,'Error');
+          
+         
+          //alert(error.error.ModelState[""][0]);
 
         }
       );
@@ -91,11 +95,11 @@ export class VehiclePageComponent implements OnInit {
       }))
     .subscribe(
       data => {
-        this.rentService = data.body[0];
+        this.rentService = data.body;
 
       },
       error => {
-      
+        this.toasterService.Error(error.error.Message, 'Error');
         console.log(error);
       })
     //this.rentService=this.rentServiceTemp;
@@ -144,11 +148,18 @@ export class VehiclePageComponent implements OnInit {
         this.pageSize = jsonData.pageSize;
         this.totalPagesNumber = jsonData.totalPages;
 
-       
+       this.showWarning=false;
         //alert("GET: id: " + this.methodResult.id + ", userId: " + this.methodResult.userId + ", title: " + this.methodResult.title + ", body: " + this.methodResult.body);
       },
       error => {
-       
+        if (error.error.Message === 'There are no Vehicles') {
+          this.toasterService.Warning(error.error.Message, 'Warning');
+          this.showWarning=true;
+        }
+        else {
+          this.toasterService.Error(error.error.Message, 'Error');
+
+        }
         console.log(error);
       })
 
@@ -221,7 +232,7 @@ StopNav(){
         //alert("GET: id: " + this.methodResult.id + ", userId: " + this.methodResult.userId + ", title: " + this.methodResult.title + ", body: " + this.methodResult.body);
       },
       error => {
-     
+        this.toasterService.Error(error.error.Message, 'Error');
         console.log(error);
       })
   }

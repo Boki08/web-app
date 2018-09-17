@@ -7,6 +7,8 @@ import { ActivatedRoute } from '@angular/router';
 import { OfficeServices } from '../services/office-services';
 import { NgForm, Validators, FormControl, FormGroup } from '@angular/forms';
 import { finalize } from 'rxjs/operators'
+import { ToasterService } from '../toaster-service/toaster-service.component';
+import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 
 @Component({
   selector: 'app-add-office',
@@ -25,6 +27,8 @@ export class AddOfficeComponent implements OnInit {
   imageUrl: string = "/assets/images/default-placeholder.png"
   rentServiceId: number;
   isBtnDisabled: boolean;
+  showProgress: boolean;
+  option:string;
 
   addOfficeForm: FormGroup;
   Address: FormControl;
@@ -32,14 +36,17 @@ export class AddOfficeComponent implements OnInit {
   
 
 
-  constructor(private activatedRoute: ActivatedRoute, private officeServices: OfficeServices) {
+  constructor(private btmNavMessageService: btmNavDataService,private toasterService:ToasterService,private activatedRoute: ActivatedRoute, private officeServices: OfficeServices) {
     activatedRoute.params.subscribe(params => { this.rentServiceId = params["rentServiceId"] });
-
   }
   ngOnInit() {
+    this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress = message)
     this.CreateFormControls();
     this.CreateForm();
     this.isBtnDisabled = true;
+  }
+  ngOnDestroy() {
+    this.btmNavMessageService.changeMessage(false);
   }
 
   CreateFormControls() {
@@ -79,6 +86,7 @@ export class AddOfficeComponent implements OnInit {
   }
 
   onSubmit(office: OfficeModel,form:NgForm) {
+    this.btmNavMessageService.changeMessage(true);
     this.isBtnDisabled = true;
     console.log(office);
 
@@ -90,15 +98,18 @@ export class AddOfficeComponent implements OnInit {
     this.officeServices.AddOffice(office, this.fileToUpload).pipe(finalize(
       () => {
         this.isBtnDisabled=false;
+        this.btmNavMessageService.changeMessage(false);
       }))
       .subscribe(
         data => {
-          alert("Your changes updated successfully");
+          //alert("Your changes updated successfully");
+          this.toasterService.Info("Office was added",'Info');
           form.reset();
          
         },
         error => {
-          alert(error.error.ModelState[""][0]);
+          this.toasterService.Error(error.error.Message,'Error');
+          //alert(error.error.ModelState[""][0]);
          
         }
       );

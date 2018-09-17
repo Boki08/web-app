@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 //import { Http, Response } from '@angular/http';
 import { Headers, RequestOptions } from '@angular/http';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
@@ -45,7 +45,6 @@ export class VehicleServices {
 
   AddVehicle(vehicle: Vehicle, photos: File[]): Observable<any> {
 
-    const endpoint = 'http://localhost:51680/api/vehicle/addVehicle';
     const formData: FormData = new FormData();
 
     for (let i = 0; i < photos.length; i++) {
@@ -61,7 +60,32 @@ export class VehicleServices {
     formData.append('YearOfManufacturing', vehicle.YearOfManufacturing.toString());
     formData.append('ImagesNum', photos.length.toString());
 
-    return this.httpClient.post(endpoint, formData);
+    return this.httpClient.post('http://localhost:51680/api/vehicle/addVehicle', formData);
+
+  }
+
+  EditVehicle(vehicle: Vehicle, photos: File[],ETag:string): Observable<any> {
+
+    let headers = new HttpHeaders();
+    headers = headers.append('if-match', ETag);
+
+
+    const formData: FormData = new FormData();
+
+    for (let i = 0; i < photos.length; i++) {
+      formData.append('Image' + i, photos[i], photos[i].name);
+
+    }
+    formData.append('HourlyPrice', vehicle.HourlyPrice.toString());
+    formData.append('TypeId', vehicle.TypeId.toString());
+    formData.append('VehicleId', vehicle.VehicleId.toString());
+    formData.append('Description', vehicle.Description.toString());
+    formData.append('Manufacturer', vehicle.Manufacturer.toString());
+    formData.append('Model', vehicle.Model.toString());
+    formData.append('YearOfManufacturing', vehicle.YearOfManufacturing.toString());
+    formData.append('ImagesNum', photos.length.toString());
+
+    return this.httpClient.post('http://localhost:51680/api/vehicle/editVehicle', formData, { "headers": headers });
 
   }
 

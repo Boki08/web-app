@@ -6,6 +6,7 @@ import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Vehicle } from '../models/vehicles';
 import { VehicleTypeServices } from '../services/vehicleType-services';
 import { finalize } from 'rxjs/operators'
+import { ToasterService } from '../toaster-service/toaster-service.component';
 
 @Component({
   selector: 'app-add-vehicle',
@@ -14,18 +15,14 @@ import { finalize } from 'rxjs/operators'
 })
 export class AddVehicleComponent implements OnInit {
 
-  constructor(private vehicleTypeServices:VehicleTypeServices,private vehicleServices: VehicleServices, private activatedRoute: ActivatedRoute) {
+  constructor(private toasterService:ToasterService,private vehicleTypeServices:VehicleTypeServices,private vehicleServices: VehicleServices, private activatedRoute: ActivatedRoute) {
     activatedRoute.params.subscribe(params => { this.rentServiceId = params["rentServiceId"] });
   }
   rentServiceId: number;
   vehicleTypes: VehicleTypes[];
   selectedType: string = "Select Type";
-  canUploadPictures: boolean = false;
   fileToUpload: Array<File> = [];
-  imagesUrl: Array<string> = [] = ["/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png"]
-  imageUrl2: string = "/assets/images/default-placeholder.png"
-  imageUrl3: string = "/assets/images/default-placeholder.png"
-  vehicleId: number;
+  imagesUrl: Array<string> = [] = ["/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png"];
   selectedTypeId: number;
 
   addVehicleForm: FormGroup;
@@ -41,7 +38,7 @@ export class AddVehicleComponent implements OnInit {
   ngOnInit() {
     this.CreateFormControls() ;
     this.CreateForm();
-    this.vehicleTypeServices.GetVehicleTypes() .pipe(finalize(
+    this.vehicleTypeServices.GetVehicleTypes().pipe(finalize(
       () => {
       /*   this.btmNavMessageService.changeMessage(false);
         this.disableBtn = false; */
@@ -53,7 +50,8 @@ export class AddVehicleComponent implements OnInit {
           this.selectedTypeId = this.vehicleTypes[0].TypeId;
         },
         error => {
-          alert(error.error.Message);
+          //alert(error.error.Message);
+          this.toasterService.Error(error.error.Message,'Error');
 
         }
       );
@@ -114,12 +112,12 @@ export class AddVehicleComponent implements OnInit {
       }))
       .subscribe(
         data => {
-          this.vehicleId = data.VehicleId as number;
-          this.canUploadPictures = true;
+         // this.vehicleId = data.VehicleId as number;
+         this.toasterService.Info(data,'Info');
         },
         error => {
-          alert(error.error.ModelState[""][0]);
-
+          //alert(error.error.ModelState[""][0]);
+          this.toasterService.Error(error.error.Message,'Error');
         }
       );
 

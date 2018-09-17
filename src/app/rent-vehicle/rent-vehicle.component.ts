@@ -15,6 +15,7 @@ import { finalize } from 'rxjs/operators'
 import { BsLocaleService, BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { enGbLocale } from 'ngx-bootstrap/locale';
 import { defineLocale } from 'ngx-bootstrap/chronos';
+import { ToasterService } from '../toaster-service/toaster-service.component';
 defineLocale('en-gb', enGbLocale);
 
 
@@ -25,7 +26,7 @@ defineLocale('en-gb', enGbLocale);
 })
 export class RentVehicleComponent implements OnInit {
 
-  constructor(private localeService: BsLocaleService,private btmNavMessageService: btmNavDataService, private router: Router, private orderServices: OrderServices, private officeServices: OfficeServices, private vehicleServices: VehicleServices, private activatedRoute: ActivatedRoute) {
+  constructor(private toasterService: ToasterService, private localeService: BsLocaleService, private btmNavMessageService: btmNavDataService, private router: Router, private orderServices: OrderServices, private officeServices: OfficeServices, private vehicleServices: VehicleServices, private activatedRoute: ActivatedRoute) {
     activatedRoute.params.subscribe(params => { this.vehicleID = params["vehicleId"] });
     activatedRoute.params.subscribe(params => { this.rentServiceId = params["rentServiceId"] });
 
@@ -44,10 +45,10 @@ export class RentVehicleComponent implements OnInit {
       minDate: new Date(),
 
     });
-   
+
     this.localeService.use("en-gb");
   }
-  
+
   bsConfigDeparture: Partial<BsDatepickerConfig>;
   bsConfigReturn: Partial<BsDatepickerConfig>;
   vehicleID: number;
@@ -73,7 +74,7 @@ export class RentVehicleComponent implements OnInit {
   returnOffice: OfficeModel;
   selectedReturnOffice: string = "Return Office";
 
-  
+
   isDepartureDateBad: boolean = false;
   isReturnDateBad: boolean = false;
 
@@ -104,22 +105,24 @@ export class RentVehicleComponent implements OnInit {
             this.showDangerErrorMessage = true;
 
           }
-          if (this.firstLoad == true) {
-            this.btmNavMessageService.changeMessage(false);
-          }
-          else {
-            this.firstLoad = true;
-          }
+          this.checkIfAllLoaded();
 
         },
         error => {
-          if (this.firstLoad == true) {
-            this.btmNavMessageService.changeMessage(false);
+          if (error.error.Message === 'Vehicle does not exist') {
+            this.btnDisabled = true;
+
+            this.dangerErrMessage = "This Vehicle is not Available!";
+            this.showDangerErrorMessage = true;
+            
+            this.toasterService.Warning(error.error.Message, 'Warning');
           }
           else {
-            this.firstLoad = true;
+            this.toasterService.Error(error.error.Message, 'Error');
           }
-          alert(error.error.ModelState[""][0]);
+          this.checkIfAllLoaded();
+          //alert(error.error.ModelState[""][0]);
+          
 
         }
       );
@@ -128,42 +131,56 @@ export class RentVehicleComponent implements OnInit {
       .subscribe(
         data => {
           this.offices = data.body as OfficeModel[];
-          if (this.offices.length == 0) {
+          /*  if (this.offices.length == 0) {
+             this.btnDisabled = true;
+ 
+             this.dangerErrMessage = "This Rent Service doesn't have any offices!";
+             this.showDangerErrorMessage = true;
+           }
+           else { */
+          this.selectedDepartureOffice = data.body[0].Address;
+          this.selectedReturnOffice = data.body[0].Address;
+          this.departureOfficeId = data.body[0].OfficeId;
+          this.returnOfficeId = data.body[0].OfficeId;
+          //this.office=data.body[0];
+          this.returnOffice = data.body[0];
+          this.departureOffice = data.body[0];
+
+          this.checkIfAllLoaded();
+          /* } */
+
+        },
+        error => {
+          if (error.error.Message === 'There are no Offices') {
             this.btnDisabled = true;
 
             this.dangerErrMessage = "This Rent Service doesn't have any offices!";
             this.showDangerErrorMessage = true;
-          }
-          else {
-            this.selectedDepartureOffice = data.body[0].Address;
-            this.selectedReturnOffice = data.body[0].Address;
-            this.departureOfficeId = data.body[0].OfficeId;
-            this.returnOfficeId = data.body[0].OfficeId;
-            //this.office=data.body[0];
-            this.returnOffice = data.body[0];
-            this.departureOffice = data.body[0];
 
-            if (this.firstLoad == true) {
-              
-            }
-            else {
-              this.firstLoad = true;
-            }
-          }
-          this.btmNavMessageService.changeMessage(false);
-        },
-        error => {
-          if (this.firstLoad == true) {
-            this.btmNavMessageService.changeMessage(false);
+            this.toasterService.Warning(error.error.Message, 'Warning');
           }
           else {
-            this.firstLoad = true;
+            this.toasterService.Error(error.error.Message, 'Error');
           }
-          alert(error.error.ModelState[""][0]);
+
+          this.checkIfAllLoaded();
+
+          //alert(error.error.ModelState[""][0]);
+
 
         }
       );
   }
+
+  checkIfAllLoaded() {
+    if (this.firstLoad == true) {
+      this.btmNavMessageService.changeMessage(false);
+    }
+    else {
+      this.firstLoad = true;
+    }
+  }
+
   ngOnDestroy() {
     this.btmNavMessageService.changeMessage(false);
   }
@@ -183,13 +200,13 @@ export class RentVehicleComponent implements OnInit {
     //let d=$event.year +""+$event.month +""+$event.day +""+"T00:00:00";
     // let d=$event
     // d.hour
-   /*  let dd = new Date();
-    dd.setMilliseconds(0);
-    dd.setSeconds(0);
-    dd.setMinutes(0);
-    dd.setHours(2);
-
-    dd.setFullYear($event.year, $event.month - 1, $event.day); */
+    /*  let dd = new Date();
+     dd.setMilliseconds(0);
+     dd.setSeconds(0);
+     dd.setMinutes(0);
+     dd.setHours(2);
+ 
+     dd.setFullYear($event.year, $event.month - 1, $event.day); */
     //formatDate(new Date(d), 'yyyy/MM/dd', 'en');
     // let myDate = this.datePipe.transform(new Date(d), 'yyyy-MM-dd');
     this.returnDate = $event;
@@ -197,19 +214,19 @@ export class RentVehicleComponent implements OnInit {
     this.testReturnDate();
     this.testDepartureDate();
 
-    let dateTemp=new Date(this.returnDate);
-    dateTemp.setHours(dateTemp.getHours()-24);
+    let dateTemp = new Date(this.returnDate);
+    dateTemp.setHours(dateTemp.getHours() - 24);
     this.bsConfigDeparture = Object.assign({}, {
-      maxDate:dateTemp,
+      maxDate: dateTemp,
       minDate: new Date(),
     });
   }
   testReturnDate() {
     let today = new Date();
-     today.setMilliseconds(0);
+    today.setMilliseconds(0);
     today.setSeconds(0);
     today.setMinutes(0);
-    today.setHours(0); 
+    today.setHours(0);
 
     if (this.returnDate != null) {
       if (this.returnDate <= today) {
@@ -230,13 +247,13 @@ export class RentVehicleComponent implements OnInit {
 
         }
 
-      
+
       }
       else {
         this.btnDisabled = true;
         this.isReturnDateBad = false;
 
-        
+
       }
     } else {
       this.btnDisabled = true;
@@ -247,26 +264,26 @@ export class RentVehicleComponent implements OnInit {
 
   departureDatePicked($event) {
 
-   /*  let dd = new Date();
-    dd.setMilliseconds(0);
-    dd.setSeconds(0);
-    dd.setMinutes(0);
-    dd.setHours(2);
-
-    dd.setFullYear($event.year, $event.month - 1, $event.day);
-    //formatDate(new Date(d), 'yyyy/MM/dd', 'en');
-    // let myDate = this.datePipe.transform(new Date(d), 'yyyy-MM-dd');
-    this.departureDate = dd; */
-    this.departureDate =$event;
+    /*  let dd = new Date();
+     dd.setMilliseconds(0);
+     dd.setSeconds(0);
+     dd.setMinutes(0);
+     dd.setHours(2);
+ 
+     dd.setFullYear($event.year, $event.month - 1, $event.day);
+     //formatDate(new Date(d), 'yyyy/MM/dd', 'en');
+     // let myDate = this.datePipe.transform(new Date(d), 'yyyy-MM-dd');
+     this.departureDate = dd; */
+    this.departureDate = $event;
     this.testDepartureDate();
     this.testReturnDate();
 
-    let dateTemp=new Date(this.departureDate);
-     dateTemp.setHours(dateTemp.getHours()+24);
+    let dateTemp = new Date(this.departureDate);
+    dateTemp.setHours(dateTemp.getHours() + 24);
     this.bsConfigReturn = Object.assign({}, {
-      
 
-      minDate:dateTemp,
+
+      minDate: dateTemp,
     });
 
   }
@@ -275,7 +292,7 @@ export class RentVehicleComponent implements OnInit {
     today.setMilliseconds(0);
     today.setSeconds(0);
     today.setMinutes(0);
-    today.setHours(0); 
+    today.setHours(0);
 
     if (this.departureDate != null) {
 
@@ -320,12 +337,14 @@ export class RentVehicleComponent implements OnInit {
     this.orderServices.OrderVehicle(order)
       .subscribe(
         data => {
-          alert("Success!");
+          this.toasterService.Info("Success", 'Info');
+          //alert("Success!");
           this.router.navigate(['/viewOrdersComponent']);
         },
         error => {
           this.btnHidden = false;
-          alert(error.error.Message);
+          //alert(error.error.Message);
+          this.toasterService.Error(error.error.Message, 'Error');
         })
   }
 }

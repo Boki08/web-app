@@ -3,6 +3,7 @@ import { User } from '../models/user.model';
 import { UserServices } from '../services/user-services';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 import { finalize } from 'rxjs/operators'
+import { ToasterService } from '../toaster-service/toaster-service.component';
 
 @Component({
   selector: 'app-view-profile',
@@ -11,7 +12,7 @@ import { finalize } from 'rxjs/operators'
 })
 export class ViewProfileComponent implements OnInit {
 
-  constructor(private btmNavMessageService: btmNavDataService, private userServices: UserServices) {
+  constructor(private toasterService:ToasterService,private btmNavMessageService: btmNavDataService, private userServices: UserServices) {
     
   }
   @Input()
@@ -32,12 +33,13 @@ export class ViewProfileComponent implements OnInit {
       .subscribe(
         data => {
          
-            this.userData = data;
-            this.userData.BirthDate = data.BirthDate.slice(0, 10);
+            this.userData = data.body;
+            this.userData.BirthDate = data.body.BirthDate.slice(0, 10);
           
         },
         error => {
-          alert(error.error.Message);
+         // alert(error.error.Message);
+         this.toasterService.Error(error.error.Message,'Error');
         }
       )
   }

@@ -3,6 +3,7 @@ import { ServiceData } from '../models/ServiceData';
 import { RentServices } from '../services/rent-service';
 import { finalize } from 'rxjs/operators'
 import { Validators, FormControl, FormGroup, NgForm } from '@angular/forms';
+import { ToasterService } from '../toaster-service/toaster-service.component';
 
 @Component({
   selector: 'app-add-service',
@@ -11,7 +12,7 @@ import { Validators, FormControl, FormGroup, NgForm } from '@angular/forms';
 })
 export class AddServiceComponent implements OnInit {
 
-  constructor(private RentServices:RentServices) { }
+  constructor(private toasterService:ToasterService,private RentServices:RentServices) { }
   serviceData:ServiceData;
   fileToUpload : File = null;
   imageUrl: string = "/assets/images/default-placeholder.png"
@@ -74,11 +75,13 @@ export class AddServiceComponent implements OnInit {
       }))
     .subscribe(
       data=>{
-        alert("Your changes updated successfully");
+        this.toasterService.Info("Your changes updated successfully",'Info');
+        //alert("Your changes updated successfully");
         form.reset();
       },
       error=>{
-        alert(error.error.ModelState[""][0]);
+        this.toasterService.Error(error.error.Message,'Error');
+        //alert(error.error.ModelState[""][0]);
       }
     );
   }

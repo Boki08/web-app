@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 //import { Http, Response } from '@angular/http';
 import { Headers, RequestOptions } from '@angular/http';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
@@ -15,6 +15,9 @@ export class UserServices {
 
   constructor( private httpClient: HttpClient) { }
 
+  getImage(name: string): Observable<Blob> {
+    return this.httpClient.get('http://localhost:51680/api/appUser/getDocumentPicture?path='+name, {responseType: "blob"});
+}
   register(NewUser): Observable<any> {
     console.log(NewUser);
     return this.httpClient.post("http://localhost:51680/api/Account/Register", NewUser);
@@ -24,14 +27,18 @@ export class UserServices {
     return this.httpClient.post("http://localhost:51680/api/Account/ChangePassword", NewPassword);
   }
   getProfile():Observable<any>{
-    return this.httpClient.get("http://localhost:51680/api/appUser/getCurrentUser");
+    return this.httpClient.get("http://localhost:51680/api/appUser/getCurrentUser", { observe: 'response' });
   }
   LogOut():Observable<any>{
     return this.httpClient.post("http://localhost:51680/api/Account/Logout",localStorage.jwt);
   }
   
-  EditUser(userData:User, fileToUpload:File){
-    const endpoint = 'http://localhost:51680/api/appUser/editAppUser';
+  EditUser(userData:User, fileToUpload:File,ETag:string){
+
+    let headers = new HttpHeaders();
+    headers = headers.append('if-match', ETag);
+
+   
     const formData: FormData = new FormData();
     if(!userData.DocumentPicture)
     {
@@ -43,7 +50,7 @@ export class UserServices {
     formData.append('Email', userData.Email.toString());
     formData.append('UserId', userData.UserId.toString());
 
-    return this.httpClient.post(endpoint, formData);
+    return this.httpClient.post('http://localhost:51680/api/appUser/editAppUser', formData, { "headers": headers });
   }
 
   GetAllUsers(type:string,pageIndex:number,pageSize:number,editedFirst:boolean,approvedFirst:boolean): Observable<any> {

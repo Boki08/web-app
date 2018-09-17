@@ -8,6 +8,7 @@ import { CommentModel } from '../models/commentData';
 import { Vehicle } from '../models/vehicles';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 import { finalize } from 'rxjs/operators'
+import { ToasterService } from '../toaster-service/toaster-service.component';
 
 @Component({
   selector: 'app-view-orders',
@@ -16,11 +17,11 @@ import { finalize } from 'rxjs/operators'
 })
 export class ViewOrdersComponent implements OnInit {
 
-  constructor(private btmNavMessageService: btmNavDataService,private commentServices: CommentServices, private orderServices: OrderServices, private officeServices: OfficeServices) { }
+  constructor(private toasterService: ToasterService, private btmNavMessageService: btmNavDataService, private commentServices: CommentServices, private orderServices: OrderServices, private officeServices: OfficeServices) { }
 
   pageSize: number = 9;
   pageIndex: number = 1;
-  totalPagesNumber: number=0;
+  totalPagesNumber: number = 0;
   orders: OrderData[];
   departureOffice: OfficeModel;
   returnOffice: OfficeModel;
@@ -31,14 +32,16 @@ export class ViewOrdersComponent implements OnInit {
   displayComment: boolean = false;
   selectedGrade: string = "Grade";
   btnDisabled: boolean = true;
-  vehicleReturned:boolean=true;
-  showProgress:boolean=false;
+  vehicleReturned: boolean = true;
+  showProgress: boolean = false;
   stopNav: number = 0;
   stopNavLockCount: number = 1;
-  showOrderProgress:boolean=false;
-  orderPosition:number;
-  
-  ngOnInit() {    
+  showOrderProgress: boolean = false;
+  orderPosition: number;
+  showOrders: boolean = false;
+  showOrdersWarning: boolean = false;
+
+  ngOnInit() {
     this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress = message)
     this.getAlllOrders();
   }
@@ -51,22 +54,31 @@ export class ViewOrdersComponent implements OnInit {
       () => {
         this.btmNavMessageService.changeMessage(false);
       }))
-    .subscribe(
-      data => {
-        this.orders = data.body as OrderData[];
-        //this.userData=this.users[0];
+      .subscribe(
+        data => {
+          this.orders = data.body as OrderData[];
+          //this.userData=this.users[0];
 
-        let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
+          let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
-        this.pageIndex = jsonData.currentPage;
-        this.pageSize = jsonData.pageSize;
-        this.totalPagesNumber = jsonData.totalPages;
-        
-      },
-      error => {
-        
-        console.log(error.Message);
-      })
+          this.pageIndex = jsonData.currentPage;
+          this.pageSize = jsonData.pageSize;
+          this.totalPagesNumber = jsonData.totalPages;
+          this.showOrders = true;
+          this.showOrdersWarning=false;
+        },
+        error => {
+          this.showOrders = false;
+          if (error.error.Message === "There are no Orders") {
+            this.toasterService.Warning(error.error.Message, 'Warning');
+            this.showOrdersWarning=true;
+          }
+          else {
+            this.showOrdersWarning=false;
+            this.toasterService.Error(error.error.Message, 'Error');
+          }
+          console.log(error.Message);
+        })
 
     //this.RentServices = JSON.parse(temp);
 
@@ -75,14 +87,14 @@ export class ViewOrdersComponent implements OnInit {
 
   }
   OrderDetails(order: OrderData, orderPosition: number) {
-    this.stopNavLockCount=1;
+    this.stopNavLockCount = 1;
     this.displayComment = false;
     this.canComment = false
     this.order = order;
-    this.vehicleReturned= this.order.VehicleReturned;
-    this.showOrderProgress=true;
-    this.orderPosition=orderPosition;
-    
+    this.vehicleReturned = this.order.VehicleReturned;
+    this.showOrderProgress = true;
+    this.orderPosition = orderPosition;
+
 
     let today = new Date();
     today.setMilliseconds(0);
@@ -96,7 +108,7 @@ export class ViewOrdersComponent implements OnInit {
     returnDate.setHours(0);
 
     if (returnDate <= today) {
-      this.stopNavLockCount+=1;
+      this.stopNavLockCount += 1;
       this.commentServices.CanComment(order.OrderId, order.UserId).subscribe(
         data => {
           let infoString = data.body as string;
@@ -111,26 +123,27 @@ export class ViewOrdersComponent implements OnInit {
               () => {
                 this.StopNav();
               }))
-            .subscribe(
-              data => {
-                this.commentModel = data.body as CommentModel;
-                this.displayComment = true;
-              },
-              error => {
-
-                console.log(error);
-              }
-            )
+              .subscribe(
+                data => {
+                  this.commentModel = data.body as CommentModel;
+                  this.displayComment = true;
+                },
+                error => {
+                  this.toasterService.Error(error.error.Message, 'Error');
+                  console.log(error);
+                }
+              )
           }
-          else{
+          else {
             this.StopNav();
             this.canComment = false;
             this.displayComment = false;
           }
-          
+
         },
         error => {
-           this.StopNav();
+          this.StopNav();
+          this.toasterService.Error(error.error.Message, 'Error');
           console.log(error);
         })
 
@@ -139,78 +152,79 @@ export class ViewOrdersComponent implements OnInit {
       () => {
         this.StopNav();
       }))
-    .subscribe(
-      data => {
-        
-        this.departureOffice = data.body as OfficeModel;
-      },
-      error => {
-        
-        console.log(error);
-      }
-    )
+      .subscribe(
+        data => {
+
+          this.departureOffice = data.body as OfficeModel;
+        },
+        error => {
+          this.toasterService.Error(error.error.Message, 'Error');
+          console.log(error);
+        }
+      )
 
     this.officeServices.GetOffice(order.ReturnOfficeId).pipe(finalize(
       () => {
         this.StopNav();
       }))
-    .subscribe(
-      data => {
-       
-        this.returnOffice = data.body as OfficeModel;
+      .subscribe(
+        data => {
 
-      },
-      error => {
-      
-        console.log(error);
-      }
-    )
+          this.returnOffice = data.body as OfficeModel;
+
+        },
+        error => {
+          this.toasterService.Error(error.error.Message, 'Error');
+          console.log(error);
+        }
+      )
 
 
   }
 
   onSubmit(comment: CommentModel) {//////////????????
-    this.showOrderProgress=true;
+    this.showOrderProgress = true;
     comment.Grade = Number(this.selectedGrade);
     comment.OrderId = this.order.OrderId;
 
     this.commentServices.PostComment(comment).pipe(finalize(
       () => {
-        this.showOrderProgress=false;
+        this.showOrderProgress = false;
       }))
-    .subscribe(
-      data => {
-        this.commentModel = data.body as CommentModel;
-        this.displayComment = true;
-        this.canComment = false;
+      .subscribe(
+        data => {
+          this.commentModel = data.body as CommentModel;
+          this.displayComment = true;
+          this.canComment = false;
 
-      },
-      error => {
-
-        console.log(error);
-      })
+          this.toasterService.Info("Comment was posted", 'Error');
+        },
+        error => {
+          this.toasterService.Error(error.error.Message, 'Error');
+          console.log(error);
+        })
   }
   GetSelectedGrade(grade: string) {
     this.selectedGrade = grade;
     this.btnDisabled = false;
   }
   returnVehicle() {
-    this.showOrderProgress=true;
+    this.showOrderProgress = true;
     this.orderServices.ReturnVehicle(this.order.OrderId).pipe(finalize(
       () => {
-        this.showOrderProgress=false;
+        this.showOrderProgress = false;
       }))
-    .subscribe(
-      data => {
-        this.order.Vehicle = data.body as Vehicle;
-        this.order.VehicleReturned=true;
-        this.OrderDetails(this.order,1);
-      },
-      error => {
-
-        console.log(error);
-      })
-  }  
+      .subscribe(
+        data => {
+          this.order.Vehicle = data.body as Vehicle;
+          this.order.VehicleReturned = true;
+          this.OrderDetails(this.order, 1);
+        },
+        error => {
+          this.toasterService.Error(error.error.Message, 'Error');
+          console.log(error);
+        })
+  }
   set page(val: number) {
     if (val !== this.pageIndex) {
       this.pageIndex = val;
@@ -218,15 +232,15 @@ export class ViewOrdersComponent implements OnInit {
     }
   }
 
-  StopNav(){
+  StopNav() {
     if (this.stopNav == this.stopNavLockCount) {
-      this.showOrderProgress=false;
-      this.stopNav=0;
+      this.showOrderProgress = false;
+      this.stopNav = 0;
     }
     else {
       this.stopNav += 1;
     }
   }
 
-  
+
 }

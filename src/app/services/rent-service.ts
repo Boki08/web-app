@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 //import { Http, Response } from '@angular/http';
 import { Headers, RequestOptions } from '@angular/http';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
@@ -18,7 +18,7 @@ export class RentServices {
 
 
   AddRentService(serviceData: ServiceData, fileToUpload: File) {
-    const endpoint = 'http://localhost:51680/api/rentService/addRentService';
+
     const formData: FormData = new FormData();
     if (!serviceData.Logo) {
       formData.append('Logo', fileToUpload, fileToUpload.name);
@@ -28,7 +28,25 @@ export class RentServices {
     formData.append('Email', serviceData.Email.toString());
     formData.append('Description', serviceData.Description.toString());
 
-    return this.httpClient.post(endpoint, formData);
+    return this.httpClient.post('http://localhost:51680/api/rentService/addRentService', formData);
+  }
+
+  EditRentService(serviceData: ServiceData, fileToUpload: File,ETag:string) {
+    
+    let headers = new HttpHeaders();
+    headers = headers.append('if-match', ETag);
+
+    const formData: FormData = new FormData();
+
+    if (!serviceData.Logo) {
+      formData.append('Logo', fileToUpload, fileToUpload.name);
+    }
+
+    formData.append('Name', serviceData.Name.toString());
+    formData.append('Email', serviceData.Email.toString());
+    formData.append('Description', serviceData.Description.toString());
+
+    return this.httpClient.post('http://localhost:51680/api/rentService/editRentService', formData, { "headers": headers });
   }
 
   GetAllServicesManager(isApproved: boolean, noOffices: boolean, noVehicles: boolean, pageIndex: number, pageSize: number): Observable<any> {

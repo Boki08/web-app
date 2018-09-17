@@ -1,0 +1,10 @@
+agm-map {
+    height: 300px; width: 300px;
+   
+    
+  }
+  #backBtn, #editBtn {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}

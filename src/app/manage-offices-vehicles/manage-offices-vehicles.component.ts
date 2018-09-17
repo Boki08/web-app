@@ -5,12 +5,12 @@ import { OfficeModel } from '../models/office-model';
 import { Vehicle } from '../models/vehicles';
 import { VehicleServices } from '../services/vehicle-services';
 import { MapInfo } from '../models/map-info.model';
-import { DataService } from '../cards/dataRentService';
 import { ServiceData } from '../models/serviceData';
 import { VehiclePictures } from '../models/vehicle-pictures';
 import { RentServices } from '../services/rent-service';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 import { finalize } from 'rxjs/operators'
+import { ToasterService } from '../toaster-service/toaster-service.component';
 
 
 @Component({
@@ -20,7 +20,7 @@ import { finalize } from 'rxjs/operators'
 })
 export class ManageOfficesVehiclesComponent implements OnInit {
 
-  constructor(private router: Router,private btmNavMessageService: btmNavDataService, private rentServices: RentServices, private dataService: DataService, private vehicleServices: VehicleServices, private officeServices: OfficeServices, private activatedRoute: ActivatedRoute) {
+  constructor(private toasterService: ToasterService, private router: Router, private btmNavMessageService: btmNavDataService, private rentServices: RentServices, private vehicleServices: VehicleServices, private officeServices: OfficeServices, private activatedRoute: ActivatedRoute) {
     activatedRoute.params.subscribe(params => { this.rentServiceId = params["rentServiceId"] });
 
 
@@ -52,6 +52,10 @@ export class ManageOfficesVehiclesComponent implements OnInit {
   showVehicleProgress: boolean = false;
   showOffices: boolean = false;
   showVehicles: boolean = false;
+  showOfficesWarning: boolean = false;
+  showVehiclesWarning: boolean = false;
+  loading:boolean=true;
+  
 
   ngOnInit() {
 
@@ -61,10 +65,11 @@ export class ManageOfficesVehiclesComponent implements OnInit {
     this.rentServices.GetRentService(this.rentServiceId).pipe(finalize(
       () => {
         this.StopProgress();
+        this.loading=false;
       }))
       .subscribe(
         data => {
-          this.rentServiceTemp = data.body[0];
+          this.rentServiceTemp = data.body;
 
         },
         error => {
@@ -113,21 +118,31 @@ export class ManageOfficesVehiclesComponent implements OnInit {
           this.offices = data.body as OfficeModel[];
           //this.userData=this.users[0];
 
-          if (this.offices.length > 0) {
-            let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
+          /*  if (this.offices.length > 0) { */
+          let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
-            this.pageIndexO = jsonData.currentPage;
-            this.pageSizeO = jsonData.pageSize;
-            this.totalPagesNumberO = jsonData.totalPages;
-            this.showOffices = true;
-          }
-          else {
-            this.showOffices = false;
-          }
+          this.pageIndexO = jsonData.currentPage;
+          this.pageSizeO = jsonData.pageSize;
+          this.totalPagesNumberO = jsonData.totalPages;
+          this.showOffices = true;
+          this.showOfficesWarning=false;
+          /*  }
+           else {
+             this.showOffices = false;
+           } */
         },
         error => {
 
-          console.log(error);
+          if (error.error.Message === 'There are no Offices') {
+           
+            this.showOfficesWarning=true;
+            this.toasterService.Warning(error.error.Message, 'Warning');
+          }
+          else {
+            this.showOfficesWarning=false;
+            this.toasterService.Error(error.error.Message, 'Error');
+          }
+          this.showOffices = false;
         })
   }
   public getServiceVehicles() {
@@ -140,21 +155,30 @@ export class ManageOfficesVehiclesComponent implements OnInit {
         data => {
           this.vehicles = data.body as Vehicle[];
 
-          if (this.vehicles.length > 0) {
+          /* if (this.vehicles.length > 0) { */
             let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
             this.pageIndexV = jsonData.currentPage;
             this.pageSizeV = jsonData.pageSize;
             this.totalPagesNumberV = jsonData.totalPages;
             this.showVehicles = true;
-          }
+            this.showVehiclesWarning=false;
+      /*     }
           else {
             this.showVehicles = false;
-          }
+          } */
 
         },
         error => {
-
+          if (error.error.Message === 'There are no Vehicles') {
+            this.toasterService.Warning(error.error.Message, 'Warning');
+            this.showVehiclesWarning=true;
+          }
+          else {
+            this.toasterService.Error(error.error.Message, 'Error');
+            this.showVehiclesWarning=false;
+          }
+          this.showVehicles = false;
           console.log(error);
         })
   }
@@ -232,11 +256,11 @@ export class ManageOfficesVehiclesComponent implements OnInit {
         data => {
           this.vehicle = data as Vehicle;
           this.vehicles[this.vehicleCounter] = data as Vehicle;
-
+          this.toasterService.Info("Vehicle was disabled", 'Info');
         },
         error => {
           // this.disableButtons = false;
-
+          this.toasterService.Error(error.error.Message, 'Warning');
           console.log(error);
         })
   }
@@ -249,17 +273,19 @@ export class ManageOfficesVehiclesComponent implements OnInit {
       .subscribe(
         data => {
           this.getServiceVehicles();
-          alert("Vehicle Deleted");
-          
+          this.toasterService.Info("Vehicle Deleted", 'Info');
+          //alert("Vehicle Deleted");
+
         },
         error => {
           // this.disableButtons = false;
-          alert(error.error.Message);
+          //alert(error.error.Message);
+          this.toasterService.Error(error.error.Message, 'Error');
           console.log(error);
         })
   }
 
-  deleteOffice($event,officeId: number) {
+  deleteOffice($event, officeId: number) {
     this.btmNavMessageService.changeMessage(true);
     this.officeServices.DeleteOffice(officeId).pipe(finalize(
       () => {
@@ -268,16 +294,18 @@ export class ManageOfficesVehiclesComponent implements OnInit {
       .subscribe(
         data => {
           this.getServiceOffices();
-          alert("Office Deleted");
-          
+          this.toasterService.Info("Office was deleted", 'Info');
+          //alert("Office Deleted");
+
         },
         error => {
           // this.disableButtons = false;
-          alert(error.error.Message);
+          //alert(error.error.Message);
+          this.toasterService.Error(error.error.Message, 'Error');
           console.log(error);
         })
   }
-  deleteService($event,serviceId: number) {
+  deleteService($event, serviceId: number) {
     this.btmNavMessageService.changeMessage(true);
     this.rentServices.DeleteRentService(serviceId).pipe(finalize(
       () => {
@@ -285,12 +313,14 @@ export class ManageOfficesVehiclesComponent implements OnInit {
       }))
       .subscribe(
         data => {
-          alert("Service Deleted");
+          this.toasterService.Info("Service was deleted", 'Info');
+          // alert("Service Deleted");
           this.router.navigate(['/editServicesComponent']);
         },
         error => {
           // this.disableButtons = false;
-          alert(error.error.Message);
+          //alert(error.error.Message);
+          this.toasterService.Error(error.error.Message, 'Error');
           console.log(error);
         })
   }

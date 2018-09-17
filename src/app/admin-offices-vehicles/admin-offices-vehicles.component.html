@@ -62,7 +62,7 @@
 
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="offices" role="tabpanel" aria-labelledby="offices-tab">
-      <div *ngIf="offices!=null && !showOffices && offices.length==0">
+      <div *ngIf=" showOfficesWarning ">
         <p class="text-warning">This Rent Service has no Offices</p>
       </div>
       <div *ngIf="showOffices">
@@ -91,7 +91,7 @@
       </div>
     </div>
     <div class="tab-pane fade" id="vehicles" role="tabpanel" aria-labelledby="vehicles-tab">
-      <div *ngIf="vehicles!=null && !showVehicles && vehicles.length==0">
+      <div *ngIf="showVehiclesWarning">
         <p class="text-warning">This Rent Service has no Vehicles</p>
       </div>
       <div *ngIf="showVehicles">
@@ -119,7 +119,7 @@
               </td>
           </tbody>
         </table>
-        <div class=" row justify-content-md-center" *ngIf="vehicles==null || vehicles.length==0">
+        <div class=" row justify-content-md-center" *ngIf="vehicles!=null && vehicles.length>0">
 
           <app-pager [page]="pageIndexV" [totalPages]="totalPagesNumberV" (changePage)="pageV=$event"></app-pager>
         </div>

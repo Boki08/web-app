@@ -3,6 +3,7 @@ import { RentServices } from '../services/rent-service';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 import { ServiceData } from '../models/serviceData';
 import { finalize } from 'rxjs/operators'
+import { ToasterService } from '../toaster-service/toaster-service.component';
 
 @Component({
   selector: 'app-manage-services',
@@ -11,7 +12,7 @@ import { finalize } from 'rxjs/operators'
 })
 export class ManageServicesComponent implements OnInit {
 
-  constructor(private btmNavMessageService: btmNavDataService, private RentServices: RentServices) { }
+  constructor(private toasterService:ToasterService,private btmNavMessageService: btmNavDataService, private RentServices: RentServices) { }
 
   tableVisible: boolean = false;
   showProgress: boolean = false;
@@ -21,6 +22,7 @@ export class ManageServicesComponent implements OnInit {
   notEdited: boolean = false;
   checkBoxDisabled: boolean = true;
   showServiceProgress: boolean = false;
+  showServiceWarning: boolean = false;
 
 
   selectedSortTemp: string = "No Sort";
@@ -52,7 +54,7 @@ export class ManageServicesComponent implements OnInit {
     .subscribe(
       data => {
         this.rentServices = data.body;
-        if (this.rentServices.length > 0) {
+        /* if (this.rentServices.length > 0) { */
 
           let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
@@ -60,14 +62,23 @@ export class ManageServicesComponent implements OnInit {
           this.pageSize = jsonData.pageSize;
           this.totalPagesNumber = jsonData.totalPages;
           this.tableVisible = true;
-        }
+          this.showServiceWarning=false;
+      /*   }
         else {
           this.tableVisible = false;
-        }
+        } */
 
         
       },
       error => {
+        if(error.error.Message==="There are no Rent Services"){
+          this.toasterService.Warning(error.error.Message,'Warning');
+          this.showServiceWarning=true;
+        }
+        else{
+          this.showServiceWarning=false;
+          this.toasterService.Error(error.error.Message,'Error');
+        }
         this.tableVisible = false;
     
         console.log(error);
@@ -164,11 +175,12 @@ export class ManageServicesComponent implements OnInit {
       data => {
       
         this.selectedService.Activated=serviceActivated;
-        alert(data.body);
+        this.toasterService.Info(data.body,'Info');
+        
       },
       error => {
-        
-        alert(error.error.Message);
+        this.toasterService.Error(error.error.Message,'Error');
+        //alert(error.error.Message);
       }
     )
   }

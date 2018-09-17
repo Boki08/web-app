@@ -3,7 +3,8 @@ import { VehicleTypes } from '../models/vehicleTypes';
 import { VehicleTypeServices } from '../services/vehicleType-services';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 import { finalize } from 'rxjs/operators'
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
+import { ToasterService } from '../toaster-service/toaster-service.component';
 
 @Component({
   selector: 'app-vehicle-type',
@@ -12,11 +13,12 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 })
 export class VehicleTypeComponent implements OnInit {
 
-  constructor(private btmNavMessageService: btmNavDataService, private vehicleTypeServices: VehicleTypeServices, ) { }
+  constructor(private toasterService: ToasterService, private btmNavMessageService: btmNavDataService, private vehicleTypeServices: VehicleTypeServices, ) { }
 
   addDisabled: boolean = true;
   showTypeProgress: boolean = false;
   showProgress: boolean = false;
+  showWarning: boolean = false;
 
   pageIndex: number = 1;
   pageSize: number = 10;
@@ -25,12 +27,12 @@ export class VehicleTypeComponent implements OnInit {
   addVehicleTypeForm: FormGroup;
   Type: FormControl;
 
-  vehicleTypes: VehicleTypes[];
+  vehicleTypes: VehicleTypes[]=new Array<VehicleTypes>();
   ngOnInit() {
     this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress = message)
 
     this.GetVehicleTypes();
-    
+
     this.CreateFormControls();
     this.CreateForm();
   }
@@ -51,7 +53,7 @@ export class VehicleTypeComponent implements OnInit {
     this.btmNavMessageService.changeMessage(false);
   }
 
-  onSubmit(vehicleType: VehicleTypes) {
+  onSubmit(vehicleType: VehicleTypes,form:NgForm) {
     console.log(vehicleType);
 
     this.addDisabled = true;
@@ -59,25 +61,29 @@ export class VehicleTypeComponent implements OnInit {
     this.vehicleTypeServices.AddVehicleType(vehicleType).pipe(finalize(
       () => {
         this.addDisabled = false;
-          this.showTypeProgress = false;
+        this.showTypeProgress = false;
       }))
       .subscribe(
         data => {
+       
 
           this.vehicleTypes.push(data.body);
-
-          alert("Vehicle Type added");
+          this.showWarning = false;
+          this.toasterService.Info("Vehicle Type was added", 'Info');
+          form.reset();
+          //alert("Vehicle Type added");
         },
         error => {
-          
+
           //alert(error.error.ModelState[""][0]);
-          alert(error.error.Message);
+          //alert(error.error.Message);
+          this.toasterService.Error(error.error.Message, 'Error');
         }
       );
   }
   GetVehicleTypes() {
     this.btmNavMessageService.changeMessage(true);
-    this.vehicleTypeServices.GetVehicleTypesPaged(this.pageIndex,this.pageSize).pipe(finalize(
+    this.vehicleTypeServices.GetVehicleTypesPaged(this.pageIndex, this.pageSize).pipe(finalize(
       () => {
         this.btmNavMessageService.changeMessage(false);
       }))
@@ -92,13 +98,22 @@ export class VehicleTypeComponent implements OnInit {
           this.totalPagesNumber = jsonData.totalPages;
 
 
-
+          this.showWarning = false;
           this.addDisabled = false;
-          
+
         },
         error => {
+          if (error.error.Message === 'There are no Vehicle Types') {
+            this.showWarning = true;
+            this.toasterService.Warning(error.error.Message, 'Warning');
+          } else {
+            this.showWarning = false;
+            this.toasterService.Error(error.error.Message, 'Error');
+          }
 
-          alert(error.error.Message);
+          this.addDisabled = false;
+
+          //(error.error.Message);
         }
       );
   }
@@ -110,14 +125,15 @@ export class VehicleTypeComponent implements OnInit {
       }))
       .subscribe(
         data => {
-          let vehiclePosition=this.vehicleTypes.findIndex(x=>x.TypeId==data.body.TypeId) ;
-          this.vehicleTypes.splice(vehiclePosition);
-          alert("Vehicle Type deleted");
-          
+          let vehiclePosition = this.vehicleTypes.findIndex(x => x.TypeId == data.body.TypeId);
+          this.vehicleTypes.splice(vehiclePosition, 1);
+          this.toasterService.Info("Vehicle Type was deleted", 'Info');
+          //alert("Vehicle Type deleted");
+
         },
         error => {
-          
-          alert(error.error.Message);
+          this.toasterService.Error(error.error.Message, 'Error');
+          //alert(error.error.Message);
         }
       );
   }

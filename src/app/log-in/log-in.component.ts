@@ -6,6 +6,7 @@ import { LogInData } from '../models/logInData';
 import { UserServices } from '../services/user-services';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 import { finalize } from 'rxjs/operators'
+import { ToasterService } from '../toaster-service/toaster-service.component';
 
 
 @Component({
@@ -27,7 +28,7 @@ export class LogInComponent implements AfterContentInit {
 
 
 
-  constructor(private btmNavMessageService: btmNavDataService, private LogInService: LogInService, private UserService: UserServices) {
+  constructor(private toasterService:ToasterService,private btmNavMessageService: btmNavDataService, private LogInService: LogInService, private UserService: UserServices) {
   }
 
   ngOnInit() {
@@ -104,13 +105,15 @@ export class LogInComponent implements AfterContentInit {
           localStorage.removeItem("role");
           this.setUp();
           this.loggedOutEvent.emit();
-          alert("Logged out");
+          this.toasterService.Info("Logged Out",'Info');
+          //alert("Logged out");
 
         },
         error => {
           if (localStorage.jwt) { localStorage.removeItem("jwt"); }
           if (localStorage.role) { localStorage.removeItem("role"); }
-          alert(error.error.Message);
+          //alert(error.error.Message);
+          this.toasterService.Error(error.error.Message,'Error');
           this.setUp();
           this.loggedOutEvent.emit();
 

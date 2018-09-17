@@ -1,30 +1,45 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Pipe, Sanitizer } from '@angular/core';
 import { UserServices } from '../services/user-services';
 import { User } from '../models/user.model';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 import { finalize } from 'rxjs/operators'
+import { ToasterService } from '../toaster-service/toaster-service.component';
+import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import { TokenInterceptor } from '../interceptors/interceptors.component';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Http, RequestOptions, ResponseContentType } from '@angular/http';
+import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-manage-users',
   templateUrl: './manage-users.component.html',
-  styleUrls: ['./manage-users.component.css']
+  styleUrls: ['./manage-users.component.css'],
+   providers: [{
+    // register the interceptor to our angular module
+    provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true
+  }]
 })
+
 export class ManageUsersComponent implements OnInit {
 
-  constructor(private btmNavMessageService: btmNavDataService, private UserServices: UserServices) { }
+  constructor(private sanitizer: DomSanitizer,private toasterService: ToasterService, private btmNavMessageService: btmNavDataService, private UserServices: UserServices) { }
 
   pageSize: number = 5;
+
+  img:SafeUrl="/assets/images/default-placeholder.png";
 
   users: User[];
   managers: User[];
   userData: User;
   managerData: User;
-  disableButtons: boolean = false;
+
+
+  disableButtons: boolean = true;
   disableCheckButton: boolean = false;
-
-
   showUsers: boolean = false;
   showManagers: boolean = false;
+  showUsersWarning: boolean = false;
+  showManagersWarning: boolean = false;
   showProgress: boolean;
   userProgress: boolean;
   managerProgress: boolean = false;
@@ -33,14 +48,17 @@ export class ManageUsersComponent implements OnInit {
   isUser: boolean = true;
   enabledFirst: boolean = false;
   disabledFirst: boolean = false;
+  showPicture:boolean=false;
 
   pageIndexU: number = 1;
   totalPagesNumberU: number = 0;
   pageIndexM: number = 1;
   totalPagesNumberM: number = 0;
-
   managerCounter: number;
   usercounter: number;
+
+
+  
 
 
   ngOnInit() {
@@ -50,7 +68,7 @@ export class ManageUsersComponent implements OnInit {
   ngOnDestroy() {
     this.btmNavMessageService.changeMessage(false);
   }
-
+  
   public getAllUsers(type: string) {
     this.btmNavMessageService.changeMessage(true);
     if (type == "AppUser") {
@@ -62,24 +80,32 @@ export class ManageUsersComponent implements OnInit {
           data => {
 
             this.users = data.body as User[];
-            if (this.users.length > 0) {
-              //this.userData=this.users[0];
+            /* if (this.users.length > 0) { */
+            //this.userData=this.users[0];
 
-              let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
+            let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
-              this.pageIndexU = jsonData.currentPage;
-              this.pageSize = jsonData.pageSize;
-              this.totalPagesNumberU = jsonData.totalPages;
-              this.showUsers = true;
-
-            }
-            else {
-              this.showUsers = false;
-
-            }
+            this.pageIndexU = jsonData.currentPage;
+            this.pageSize = jsonData.pageSize;
+            this.totalPagesNumberU = jsonData.totalPages;
+            this.showUsers = true;
+            this.showUsersWarning = false;
+            /*  }
+             else {
+               this.showUsers = false;
+ 
+             } */
           },
           error => {
-            console.log(error);
+            if (error.error.Message === "There are no Users") {
+              this.showUsers = false;
+              this.showUsersWarning = true;
+            }
+            else {
+              this.showUsersWarning = false;
+              this.toasterService.Error(error.error.Message, 'Error');
+            }
+            //console.log(error);
           })
     }
     else {//manager
@@ -92,30 +118,33 @@ export class ManageUsersComponent implements OnInit {
 
             this.managers = data.body as User[];
             //this.userData=this.users[0];
-            if (this.managers.length > 0) {
-              let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
+            /*  if (this.managers.length > 0) { */
+            let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
-              this.pageIndexM = jsonData.currentPage;
-              this.pageSize = jsonData.pageSize;
-              this.totalPagesNumberM = jsonData.totalPages;
+            this.pageIndexM = jsonData.currentPage;
+            this.pageSize = jsonData.pageSize;
+            this.totalPagesNumberM = jsonData.totalPages;
 
-              this.showManagers = true;
-
-            }
+            this.showManagers = true;
+            this.showManagersWarning = false;
+            /* }
             else {
               this.showManagers = false;
 
-            }
+            } */
           },
           error => {
-            console.log(error);
+            if (error.error.Message === "There are no Managers") {
+              this.toasterService.Warning(error.error.Message, 'Warning');
+              this.showManagers = false;
+              this.showManagersWarning = true;
+            }
+            else {
+              this.showManagersWarning = false;
+              this.toasterService.Error(error.error.Message, 'Error');
+            }
           })
     }
-    //this.RentServices = JSON.parse(temp);
-
-
-    //(<ProcessComponent>componentRef.instance).data=step.desc;
-
   }
 
   set pageU(val: number) {
@@ -159,8 +188,44 @@ export class ManageUsersComponent implements OnInit {
   userDetails(user: User, counter: number) {
     this.userData = user;
     this.usercounter = counter;
-  }
 
+    this.userProgress = true;
+    
+
+    this.UserServices.getImage(this.userData.DocumentPicture).pipe(finalize(
+      () => {
+        this.userProgress = false;
+     
+          this.disableButtons = false;
+        
+      }))
+      .subscribe(
+        data => {
+this.createImageFromBlob(data);
+
+        },
+        error => {
+          /* if (error.error.Message === "There are no Users") {
+            this.showUsers = false;
+            this.showUsersWarning = true;
+          }
+          else {
+            this.showUsersWarning = false; */
+            this.toasterService.Error(error.error.Message, 'Error');
+         /*  } */
+          //console.log(error);
+        })
+  }
+  createImageFromBlob(image: Blob) {
+    let reader = new FileReader();
+    reader.addEventListener("load", () => {
+       this.img =  this.sanitizer.bypassSecurityTrustResourceUrl(reader.result as string);
+    }, false);
+ 
+    if (image) {
+       reader.readAsDataURL(image);
+    }
+ }
   managerDetails(manager: User, counter: number) {
     this.managerData = manager;
     this.managerCounter = counter;
@@ -235,7 +300,7 @@ export class ManageUsersComponent implements OnInit {
           //this.disableButtons = false;
           console.log(error.Message);
         }
-       )
+      )
   }
 
   setRadioUser(value: string): void {

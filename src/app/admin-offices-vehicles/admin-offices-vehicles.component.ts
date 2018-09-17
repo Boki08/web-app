@@ -10,6 +10,7 @@ import { Vehicle } from '../models/vehicles';
 import { VehiclePictures } from '../models/vehicle-pictures';
 import { MapInfo } from '../models/map-info.model';
 import { finalize } from 'rxjs/operators'
+import { ToasterService } from '../toaster-service/toaster-service.component';
 
 @Component({
   selector: 'app-admin-offices-vehicles',
@@ -18,7 +19,7 @@ import { finalize } from 'rxjs/operators'
 })
 export class AdminOfficesVehiclesComponent implements OnInit {
 
-  constructor(private btmNavMessageService: btmNavDataService, private rentServices: RentServices, private vehicleServices: VehicleServices, private officeServices: OfficeServices, private activatedRoute: ActivatedRoute) {
+  constructor(private toasterService:ToasterService,private btmNavMessageService: btmNavDataService, private rentServices: RentServices, private vehicleServices: VehicleServices, private officeServices: OfficeServices, private activatedRoute: ActivatedRoute) {
     activatedRoute.params.subscribe(params => { this.rentServiceId = params["rentServiceId"] });
 
 
@@ -52,6 +53,8 @@ export class AdminOfficesVehiclesComponent implements OnInit {
   showVehicles: boolean = false;
   mapVisible: boolean = false;
   checkBoxDisabled: boolean = true;
+  showOfficesWarning: boolean = false;
+  showVehiclesWarning: boolean = false;
 
   ngOnInit() {
 
@@ -64,7 +67,8 @@ export class AdminOfficesVehiclesComponent implements OnInit {
       }))
     .subscribe(
       data => {
-        this.rentServiceTemp = data.body[0];
+        
+        this.rentServiceTemp = data.body;
         this.checkBoxDisabled=false;
       },
       error => {
@@ -112,21 +116,31 @@ export class AdminOfficesVehiclesComponent implements OnInit {
         this.offices = data.body as OfficeModel[];
         //this.userData=this.users[0];
 
-        if (this.offices.length > 0) {
+      /*   if (this.offices.length > 0) { */
           let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
           this.pageIndexO = jsonData.currentPage;
           this.pageSizeO = jsonData.pageSize;
           this.totalPagesNumberO = jsonData.totalPages;
           this.showOffices = true;
-        }
+          this.showOfficesWarning=false;
+        /* }
         else
         {
           this.showOffices = false;
-        }       
+        }   */     
       },
       error => {
-        console.log(error);
+        if(error.error.Message==='There are no Offices'){
+          this.showOfficesWarning=true;
+          this.toasterService.Warning(error.error.Message,'Warning');
+        }
+        else{
+          this.showOfficesWarning=false;
+          this.toasterService.Error(error.error.Message,'Error');
+        }
+        this.showOffices = false;
+        //console.log(error);
       })
   }
   public getServiceVehicles() {
@@ -139,21 +153,32 @@ export class AdminOfficesVehiclesComponent implements OnInit {
       data => {
         this.vehicles = data.body as Vehicle[];
 
-        if (this.vehicles.length > 0) {
+       /*  if (this.vehicles.length > 0) { */
           let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
           this.pageIndexV = jsonData.currentPage;
           this.pageSizeV = jsonData.pageSize;
           this.totalPagesNumberV = jsonData.totalPages;
           this.showVehicles = true;
-        }
+          this.showVehiclesWarning=false;
+       /*  }
         else {
-          this.showVehicles = false;
-        }
+          
+          
+        } */
       
       },
       error => {
-      
+        if (error.error.Message === 'There are no Vehicles') {
+          this.showVehiclesWarning=true;
+          this.toasterService.Warning(error.error.Message, 'Warning');
+        }
+        else {
+          this.showVehiclesWarning=false;
+          this.toasterService.Error(error.error.Message, 'Error');
+
+        }
+        this.showVehicles = false;
         console.log(error);
       })
   }
@@ -261,11 +286,11 @@ export class AdminOfficesVehiclesComponent implements OnInit {
       data => {
       
         this.rentServiceTemp.Activated=serviceActivated;
-        alert(data.body);
+        this.toasterService.Info(data.body,'Info');
       },
       error => {
-        
-        alert(error.error.Message);
+        this.toasterService.Error(error.error.Message,'Error');
+       // alert(error.error.Message);
       }
     )
   }

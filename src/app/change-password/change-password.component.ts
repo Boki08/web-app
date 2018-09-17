@@ -5,6 +5,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ChangePasswordValidator } from 'src/app/change-password/password-validator';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 import { finalize } from 'rxjs/operators'
+import { ToasterService } from '../toaster-service/toaster-service.component';
 
 @Component({
   selector: 'app-change-password',
@@ -13,7 +14,7 @@ import { finalize } from 'rxjs/operators'
 })
 export class ChangePasswordComponent implements OnInit {
 
-  constructor(private btmNavMessageService: btmNavDataService, private userServices: UserServices) { }
+  constructor(private toasterService:ToasterService,private btmNavMessageService: btmNavDataService, private userServices: UserServices) { }
 
 
   editPasswordForm: FormGroup;
@@ -78,10 +79,12 @@ export class ChangePasswordComponent implements OnInit {
         }))
       .subscribe(
         data => {
-          alert("Your changes updated successfully");
+          this.toasterService.Info("Your changes updated successfully",'Info');
+         // alert("Your changes updated successfully");
         },
         error => {
-          alert(error.error.Message);
+          this.toasterService.Error(error.error.Message,'Error');
+          //alert(error.error.Message);
         }
       );
   }

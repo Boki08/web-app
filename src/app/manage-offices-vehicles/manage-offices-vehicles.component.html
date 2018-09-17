@@ -28,9 +28,9 @@
     </div>
     </li>
 
-    <ul class="list-unstyled components" #linkList id="linkList">
+    <ul class="list-unstyled components" #linkList id="linkList" *ngIf="!loading">
       <li>
-        <span class="border border-primary"><a href="#" [routerLink]="['/addOfficeComponent',rentServiceTemp.RentServiceId]"
+        <span class="border border-primary" ><a href="#"  [routerLink]="['/addOfficeComponent',rentServiceTemp.RentServiceId]"
             class="text-center">Add Office</a></span>
       </li>
       <li>
@@ -60,7 +60,7 @@
 
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="offices" role="tabpanel" aria-labelledby="offices-tab">
-      <div *ngIf="offices!=null && !showOffices && offices.length==0">
+      <div *ngIf="showOfficesWarning">
         <p class="text-warning">This Rent Service has no Offices</p>
       </div>
       <div *ngIf="showOffices">
@@ -89,7 +89,7 @@
       </div>
     </div>
     <div class="tab-pane fade" id="vehicles" role="tabpanel" aria-labelledby="vehicles-tab">
-      <div *ngIf="vehicles!=null && !showVehicles && vehicles.length==0">
+      <div *ngIf="showVehiclesWarning">
         <p class="text-warning">This Rent Service has no Vehicles</p>
       </div>
       <div *ngIf="showVehicles">
@@ -249,6 +249,8 @@
         </div>
         <button type="button" [disabled]="vehicle==null || !vehicle.Available" class="btn btn-danger" (click)="deleteVehicle($event,vehicle.VehicleId)"
           data-dismiss="modal">Delete Vehicle</button>
+          <button *ngIf="vehicle!=null" type="button" class="btn btn-primary" [routerLink]="['/editVehicleComponent',vehicle.VehicleId]" data-dismiss="modal">Edit
+            Vehicle</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 
       </div>
@@ -320,6 +322,8 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" (click)="deleteOffice($event,office.OfficeId)" data-dismiss="modal">Delete
+          Office</button>
+            <button type="button" class="btn btn-primary" [routerLink]="['/editOfficeComponent',office.OfficeId]" data-dismiss="modal">Edit
           Office</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 

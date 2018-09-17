@@ -1,0 +1,150 @@
+<div class="container-fluid ">
+  <form class="needs-validation pt-3 pb-5" [formGroup]="addVehicleForm" #f="ngForm" (ngSubmit)="onSubmit(f.value, f)"
+    novalidate>
+    <div class="form-group row pt-3 justify-content-md-center">
+
+      <label for="ModelInput" class="col-sm-2 col-form-label ">Model</label>
+      <div class="col-sm-3">
+        <input type="text" name="Model" [(ngModel)]="vehicle.Model" formControlName="Model" class="form-control" id="ModelInput"
+          placeholder="Model" [ngClass]="{
+          'is-valid':Model.valid && (Model.dirty || Model.touched),
+          'is-invalid':Model.invalid && (Model.dirty || Model.touched)
+        }">
+        <div class="invalid-feedback" *ngIf="Model.errors && (Model.dirty || Model.touched)">
+          <p *ngIf="Model.errors.required">Model is required</p>
+          <p *ngIf="Model.errors.maxlength">Model is too long, delete {{Model.errors.maxlength.actualLength
+            - Model.errors.maxlength.requiredLength}} characters </p>
+
+        </div>
+
+      </div>
+    </div>
+
+    <div class="form-group row pt-3 justify-content-md-center">
+      <label for="ManufacturerInput" class="col-sm-2 col-form-label ">Manufacturer</label>
+      <div class="col-sm-3">
+        <input type="Manufacturer" name="Manufacturer" [(ngModel)]="vehicle.Manufacturer" formControlName="Manufacturer"
+          class="form-control  is-valid" id="ManufacturerInput" placeholder="Manufacturer" [ngClass]="{
+            'is-valid':Manufacturer.valid && (Manufacturer.dirty || Manufacturer.touched),
+            'is-invalid':Manufacturer.invalid && (Manufacturer.dirty || Manufacturer.touched)
+          }">
+        <div class="invalid-feedback" *ngIf="Manufacturer.errors && (Manufacturer.dirty || Manufacturer.touched)">
+          <p *ngIf="Manufacturer.errors.required">Manufacturer is required</p>
+          <p *ngIf="Manufacturer.errors.maxlength">Manufacturer is too long, delete
+            {{Manufacturer.errors.maxlength.actualLength
+            - Manufacturer.errors.maxlength.requiredLength}} characters </p>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row pt-3 justify-content-md-center">
+      <label for="YearOfManufacturingInput" class="col-sm-2 col-form-label ">Year of Manufacturing</label>
+      <div class="col-sm-3">
+        <input type="YearOfManufacturing" name="YearOfManufacturing" [(ngModel)]="vehicle.YearOfManufacturing"
+          formControlName="YearOfManufacturing" class="form-control  is-valid" id="YearOfManufacturingInput"
+          placeholder="YearOfManufacturing" [ngClass]="{
+            'is-valid':YearOfManufacturing.valid && (YearOfManufacturing.dirty || YearOfManufacturing.touched),
+            'is-invalid':YearOfManufacturing.invalid && (YearOfManufacturing.dirty || YearOfManufacturing.touched)
+          }">
+        <div class="invalid-feedback" *ngIf="YearOfManufacturing.errors && (YearOfManufacturing.dirty || YearOfManufacturing.touched)">
+          <p *ngIf="YearOfManufacturing.errors.required">Year Of Manufacturing is required</p>
+          <p *ngIf="YearOfManufacturing.errors.maxlength">YearOfManufacturing is too long, delete
+            {{YearOfManufacturing.errors.maxlength.actualLength
+            - YearOfManufacturing.errors.maxlength.requiredLength}} characters </p>
+          <p *ngIf="YearOfManufacturing.errors.pattern">Year Of Manufacturing format in not correct</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row pt-3 justify-content-md-center">
+      <label for="HourlyPriceInput" class="col-sm-2 col-form-label ">Hourly Price</label>
+      <div class="col-sm-3">
+        <input type="HourlyPrice" name="HourlyPrice" [(ngModel)]="vehicle.HourlyPrice" formControlName="HourlyPrice"
+          class="form-control  is-valid" id="Hourly Price" placeholder="HourlyPrice" [ngClass]="{
+            'is-valid':HourlyPrice.valid && (HourlyPrice.dirty || HourlyPrice.touched),
+            'is-invalid':HourlyPrice.invalid && (HourlyPrice.dirty || HourlyPrice.touched)
+          }">
+        <div class="invalid-feedback" *ngIf="HourlyPrice.errors && (HourlyPrice.dirty || HourlyPrice.touched)">
+          <p *ngIf="HourlyPrice.errors.required">Hourly Price is required</p>
+          <p *ngIf="HourlyPrice.errors.maxlength">HourlyPrice is too long, delete
+            {{HourlyPrice.errors.maxlength.actualLength
+            - HourlyPrice.errors.maxlength.requiredLength}} characters </p>
+          <p *ngIf="HourlyPrice.errors.pattern">Hourly Price format in not correct</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row pt-3 justify-content-md-center">
+      <label for="DescriptionInput" class="col-sm-2 col-form-label ">Description</label>
+      <div class="col-sm-3">
+        <input type="Description" name="Description" [(ngModel)]="vehicle.Description" formControlName="Description"
+          class="form-control  is-valid" placeholder="Description" id="DescriptionInput" [ngClass]="{
+            'is-valid':Description.valid && (Description.dirty || Description.touched),
+            'is-invalid':Description.invalid && (Description.dirty || Description.touched)
+          }">
+        <div class="invalid-feedback" *ngIf="Description.errors && (Description.dirty || Description.touched)">
+          <p *ngIf="Description.errors.required">Description is required</p>
+          <p *ngIf="Description.errors.maxlength">Description is too long, delete
+            {{Description.errors.maxlength.actualLength
+            - Description.errors.maxlength.requiredLength}} characters </p>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="form-group row pt-3 justify-content-md-center">
+      <label for="DescriptionInput" class="col-sm-2 col-form-label ">Vehicle Type</label>
+      <div class="col-sm-3">
+        <button type="button" id="dLabel" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          {{selectedType}}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dLabel">
+          <a class="dropdown-item" *ngFor="let type of vehicleTypes" (click)="GetSelectedType(type)">{{type.Type}}</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row pt-3 justify-content-md-center">
+      <div class="row">
+        <div class="col col-lg-4 col-lg-push-4">
+          <img [src]="imagesUrl[0]" style="width:250px; height:150px">
+          <br>
+          <br>
+          <input type="file"  (change)="handleFileInput($event.target.files,0)" name="Picture"
+            #Picture accept="image/*">
+         
+          <br>
+        </div>
+        <div class="col col-lg-4 col-lg-push-4">
+          <img [src]="imagesUrl[1]" style="width:250px; height:150px">
+          <br>
+          <br>
+          <input type="file"  (change)="handleFileInput($event.target.files,1)" name="Picture"
+            #Picture accept="image/*">
+         
+          <br>
+        </div>
+        <div class="col col-lg-4 col-lg-push-4">
+          <img [src]="imagesUrl[2]" style="width:250px; height:150px">
+          <br>
+          <br>
+          <input type="file"  (change)="handleFileInput($event.target.files,2)" name="Picture"
+            #Picture accept="image/*">
+         
+          <br>
+        </div>
+      </div>
+    </div>
+    <!-- 
+        <hr/>
+        <pre>Model: {{ model | json }}</pre> 
+    <hr/>-->
+    <div class="form-group row pt-3 mb-3 justify-content-md-center">
+      <button class="btn btn-primary justify-content-md-center" [routerLink]="['/manageOfficesVehiclesComponent',vehicle.RentServiceId]">Back</button>
+      <button class="btn btn-primary justify-content-md-center" [disabled]="!f.valid" type="submit">Edit Vehicle</button>
+    </div>
+  </form>
+</div>

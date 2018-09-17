@@ -9,7 +9,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AgmCoreModule } from '@agm/core';
 import { DlDateTimePickerDateModule } from 'angular-bootstrap-datetimepicker';
 
-
 //import { OwlModule } from 'ngx-owl-carousel';
 
 import { RouterModule, Routes } from '@angular/router';
@@ -20,14 +19,12 @@ import { TokenInterceptor } from './interceptors/interceptors.component';
 import { AdminManagerGuard } from './guard/guard.component';
 import { CommunicationComponent } from './communication/communication.component';
 import { SearchComponent } from './search/search.component';
-import { CardsComponent } from './cards/cards.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { RentServicesComponent } from './rent-services/rent-services.component';
 import { VehiclePageComponent } from './vehicle-page/vehicle-page.component';
-import { VehicleCardsComponent } from './vehicle-cards/vehicle-cards.component';
-import { DataService } from './cards/dataRentService';
+
 import { PagerComponent } from './pager/pager.component';
 import { Services } from './services/services.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
@@ -49,6 +46,8 @@ import { AdminOfficesVehiclesComponent } from './admin-offices-vehicles/admin-of
 import { BsDatepickerModule, BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { GetNotificationComponent } from './get-notification/get-notification.component';
 import { ToasterService } from './toaster-service/toaster-service.component';
+import { EditOfficeComponent } from './edit-office/edit-office.component';
+import { EditVehicleComponent } from './edit-vehicle/edit-vehicle.component';
 
 const Routes = [
   {
@@ -154,7 +153,18 @@ const Routes = [
     component: AdminOfficesVehiclesComponent,
     canActivate: ['IsAdminGuard']
   }
-  
+  ,
+  {
+    path: "editOfficeComponent/:officeId",
+    component: EditOfficeComponent,
+    canActivate: ['IsManagerGuard']
+  }
+  ,
+  {
+    path: "editVehicleComponent/:vehicleId",
+    component: EditVehicleComponent,
+    canActivate: ['IsManagerGuard']
+  }
   
 ]
 
@@ -168,14 +178,12 @@ const Routes = [
     //CanActivateViaAuthGuard,
     CommunicationComponent,
     SearchComponent,
-    CardsComponent,
+
     NavbarComponent,
     HomeComponent,
     RegisterComponent,
     RentServicesComponent,
     VehiclePageComponent,
-
-    VehicleCardsComponent,
 
     PagerComponent,
 
@@ -210,6 +218,10 @@ const Routes = [
     AdminOfficesVehiclesComponent,
 
     GetNotificationComponent,
+
+    EditOfficeComponent,
+
+    EditVehicleComponent,
 
     
 
@@ -280,7 +292,6 @@ const Routes = [
           return true;
       }
     },
-    DataService,
     btmNavDataService,
     ToasterService
   ],

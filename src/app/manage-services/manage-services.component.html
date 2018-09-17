@@ -74,7 +74,7 @@
       <hr>
       <!-- <app-cards #cards (sendServiceId)="getVehicles($event)" [isUser]="true"></app-cards> -->
 
-      <div *ngIf="rentServices!=null && rentServices.length==0">
+      <div *ngIf="showServiceWarning">
         <p class="text-warning">There are no Rent Services</p>
       </div>
       <div *ngIf="tableVisible">

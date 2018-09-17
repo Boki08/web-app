@@ -74,13 +74,13 @@
               aria-selected="false">Managers</a>
           </li>
         </ul>
-        <h4  class="text-primary mt-1" style="margin-left:25%">
+        <h4 class="text-primary mt-1" style="margin-left:25%">
           <small>Registered Users</small>
         </h4>
       </div>
       <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
-          <div *ngIf="users!=null && !showUsers && users.length==0">
+          <div *ngIf="showUsersWarning">
             <p class="text-warning">There are no Users</p>
           </div>
           <div *ngIf="showUsers">
@@ -130,7 +130,7 @@
           </div>
         </div>
         <div class="tab-pane fade" id="managers" role="tabpanel" aria-labelledby="managers-tab">
-          <div *ngIf="managers!=null && !showManagers && managers.length==0">
+          <div *ngIf="showManagersWarning">
             <p class="text-warning">There are no Managers</p>
           </div>
           <div *ngIf="showManagers">
@@ -169,12 +169,12 @@
             </div>
           </div>
         </div>
-       <!--  <div class=" row justify-content-md-center">
+        <!--  <div class=" row justify-content-md-center">
 
             <app-pager [page]="pageIndexM" [totalPages]="totalPagesNumberM" (changePage)="pageM=$event"></app-pager>
           </div> -->
       </div>
-      
+
     </div>
 
   </div>
@@ -242,20 +242,24 @@
             </div>
             <div class="col">
               <div class="container">
-                <div class="row justify-content-center">
-                  <span class="border border-primary">
+                <div class="row justify-content-center" >
+                  <div class="shadow p-3 mb-5 bg-white rounded">
                     <div class="col">
 
                       <div class="thumbnail">
-                        <img class="group list-group-image" src='http://localhost:51680/api/appUser/getDocumentPicture?path={{userData!=null ? userData.DocumentPicture:"" }}'
-                          alt="" />
+                        <!-- <img class="group list-group-image" src="{{img}}" alt="" /> -->
+                        <img class="e2e-trusted-url" style="width:300px; height:300px" [src]="img" alt="User Document">
+                      <!--   <ng-template #noImageFound>
+                          <img src="/assets/images/default-placeholder.png" alt="Fallbackimage">
+                        </ng-template> -->
+                        <!--  <img class="group list-group-image" [attr.src]="'http://localhost:51680/api/appUser/getDocumentPicture?path={{userData!=null ? userData.DocumentPicture:'' }}' | secure | async" alt="" /> -->
                         <div class="caption">
 
                         </div>
                       </div>
 
                     </div>
-                  </span>
+                  </div>
                 </div>
                 <div class="row justify-content-center mt-4">
 
@@ -278,15 +282,17 @@
 
       </div>
       <div class="modal-footer">
-        <div class="progress" style="
-          display: flex;
-          flex-flow: row wrap;
-          justify-content: center;"
-          *ngIf="userProgress">
-          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100"
-            aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-          </div>
-        </div>
+          <div class="col col-md-5" style="margin-right:16%">
+              <div class="progress" style="
+                    display: flex;
+                    flex-flow: row wrap;
+                    justify-content: center;"
+                *ngIf="userProgress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100"
+                  aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                </div>
+              </div>
+            </div>
         <button type="button" class="btn btn-secondary" (click)="DeleteUser()" data-dismiss="modal">Delete User</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 

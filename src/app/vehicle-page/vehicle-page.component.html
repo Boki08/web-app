@@ -59,6 +59,7 @@
         <small>Vehicles</small>
       </h4>
     </div>
+  
     <div class="col">
       <div class="row">
         <div class="col col-md-4 justify-content-md-center">
@@ -110,7 +111,7 @@
 
 
 
-  <div *ngIf="vehicles!=null && vehicles.length==0">
+  <div *ngIf="showWarning">
     <p class="text-warning">There are no Vehicles</p>
   </div>
   <div class="row" *ngIf="vehicles">

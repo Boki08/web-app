@@ -10,6 +10,7 @@ import { defineLocale } from 'ngx-bootstrap/chronos';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 defineLocale('en-gb', enGbLocale);
 import { finalize } from 'rxjs/operators'
+import { ToasterService } from '../toaster-service/toaster-service.component';
 
 @Component({
   selector: 'app-register',
@@ -25,7 +26,7 @@ export class RegisterComponent implements OnInit {
    maxDate = this.date.getFullYear() + "-" + (this.date.getMonth() + 1) + "-" + this.date.getDate(); */
 
 
-  constructor(private btmNavMessageService: btmNavDataService, private localeService: BsLocaleService, private UserService: UserServices) {
+  constructor(private toasterService:ToasterService,private btmNavMessageService: btmNavDataService, private localeService: BsLocaleService, private UserService: UserServices) {
     this.bsConfig = Object.assign({}, {
       containerClass: 'theme-dark-blue',
       showWeekNumbers: false,
@@ -106,10 +107,12 @@ export class RegisterComponent implements OnInit {
       }))
     .subscribe(
       data => {
-        alert("You registered successfully");
+        this.toasterService.Info("Registration was successfull",'Info');
+        //alert("You registered successfully");
       },
       error => {
-        alert(error.error.Message);
+        //alert(error.error.Message);
+        this.toasterService.Error(error.error.Message,'Error');
         console.log(error);
       })
     form.reset();

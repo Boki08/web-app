@@ -60,7 +60,7 @@
               <small>Available Rent Services</small>
             </h4>
           <hr>
-          <div *ngIf="rentServices!=null && rentServices.length==0">
+          <div *ngIf="showRentServicesWarning">
               <p class="text-warning">There are no Rent Services</p>
             </div>
           <!-- <app-cards #cards (sendServiceId)="getVehicles($event)" [isUser]="true"></app-cards> -->
