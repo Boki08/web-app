@@ -3,7 +3,63 @@
   <app-navbar></app-navbar>
 
 
-  <router-outlet></router-outlet>
+ <!--  <div [hidden]="!loading" class="loader">
+      <h2>Loading...</h2>
+     
+    </div>-->
+  <div [hidden]="loading" class="router-output">
+      <router-outlet></router-outlet>
+    </div> 
+
+
+
+    <style type="text/css" class="preloader">
+      div.splash {
+          background-color: #ffffff ;
+          bottom: 0px ;
+          display: flex ;
+          left: 0px ;
+          position: fixed ;
+          right: 0px ;
+          top: 0px ;
+         
+      }
+
+      div.splash--loaded {
+          opacity: 0.0 ;
+          transition: opacity 500ms ease ;
+          
+      }
+
+       div.splash--go_back {
+        opacity: 0.0 ;
+         z-index: -9999;
+          
+      }
+
+      div.splash__message {
+          font-size: 26px ;
+          line-height: 31px ;
+          margin: auto auto auto auto ;
+          text-decoration: underline ;
+      }
+  </style>
+
+  <div id="splash" #splash class="loader preloader splash">
+      <div class="splash__message">
+          Loading
+      </div>
+  </div>
+
+
+<!-- <router-outlet></router-outlet> -->
+
+
+
+
+
+
+  <!-- <router-outlet></router-outlet> -->
 <!-- 
   <div class="container" id="con">
     <div class="row mb-4">

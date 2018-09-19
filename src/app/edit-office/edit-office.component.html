@@ -1,5 +1,5 @@
-<div class="container-fluid ">
-  <form class="needs-validation pt-3" [formGroup]="addOfficeForm" #f="ngForm" (ngSubmit)="onSubmit(f.value, f)"
+<div class="container-fluid " >
+  <form class="needs-validation pt-3" *ngIf="office!=null" [formGroup]="addOfficeForm" #f="ngForm" (ngSubmit)="onSubmit(f.value, f)"
     novalidate>
     <div class="form-group row pt-3 justify-content-md-center">
       <div class="container">
