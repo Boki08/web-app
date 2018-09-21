@@ -100,7 +100,7 @@
               <tbody>
                 <tr *ngFor="let user of users ; let i = index" (click)="userDetails(user,i)" data-toggle="modal"
                   data-target="#userModal">
-                  <th scope="row">{{i+1}}</th>
+                  <th scope="row">{{totalPagesNumberU*(pageIndexU-1)+i+1}}</th>
                   <td>{{user.FullName}}</td>
                   <td>{{user.Email}}</td>
                   <td>{{user.BirthDate.slice(0,10)}}</td>
@@ -148,7 +148,7 @@
               <tbody>
                 <tr *ngFor="let manager of managers ; let i = index" (click)="managerDetails(manager,i)" data-toggle="modal"
                   data-target="#managerModal">
-                  <th scope="row">{{i+1}}</th>
+                  <th scope="row">{{totalPagesNumberM*(pageIndexM-1)+i+1}}</th>
                   <td>{{manager.FullName}}</td>
                   <td>{{manager.Email}}</td>
                   <td>{{manager.BirthDate.slice(0,10)}}</td>
@@ -169,10 +169,7 @@
             </div>
           </div>
         </div>
-        <!--  <div class=" row justify-content-md-center">
 
-            <app-pager [page]="pageIndexM" [totalPages]="totalPagesNumberM" (changePage)="pageM=$event"></app-pager>
-          </div> -->
       </div>
 
     </div>
@@ -247,13 +244,8 @@
                     <div class="col">
 
                       <div class="thumbnail">
-                        <!-- <img class="group list-group-image" src="{{img}}" alt="" /> -->
                         <img class="e2e-trusted-url" style="width:300px; height:300px" [src]="img" alt="User Document">
-                      <!--   <ng-template #noImageFound>
-                          <img src="/assets/images/default-placeholder.png" alt="Fallbackimage">
-                        </ng-template> -->
-                        <!--  <img class="group list-group-image" [attr.src]="'http://localhost:51680/api/appUser/getDocumentPicture?path={{userData!=null ? userData.DocumentPicture:'' }}' | secure | async" alt="" /> -->
-                        <div class="caption">
+                       <div class="caption">
 
                         </div>
                       </div>
@@ -264,12 +256,12 @@
                 <div class="row justify-content-center mt-4">
 
                   <div class="col col-md-3" style="display: flex;flex-flow: row wrap;justify-content: center;">
-                    <button class="btn btn-danger" (click)="acceptUser(counter,userData.UserId,false)" [disabled]="(userData==null || userData.DocumentPicture==null|| userData.ProfileEdited==false || userData.Activated==true  || disableButtons==true)">
+                    <button class="btn btn-danger" (click)="acceptUser(userData.UserId,false)" [disabled]="(userData==null || userData.DocumentPicture==null|| userData.ProfileEdited==false || userData.Activated==true  || disableButtons==true)">
                       <span class="glyphicon glyphicon-remove"></span> Decline
                     </button>
                   </div>
                   <div class="col col-md-3" style="display: flex;flex-flow: row wrap;justify-content: center;">
-                    <button class="btn btn-success" (click)="acceptUser(counter,userData.UserId,true)" [disabled]="(userData==null || userData.DocumentPicture==null || userData.ProfileEdited==false || userData.Activated==true || disableButtons==true)">
+                    <button class="btn btn-success" (click)="acceptUser(userData.UserId,true)" [disabled]="(userData==null || userData.DocumentPicture==null || userData.ProfileEdited==false || userData.Activated==true || disableButtons==true)">
                       <span class="glyphicon glyphicon-ok"></span> Accept
                     </button>
                   </div>
@@ -326,10 +318,7 @@
 
                 </thead>
                 <tbody>
-                  <!-- <tr>
-                    <th scope="row">Manager ID:</th>
-                    <td>{{null != userData ? userData.UserId: 'no data' }}</td>
-                  </tr> -->
+                 
                   <tr>
                     <th scope="row">Email:</th>
                     <td>{{null != managerData ? managerData.Email: 'no data' }}</td>
@@ -338,20 +327,7 @@
                     <th scope="row">BirthDate:</th>
                     <td>{{null != managerData ? managerData.BirthDate.slice(0,10): 'no data' }}</td>
                   </tr>
-                  <!-- <tr>
-                    <th scope="row">Document Picture:</th>
-                    <td>
-                      <p [ngStyle]="{'color': (managerData!=null && managerData.DocumentPicture!=NULL)? 'green' : 'red'}">{{(managerData!=null
-                        && managerData.DocumentPicture!=NULL)?'Added' : 'Not added' }}</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Profile Edited:</th>
-                    <td>
-                      <p [ngStyle]="{'color': (managerData!=null && true == managerData.ProfileEdited) ? 'green' : 'red'}">{{(managerData!=null
-                        && true == managerData.ProfileEdited) ? 'Yes': 'No'}}</p>
-                    </td>
-                  </tr> -->
+                 
                   <tr>
                     <th scope="row">Approved:</th>
                     <td>
@@ -367,39 +343,7 @@
                 </tbody>
               </table>
             </div>
-            <!-- <div class="col">
-              <div class="container">
-                <div class="row justify-content-center">
-                  <span class="border border-primary">
-                    <div class="col">
-
-                      <div class="thumbnail">
-                        <img class="group list-group-image" src='http://localhost:51680/api/appUser/getDocumentPicture?path={{userData!=null ? userData.DocumentPicture:"" }}'
-                          alt="" />
-                        <div class="caption">
-
-                        </div>
-                      </div>
-
-                    </div>
-                  </span>
-                </div>
-                <div class="row justify-content-center mt-4">
-
-                  <div class="col col-md-3" style="display: flex;flex-flow: row wrap;justify-content: center;">
-                    <button class="btn btn-danger" (click)="acceptUser(counter,userData.UserId,false)" [disabled]="(userData==null || userData.DocumentPicture==null|| userData.ProfileEdited==false || userData.Activated==true  || disableButtons==true)">
-                      <span class="glyphicon glyphicon-remove"></span> Decline
-                    </button>
-                  </div>
-                  <div class="col col-md-3" style="display: flex;flex-flow: row wrap;justify-content: center;">
-                    <button class="btn btn-success" (click)="acceptUser(counter,userData.UserId,true)" [disabled]="(userData==null || userData.DocumentPicture==null || userData.ProfileEdited==false || userData.Activated==true || disableButtons==true)">
-                      <span class="glyphicon glyphicon-ok"></span> Accept
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-            </div> -->
+           
           </div>
         </div>
 

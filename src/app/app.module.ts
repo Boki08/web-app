@@ -173,9 +173,7 @@ const Routes = [
   declarations: [
     AppComponent,
     LogInComponent,
-    // Services,
-    //TokenInterceptor,
-    //CanActivateViaAuthGuard,
+
     CommunicationComponent,
     SearchComponent,
 
@@ -239,16 +237,10 @@ const Routes = [
     AgmCoreModule.forRoot({apiKey: 'AIzaSyDnihJyw_34z5S1KZXp90pfTGAqhFszNJk'}),
     DlDateTimePickerDateModule,
     BsDatepickerModule.forRoot(),
-  
-    //OwlModule,
+
 
   ],
-  /*   entryComponents: [
-     CardsComponent
-   ],  */
-  ///exports:[
-  // Services
-  //],
+
   providers: [
    
     AdminManagerGuard,

@@ -10,23 +10,20 @@
 
           <li class="list-unstyled components">
             <div class="card-unstyled " id="list" #list>
-              <h5 class="card-header">Info:</h5>
+              <h5 class="card-header" style="font-size:1.5vw;">Info:</h5>
               <div class="card-body">
                 <p class="card-text">
-          <li>Email:
-            <ul>{{rentServiceTemp!=null?rentServiceTemp.Email:'no data'}}</ul>
+          <li><h5 style="font-size:1vw;">Email:</h5>
+            <ul><h5 style="font-size:1vw;">{{rentServiceTemp!=null?rentServiceTemp.Email:'no data'}}</h5></ul>
           </li>
-          <li>Description:
-            <ul>{{rentServiceTemp!=null?rentServiceTemp.Description:'no data'}}</ul>
+          <li><h5 style="font-size:1vw;">Rate:</h5>
+            <ul><h5 style="font-size:1vw;">{{rentServiceTemp!=null?rentServiceTemp.Grade:'no data'}}</h5></ul>
           </li>
 
 
           </p>
       </div>
       <div class="card-footer-unstyled">
-        <div class="ml-4">
-          <li>Rate: <b>{{rentServiceTemp!=null?rentServiceTemp.Grade:'no data'}}</b></li>
-        </div>
         <hr class="bg-primary">
         <div class="row justify-content-md-center">
           <p>Activated:</p>
@@ -38,9 +35,17 @@
             <span class="slider round"></span>
           </label>
         </div>
-
+       
       </div>
+      
     </div>
+    <ul class="list-unstyled components"  #linkList id="linkList">
+        <li>
+          <span class="border border-primary"><a href="#"  data-toggle="modal" data-target="#descriptionModal"
+              class="text-center" >View Description</a></span>
+          </li>
+  
+        </ul>
     </li>
 
 
@@ -77,7 +82,7 @@
           <tbody>
             <tr *ngFor="let office of offices ; let i = index" (click)="officeDetails(office,i)" data-toggle="modal"
               data-target="#officeModal">
-              <th scope="row">{{i+1}}</th>
+              <th scope="row">{{pageSizeO*(pageIndexO-1)+i+1}}</th>
               <td>{{office.Address}}</td>
             </tr>
 
@@ -109,7 +114,7 @@
           <tbody>
             <tr *ngFor="let vehicle of vehicles ; let i = index" (click)="vehicleDetails(vehicle,i)" data-toggle="modal"
               data-target="#vehicleModal">
-              <th scope="row">{{i+1}}</th>
+              <th scope="row">{{pageSizeV*(pageIndexV-1)+i+1}}</th>
               <td>{{vehicle.Model}}</td>
               <td>{{vehicle.YearOfManufacturing}}</td>
               <td>{{vehicle.Manufacturer}}</td>
@@ -199,10 +204,10 @@
 
                   <div class="carousel-inner">
 
-                    <div class="carousel-item" data-slide-to="i+1" *ngFor="let picture of vehiclePictures; let isFirst = first"
+                    <div class="carousel-item" data-slide-to="i+1" *ngFor="let picture of vehiclePictures; let isFirst = first; let i = index"
                       [class.active]="isFirst">
 
-                      <img class="d-block w-100" style="width:250px; height:250px" src='http://localhost:51680/api/vehicle/getVehiclePicture/?path={{picture.Data }}'
+                      <img class="d-block w-100" style="width:300px; height:300px" [src]="img[i]"
                         alt="">
 
                     </div>
@@ -234,7 +239,7 @@
                 display: flex;
                 flex-flow: row wrap;
                 justify-content: center;"
-            *ngIf="showVehicleProgress">
+            *ngIf="showVehicleProgress || showVehicleProgressPic">
             <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100"
               aria-valuemin="0" aria-valuemax="100" style="width: 100%">
             </div>
@@ -313,6 +318,31 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--description view-->
+<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Rent Service Description</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      
+          <p>{{rentServiceTemp!=null?rentServiceTemp.Description:'no data'}}</p>
+        
+      </div>
+      <div class="modal-footer">
+      
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

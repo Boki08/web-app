@@ -19,33 +19,50 @@ export class VehicleTypeComponent implements OnInit {
   showTypeProgress: boolean = false;
   showProgress: boolean = false;
   showWarning: boolean = false;
+  showEditTypeProgress: boolean = false;
+  editDisabled: boolean = true;
+  showEdit: boolean = false;
 
   pageIndex: number = 1;
   pageSize: number = 10;
   totalPagesNumber: number = 0;
+  counter:number;
+
+  ETag: string;
+
+  selectedVehicleType: VehicleTypes;
 
   addVehicleTypeForm: FormGroup;
+  editVehicleTypeForm: FormGroup;
   Type: FormControl;
+  TypeEdit: FormControl;
 
-  vehicleTypes: VehicleTypes[]=new Array<VehicleTypes>();
+  vehicleTypes: VehicleTypes[] = new Array<VehicleTypes>();
   ngOnInit() {
     this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress = message)
 
     this.GetVehicleTypes();
 
     this.CreateFormControls();
-    this.CreateForm();
+    this.CreateForms();
   }
 
   CreateFormControls() {
     this.Type = new FormControl('', [
-      Validators.maxLength(50),
+      Validators.maxLength(20),
+      Validators.required
+    ]);
+    this.TypeEdit = new FormControl('', [
+      Validators.maxLength(20),
       Validators.required
     ]);
   }
-  CreateForm() {
+  CreateForms() {
     this.addVehicleTypeForm = new FormGroup({
       Type: this.Type,
+    });
+    this.editVehicleTypeForm = new FormGroup({
+      TypeEdit: this.TypeEdit,
     });
   }
 
@@ -53,7 +70,7 @@ export class VehicleTypeComponent implements OnInit {
     this.btmNavMessageService.changeMessage(false);
   }
 
-  onSubmit(vehicleType: VehicleTypes,form:NgForm) {
+  onSubmit(vehicleType: VehicleTypes, form: NgForm) {
     console.log(vehicleType);
 
     this.addDisabled = true;
@@ -65,18 +82,15 @@ export class VehicleTypeComponent implements OnInit {
       }))
       .subscribe(
         data => {
-       
+
 
           this.vehicleTypes.push(data.body);
           this.showWarning = false;
           this.toasterService.Info("Vehicle Type was added", 'Info');
           form.reset();
-          //alert("Vehicle Type added");
         },
         error => {
 
-          //alert(error.error.ModelState[""][0]);
-          //alert(error.error.Message);
           this.toasterService.Error(error.error.Message, 'Error');
         }
       );
@@ -113,11 +127,10 @@ export class VehicleTypeComponent implements OnInit {
 
           this.addDisabled = false;
 
-          //(error.error.Message);
         }
       );
   }
-  DeleteVehicleTypes(typeId: number) {
+  DeleteVehicleType(typeId: number) {
     this.btmNavMessageService.changeMessage(true);
     this.vehicleTypeServices.DeleteVehicleType(typeId).pipe(finalize(
       () => {
@@ -128,12 +141,59 @@ export class VehicleTypeComponent implements OnInit {
           let vehiclePosition = this.vehicleTypes.findIndex(x => x.TypeId == data.body.TypeId);
           this.vehicleTypes.splice(vehiclePosition, 1);
           this.toasterService.Info("Vehicle Type was deleted", 'Info');
-          //alert("Vehicle Type deleted");
 
         },
         error => {
           this.toasterService.Error(error.error.Message, 'Error');
-          //alert(error.error.Message);
+        }
+      );
+  }
+  SelectedehicleType(typeId: number,counter:number) {
+    this.counter=counter;
+    this.showEditTypeProgress = true;
+    this.editDisabled=true;
+    this.showEdit=false;
+    this.vehicleTypeServices.GetVehicleType(typeId).pipe(finalize(
+      () => {
+        this.showEditTypeProgress = false;
+        
+      }))
+      .subscribe(
+        data => {
+          this.ETag = JSON.parse(data.headers.get('ETag'));
+          this.selectedVehicleType = data.body;
+         
+          this.editDisabled=false;
+          this.showEdit=true;
+        },
+        error => {
+          this.toasterService.Error(error.error.Message, 'Error');
+
+        }
+      );
+  }
+  onSubmitEdit(vehicleType: any, form: NgForm) {
+    console.log(vehicleType);
+
+    this.editDisabled = true;
+    this.showEditTypeProgress = true;
+    let vehicleTypeTemp:VehicleTypes=new VehicleTypes(this.selectedVehicleType.TypeId,vehicleType.TypeEdit);
+    this.vehicleTypeServices.EditVehicleType(vehicleTypeTemp,this.ETag).pipe(finalize(
+      () => {
+        this.editDisabled = false;
+        this.showEditTypeProgress = false;
+      }))
+      .subscribe(
+        data => {
+
+          this.ETag = JSON.parse(data.headers.get('ETag'));
+          this.vehicleTypes[this.counter]=data.body;
+          this.toasterService.Info("Vehicle Type was edited", 'Info');
+
+        },
+        error => {
+
+          this.toasterService.Error(error.error.Message, 'Error');
         }
       );
   }

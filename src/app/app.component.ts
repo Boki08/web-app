@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, ChangeDetectorRef } from '@angular/core';
 
 import { btmNavDataService } from './bottom-navbar/btmNavDataService';
 import { Router, NavigationStart } from '@angular/router';
@@ -17,33 +17,34 @@ export class AppComponent {
 
   title = 'app';
 
-  @Input() loading: boolean;
+  loading: boolean = true;
+  showRouter: boolean = false;
   locationChanged: boolean = false;
   element = document.getElementById("splash");
   @ViewChild('splash') splash: ElementRef;
-  // I initialize the app-component.
-  constructor(private router: Router, private btmNavMessageService: btmNavDataService) {
-    this.loading = true;
+  constructor(private cdRef: ChangeDetectorRef, private router: Router, private btmNavMessageService: btmNavDataService) {
 
 
   }
+ 
 
   ngAfterViewInit() {
     this.router.events
       .subscribe((event) => {
         if (event instanceof NavigationStart) {
           this.locationChanged = true;
+          this.showRouter = false;
+          this.cdRef.detectChanges();
         }
 
       });
   }
   public ngOnInit(): void {
+    this.loading = false;
     this.btmNavMessageService.currentMessage.subscribe(message => this.change = message)
-
 
   }
   set change(val: boolean) {
-    //debugger;
     if (val !== this.loading && this.locationChanged) {
 
       this.loading = val;
@@ -53,14 +54,15 @@ export class AppComponent {
 
       }
       else {
-
         this.splash.nativeElement.className = 'preloader splash splash--loaded';
-
+        this.locationChanged = false;
+        this.showRouter = true;
+      this.cdRef.detectChanges();
         setTimeout(
           () => {
 
             this.splash.nativeElement.className = 'preloader splash splash--go_back';
-            this.locationChanged=false;
+           
           },
           500
         );

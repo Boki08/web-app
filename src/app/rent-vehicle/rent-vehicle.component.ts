@@ -62,7 +62,6 @@ export class RentVehicleComponent implements OnInit {
   showDangerErrorMessage: boolean = false;
   btnHidden: boolean = false;
 
-  //officeId:number;
   @Input() office: OfficeModel = null;
   seeMap: boolean = false;
 
@@ -80,14 +79,10 @@ export class RentVehicleComponent implements OnInit {
 
   calcPrice: number;
   errMessage: string;
-  //@Output() progressEvent = new EventEmitter<boolean>();
   firstLoad: boolean = false;
   showProgress: boolean = false;
 
-  //minDate="1900-1-1";
-  //minDate = new Date(1850, 0, 1);
   date = new Date();
-  // [minDate]="{year: 2010, month: 1, day, 1}"
   minDate = this.date.getFullYear() + "-" + (this.date.getMonth() + 1) + "-" + this.date.getDate();
 
   ngOnInit() {
@@ -121,8 +116,6 @@ export class RentVehicleComponent implements OnInit {
             this.toasterService.Error(error.error.Message, 'Error');
           }
           this.checkIfAllLoaded();
-          //alert(error.error.ModelState[""][0]);
-          
 
         }
       );
@@ -131,23 +124,16 @@ export class RentVehicleComponent implements OnInit {
       .subscribe(
         data => {
           this.offices = data.body as OfficeModel[];
-          /*  if (this.offices.length == 0) {
-             this.btnDisabled = true;
- 
-             this.dangerErrMessage = "This Rent Service doesn't have any offices!";
-             this.showDangerErrorMessage = true;
-           }
-           else { */
+
           this.selectedDepartureOffice = data.body[0].Address;
           this.selectedReturnOffice = data.body[0].Address;
           this.departureOfficeId = data.body[0].OfficeId;
           this.returnOfficeId = data.body[0].OfficeId;
-          //this.office=data.body[0];
           this.returnOffice = data.body[0];
           this.departureOffice = data.body[0];
 
           this.checkIfAllLoaded();
-          /* } */
+
 
         },
         error => {
@@ -164,9 +150,6 @@ export class RentVehicleComponent implements OnInit {
           }
 
           this.checkIfAllLoaded();
-
-          //alert(error.error.ModelState[""][0]);
-
 
         }
       );
@@ -197,19 +180,14 @@ export class RentVehicleComponent implements OnInit {
   }
 
   returnDatePicked($event) {
-    //let d=$event.year +""+$event.month +""+$event.day +""+"T00:00:00";
-    // let d=$event
-    // d.hour
-    /*  let dd = new Date();
-     dd.setMilliseconds(0);
-     dd.setSeconds(0);
-     dd.setMinutes(0);
-     dd.setHours(2);
- 
-     dd.setFullYear($event.year, $event.month - 1, $event.day); */
-    //formatDate(new Date(d), 'yyyy/MM/dd', 'en');
-    // let myDate = this.datePipe.transform(new Date(d), 'yyyy-MM-dd');
+   
     this.returnDate = $event;
+
+    let today = new Date();
+    this.returnDate.setMilliseconds(today.getMilliseconds());
+    this.returnDate.setSeconds(today.getSeconds());
+    this.returnDate.setMinutes(today.getMinutes());
+    this.returnDate.setHours(today.getHours());
 
     this.testReturnDate();
     this.testDepartureDate();
@@ -244,7 +222,6 @@ export class RentVehicleComponent implements OnInit {
           this.btnDisabled = false;
           this.isReturnDateBad = false;
           this.calcPrice = this.vehicle.HourlyPrice * (this.returnDate.getTime() - this.departureDate.getTime()) / 3600000;
-
         }
 
 
@@ -264,17 +241,14 @@ export class RentVehicleComponent implements OnInit {
 
   departureDatePicked($event) {
 
-    /*  let dd = new Date();
-     dd.setMilliseconds(0);
-     dd.setSeconds(0);
-     dd.setMinutes(0);
-     dd.setHours(2);
- 
-     dd.setFullYear($event.year, $event.month - 1, $event.day);
-     //formatDate(new Date(d), 'yyyy/MM/dd', 'en');
-     // let myDate = this.datePipe.transform(new Date(d), 'yyyy-MM-dd');
-     this.departureDate = dd; */
     this.departureDate = $event;
+
+    let today = new Date();
+    this.departureDate.setMilliseconds(today.getMilliseconds());
+    this.departureDate.setSeconds(today.getSeconds());
+    this.departureDate.setMinutes(today.getMinutes());
+    this.departureDate.setHours(today.getHours());
+    
     this.testDepartureDate();
     this.testReturnDate();
 
@@ -327,7 +301,6 @@ export class RentVehicleComponent implements OnInit {
   }
 
   onSubmit(order: any, form: NgForm) {
-    //console.log(this.args, this.user.Id); 
     this.btnHidden = true;
     order.DepartureDate = this.departureDate.toJSON();;
     order.ReturnDate = this.returnDate.toJSON();;
@@ -338,12 +311,10 @@ export class RentVehicleComponent implements OnInit {
       .subscribe(
         data => {
           this.toasterService.Info("Success", 'Info');
-          //alert("Success!");
           this.router.navigate(['/viewOrdersComponent']);
         },
         error => {
           this.btnHidden = false;
-          //alert(error.error.Message);
           this.toasterService.Error(error.error.Message, 'Error');
         })
   }

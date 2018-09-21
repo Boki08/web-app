@@ -3,11 +3,7 @@
   <app-navbar></app-navbar>
 
 
- <!--  <div [hidden]="!loading" class="loader">
-      <h2>Loading...</h2>
-     
-    </div>-->
-  <div [hidden]="loading" class="router-output">
+  <div  [hidden]="!showRouter" class="router-output">
       <router-outlet></router-outlet>
     </div> 
 
@@ -52,31 +48,11 @@
   </div>
 
 
-<!-- <router-outlet></router-outlet> -->
-
-
-
-
-
-
-  <!-- <router-outlet></router-outlet> -->
-<!-- 
-  <div class="container" id="con">
-    <div class="row mb-4">
-      <div class="col-lg justify-content-md-center">
-          <router-outlet ></router-outlet>
-      </div>
-    </div>
-  </div> -->
 <app-get-notification></app-get-notification>
 
   <app-bottom-navbar ></app-bottom-navbar>
 
-  <!--   <nav class="navbar navbar-default  navbar-dark bg-dark navbar-bottom" role="navigation">
-    <div class="container">
-      <h1>Hello World</h1>
-    </div>
-  </nav> -->
+
 
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>

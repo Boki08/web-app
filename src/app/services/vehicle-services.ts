@@ -26,8 +26,11 @@ export class VehicleServices {
     return this.httpClient.get("http://localhost:51680/api/vehicle/getServiceVehiclesSort/" + pageIndex + "/" + pageSize + "/" + serviceId+ "/" + available+ "/" + price+ "/" + type, { observe: 'response' });
 
   }
-  DisableVehicle(vehicleId: number, enabled: boolean) {
-    return this.httpClient.get("http://localhost:51680/api/vehicle/disableVehicle/" + vehicleId + "/" + enabled);
+  DisableVehicle(vehicleId: number, enabled: boolean,ETag:string): Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.append('if-match', ETag);
+
+    return this.httpClient.get("http://localhost:51680/api/vehicle/disableVehicle/" + vehicleId + "/" + enabled, { "headers": headers, observe: 'response'});
   }
 
   DeleteVehicle(vehicleId: number) {
@@ -46,9 +49,12 @@ export class VehicleServices {
   AddVehicle(vehicle: Vehicle, photos: File[]): Observable<any> {
 
     const formData: FormData = new FormData();
-
+let counter=0;
     for (let i = 0; i < photos.length; i++) {
-      formData.append('Image' + i, photos[i], photos[i].name);
+      if( photos[i].name!=":assets:images:default-placeholder.png"){
+      formData.append('Image' + counter, photos[i], photos[i].name);
+      counter+=1;
+    }
 
     }
     formData.append('HourlyPrice', vehicle.HourlyPrice.toString());
@@ -58,7 +64,7 @@ export class VehicleServices {
     formData.append('Manufacturer', vehicle.Manufacturer.toString());
     formData.append('Model', vehicle.Model.toString());
     formData.append('YearOfManufacturing', vehicle.YearOfManufacturing.toString());
-    formData.append('ImagesNum', photos.length.toString());
+    formData.append('ImagesNum', counter.toString());
 
     return this.httpClient.post('http://localhost:51680/api/vehicle/addVehicle', formData);
 
@@ -85,11 +91,15 @@ export class VehicleServices {
     formData.append('YearOfManufacturing', vehicle.YearOfManufacturing.toString());
     formData.append('ImagesNum', photos.length.toString());
 
-    return this.httpClient.post('http://localhost:51680/api/vehicle/editVehicle', formData, { "headers": headers });
+    return this.httpClient.post('http://localhost:51680/api/vehicle/editVehicle', formData, { "headers": headers,observe: 'response' });
 
   }
 
   getVehicleInfo(vehicleId:number):Observable<any> {
     return this.httpClient.get("http://localhost:51680/api/vehicle/getVehicle/"+vehicleId, { observe: 'response' }) ;
+  }
+
+  getImage(name: string): Observable<Blob> {
+    return this.httpClient.get('http://localhost:51680/api/vehicle/getVehiclePicture?path=' + name, { responseType: "blob" });
   }
 }

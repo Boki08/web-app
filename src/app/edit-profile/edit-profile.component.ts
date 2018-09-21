@@ -39,13 +39,11 @@ export class EditProfileComponent implements OnInit {
   FullName: FormControl;
   Email: FormControl;
   BirthDate: FormControl;
-  //DocumentPicture: FormControl;
 
   bsConfig: Partial<BsDatepickerConfig>;
 
   ngOnInit() {
 
-    //this.userData.DocumentPicture=this.imageUrl;
 
     this.CreateFormControls();
     this.CreateForm();
@@ -53,6 +51,9 @@ export class EditProfileComponent implements OnInit {
     this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress = message)
     this.btmNavMessageService.changeMessage(true);
 
+    this.getUser();
+  }
+  getUser(){
     this.userServices.getProfile().pipe(finalize(
       () => {
         this.btmNavMessageService.changeMessage(false);
@@ -63,9 +64,9 @@ export class EditProfileComponent implements OnInit {
           this.userData = data.body;
           this.userData.BirthDate = new Date(data.body.BirthDate);
           this.btnDisabled = false;
+          
         },
         error => {
-          //alert(error.error.Message);
           this.toasterService.Error(error.error.Message,'Error');
         }
       )
@@ -75,7 +76,6 @@ export class EditProfileComponent implements OnInit {
     this.FullName = new FormControl('', [
       Validators.maxLength(50),
       Validators.minLength(5),
-      //Validators.pattern('^(?=.*[a-zA-Z])'),
       Validators.required
     ]);
     this.Email = new FormControl('', [
@@ -83,17 +83,15 @@ export class EditProfileComponent implements OnInit {
       Validators.required
     ]);
     this.BirthDate = new FormControl('', [
-      // Validators.pattern('^([0-9]{4})\-([0-9]{2})\-([0-9]{2})[T]([0-9]{2})\:([0-9]{2})\:([0-9]{2}).*$'),
       Validators.required]);
-    // this.DocumentPicture = new FormControl('', [
-    // Validators.required]);
+
   }
   CreateForm() {
     this.editForm = new FormGroup({
       FullName: this.FullName,
       Email: this.Email,
       BirthDate: this.BirthDate,
-      //  DocumentPicture: this.DocumentPicture,
+
     });
   }
 
@@ -110,24 +108,35 @@ export class EditProfileComponent implements OnInit {
     console.log(appUser);
     this.btmNavMessageService.changeMessage(true);
 
-
-    appUser.BirthDate = appUser.BirthDate.toJSON();
+if(typeof appUser.BirthDate != "string"){
+    appUser.BirthDate = appUser.BirthDate.toJSON();}
 
     appUser.UserId = this.userData.UserId;
     appUser.DocumentPicture = this.userData.DocumentPicture;
     this.userServices.EditUser(appUser, this.fileToUpload,this.ETag).pipe(finalize(
       () => {
         this.btmNavMessageService.changeMessage(false);
-
+       
       }))
       .subscribe(
         data => {
+
+         this.ETag = JSON.parse(data.headers.get('ETag'));
+         this.userData = data.body;
+         this.userData.BirthDate = new Date(data.body.BirthDate);
           this.toasterService.Info("Your changes updated successfully",'Info');
-          //alert("Your changes updated successfully");
+
         },
         error => {
+          if(error.statusText== "Precondition Failed")
+          {
+            this.toasterService.Error("Data was already changed, please reload",'Error');
+          }
+          else
+          {
           this.toasterService.Error(error.error.Message,'Error');
-          //alert(error.error.Message);
+          }
+
         }
       );
   }

@@ -66,3 +66,10 @@
 .container {
     padding-top: 50px;
 }
+
+
+#backBtn, #addBtn {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}

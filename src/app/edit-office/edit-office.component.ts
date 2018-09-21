@@ -32,6 +32,7 @@ export class EditOfficeComponent implements OnInit {
   office: OfficeModel;
 
   isBtnDisabled: boolean = true;
+
   showProgress: boolean;
 
   ngOnInit() {
@@ -40,6 +41,7 @@ export class EditOfficeComponent implements OnInit {
     this.CreateFormControls();
     this.CreateForm();
     this.isBtnDisabled = true;
+
 
     this.officeServices.GetOffice(this.officeId).pipe(finalize(
       () => {
@@ -52,6 +54,7 @@ export class EditOfficeComponent implements OnInit {
           this.office = data.body as OfficeModel;
           if (this.office.Picture != null && this.office.Picture != '') {
             this.imageUrl = 'http://localhost:51680/api/office/getOfficePicture?path=' + this.office.Picture;
+
             this.isBtnDisabled = false;
           }
           else {
@@ -96,10 +99,10 @@ export class EditOfficeComponent implements OnInit {
       this.imageUrl = event.target.result;
     }
     reader.readAsDataURL(this.fileToUpload);
+
   }
 
   placeMarker($event) {
-    this.isBtnDisabled = false;
     console.log($event.coords.lat);
     console.log($event.coords.lng);
     this.latMark = $event.coords.lat
@@ -114,7 +117,11 @@ export class EditOfficeComponent implements OnInit {
     office.Latitude = this.latMark;
     office.Longitude = this.lngMark;
 
-    office.Picture = null;
+
+    if (this.fileToUpload != null && this.fileToUpload.name != null && this.fileToUpload.name != '') {
+      office.Picture = this.fileToUpload.name;
+    }
+    office.OfficeId = this.office.OfficeId;
     office.RentServiceId = this.office.RentServiceId;
     this.officeServices.EditOffice(office, this.fileToUpload, this.ETag).pipe(finalize(
       () => {
@@ -123,14 +130,21 @@ export class EditOfficeComponent implements OnInit {
       }))
       .subscribe(
         data => {
-          //alert("Your changes updated successfully");
+          this.ETag = JSON.parse(data.headers.get('ETag'));
+
+          this.office = data.body as OfficeModel;
+
           this.toasterService.Info("Office was edited", 'Info');
-          //form.reset();
+
 
         },
         error => {
-          this.toasterService.Error(error.error.Message, 'Error');
-          //alert(error.error.ModelState[""][0]);
+          if (error.statusText == "Precondition Failed") {
+            this.toasterService.Error("Data was already changed, please reload", 'Error');
+          }
+          else {
+            this.toasterService.Error(error.error.Message, 'Error');
+          }
 
         }
       );

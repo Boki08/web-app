@@ -11,6 +11,7 @@ import { VehiclePictures } from '../models/vehicle-pictures';
 import { MapInfo } from '../models/map-info.model';
 import { finalize } from 'rxjs/operators'
 import { ToasterService } from '../toaster-service/toaster-service.component';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-admin-offices-vehicles',
@@ -19,7 +20,7 @@ import { ToasterService } from '../toaster-service/toaster-service.component';
 })
 export class AdminOfficesVehiclesComponent implements OnInit {
 
-  constructor(private toasterService:ToasterService,private btmNavMessageService: btmNavDataService, private rentServices: RentServices, private vehicleServices: VehicleServices, private officeServices: OfficeServices, private activatedRoute: ActivatedRoute) {
+  constructor(private sanitizer: DomSanitizer, private toasterService: ToasterService, private btmNavMessageService: btmNavDataService, private rentServices: RentServices, private vehicleServices: VehicleServices, private officeServices: OfficeServices, private activatedRoute: ActivatedRoute) {
     activatedRoute.params.subscribe(params => { this.rentServiceId = params["rentServiceId"] });
 
 
@@ -37,15 +38,15 @@ export class AdminOfficesVehiclesComponent implements OnInit {
   totalPagesNumberV: number = 1;
   offices: OfficeModel[];
   vehicles: Vehicle[];
-  vehicle: Vehicle ;
+  vehicle: Vehicle;
   vehicleCounter: number;
- // vehicleEnabled: boolean;
+
   vehiclePictures: VehiclePictures[];
   tempPic: string;
   office: OfficeModel;
   officeCounter: number;
   mapInfo: MapInfo;
-  @Input() rentServiceTemp: ServiceData ;
+  @Input() rentServiceTemp: ServiceData;
   showProgress: boolean;
   stopProgress: boolean;
   showVehicleProgress: boolean = false;
@@ -55,30 +56,31 @@ export class AdminOfficesVehiclesComponent implements OnInit {
   checkBoxDisabled: boolean = true;
   showOfficesWarning: boolean = false;
   showVehiclesWarning: boolean = false;
+  showVehicleProgressPic: boolean = false;
+  rentServiceEtag:string;
+
+  img: Array<SafeUrl> = ["/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png"];
 
   ngOnInit() {
 
     this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress = message)
-    //this.dataService.currentMessage.subscribe(rentService => this.rentServiceTemp = rentService)
+
     this.btmNavMessageService.changeMessage(true);
-    this.rentServices.GetRentService(this.rentServiceId) .pipe(finalize(
+    this.rentServices.GetRentService(this.rentServiceId).pipe(finalize(
       () => {
         this.StopProgress();
       }))
-    .subscribe(
-      data => {
-        
-        this.rentServiceTemp = data.body;
-        this.checkBoxDisabled=false;
-      },
-      error => {
-        
-        console.log(error);
-      })
+      .subscribe(
+        data => {
+          this.rentServiceEtag = JSON.parse(data.headers.get('ETag'));
+          this.rentServiceTemp = data.body;
+          this.checkBoxDisabled = false;
+        },
+        error => {
 
-    /* this.vehicle = null;
-    this.office.Latitude = 1;
-    this.office.Longitude = 1; */
+          console.log(error);
+        })
+
     this.getServiceOffices();
   }
   ngOnDestroy() {
@@ -88,7 +90,7 @@ export class AdminOfficesVehiclesComponent implements OnInit {
   StopProgress() {
     if (this.stopProgress == true) {
       this.btmNavMessageService.changeMessage(false);
-      //his.stopProgress = false;
+
     }
     else {
       this.stopProgress = true;
@@ -101,47 +103,36 @@ export class AdminOfficesVehiclesComponent implements OnInit {
     console.log($event.coords.lng);
   }
 
-
-
-
-
-
   public getServiceOffices() {
     this.btmNavMessageService.changeMessage(true);
     this.officeServices.GetRentOffices(this.rentServiceId, this.pageIndexO, this.pageSizeO).pipe(finalize(
       () => {
         this.StopProgress();
       })).subscribe(
-      data => {
-        this.offices = data.body as OfficeModel[];
-        //this.userData=this.users[0];
+        data => {
+          this.offices = data.body as OfficeModel[];
 
-      /*   if (this.offices.length > 0) { */
           let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
           this.pageIndexO = jsonData.currentPage;
           this.pageSizeO = jsonData.pageSize;
           this.totalPagesNumberO = jsonData.totalPages;
           this.showOffices = true;
-          this.showOfficesWarning=false;
-        /* }
-        else
-        {
+          this.showOfficesWarning = false;
+
+        },
+        error => {
+          if (error.error.Message === 'There are no Offices') {
+            this.showOfficesWarning = true;
+            this.toasterService.Warning(error.error.Message, 'Warning');
+          }
+          else {
+            this.showOfficesWarning = false;
+            this.toasterService.Error(error.error.Message, 'Error');
+          }
           this.showOffices = false;
-        }   */     
-      },
-      error => {
-        if(error.error.Message==='There are no Offices'){
-          this.showOfficesWarning=true;
-          this.toasterService.Warning(error.error.Message,'Warning');
-        }
-        else{
-          this.showOfficesWarning=false;
-          this.toasterService.Error(error.error.Message,'Error');
-        }
-        this.showOffices = false;
-        //console.log(error);
-      })
+
+        })
   }
   public getServiceVehicles() {
     this.btmNavMessageService.changeMessage(true);
@@ -149,50 +140,36 @@ export class AdminOfficesVehiclesComponent implements OnInit {
       () => {
         this.StopProgress();
       }))
-    .subscribe(
-      data => {
-        this.vehicles = data.body as Vehicle[];
+      .subscribe(
+        data => {
+          this.vehicles = data.body as Vehicle[];
 
-       /*  if (this.vehicles.length > 0) { */
+
           let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
           this.pageIndexV = jsonData.currentPage;
           this.pageSizeV = jsonData.pageSize;
           this.totalPagesNumberV = jsonData.totalPages;
           this.showVehicles = true;
-          this.showVehiclesWarning=false;
-       /*  }
-        else {
-          
-          
-        } */
-      
-      },
-      error => {
-        if (error.error.Message === 'There are no Vehicles') {
-          this.showVehiclesWarning=true;
-          this.toasterService.Warning(error.error.Message, 'Warning');
-        }
-        else {
-          this.showVehiclesWarning=false;
-          this.toasterService.Error(error.error.Message, 'Error');
+          this.showVehiclesWarning = false;
 
-        }
-        this.showVehicles = false;
-        console.log(error);
-      })
+
+        },
+        error => {
+          if (error.error.Message === 'There are no Vehicles') {
+            this.showVehiclesWarning = true;
+            this.toasterService.Warning(error.error.Message, 'Warning');
+          }
+          else {
+            this.showVehiclesWarning = false;
+            this.toasterService.Error(error.error.Message, 'Error');
+
+          }
+          this.showVehicles = false;
+          console.log(error);
+        })
   }
 
-  /*  getVehiclePictures(){
-     this.vehicleServices.GetVehiclePictures(this.rentServiceId).subscribe(
-       data => {
-         this.vehilePictures = data as VehiclePictures[];
-       },
-       error => {
-         console.log(error);
-       })
-   }
-  */
   set pageO(val: number) {
     if (val !== this.pageIndexO) {
 
@@ -212,58 +189,53 @@ export class AdminOfficesVehiclesComponent implements OnInit {
     this.vehicle = vehicle;
     this.vehicleCounter = counter;
     this.vehiclePictures = this.vehicle.VehiclePictures;
-    this.mapVisible=false;
-    //this.vehilePictures=this.vehicle.VehiclePictures;
-    /* this.vehicleServices.GetVehiclePictures(vehicle.VehicleId).subscribe(
-      data => {
-        this.vehilePictures = data as VehiclePictures[];
-        this.tempPic=this.vehilePictures[0].Data;
-        //this.vehilePictures[0]=null;
-      },
-      error => {
-       // this.disableButtons = false;
-        console.log(error);
-      }) */
+    this.mapVisible = false;
+
+
+    this.img = ["/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png"];
+
+    this.showVehicleProgressPic = true;
+
+    let count=0;
+    for (let i = 0; i < this.vehiclePictures.length; i++) {
+      this.vehicleServices.getImage(this.vehiclePictures[i].Data).pipe(finalize(
+        () => {
+          count+=1;
+          if (count == this.vehiclePictures.length) {
+            this.showVehicleProgressPic = false;
+          }
+        }))
+        .subscribe(
+          data => {
+            this.createImageFromBlob(data, i);
+          },
+          error => {
+            this.toasterService.Error(error.error.Message, 'Error');
+          })
+    }
   }
+
+
+  createImageFromBlob(image: Blob, counter: number) {
+    let reader = new FileReader();
+    reader.addEventListener("load", () => {
+      this.img[counter] = this.sanitizer.bypassSecurityTrustResourceUrl(reader.result as string);
+    }, false);
+
+    if (image) {
+      reader.readAsDataURL(image);
+    }
+  }
+
   officeDetails(office: OfficeModel, counter: number) {
     this.office = office;
     this.officeCounter = counter;
-    this.mapVisible=true;
+    this.mapVisible = true;
 
-    /*  this.vehicleServices.GetVehiclePictures(office.OfficeId).subscribe(
-       data => {
-         this.vehilePictures = data as VehiclePictures[];
-         this.tempPic=this.vehilePictures[0].Data;
-         //this.vehilePictures[0]=null;
-       },
-       error => {
-        // this.disableButtons = false;
-         console.log(error);
-       }) */
+
   }
-  /* setCheckBoxVehicle(event, vehicleId: number) {
-    let vehicleEnabled:boolean;
-    if (event.target.checked) {
-       vehicleEnabled = true;
-    }
-    else {
-      vehicleEnabled = false;
-    }
-    this.showVehicleProgress = true;
-    this.vehicleServices.DisableVehicle(vehicleId, vehicleEnabled).subscribe(
-      data => {
-        this.vehicle = data as Vehicle;
-        this.vehicles[this.vehicleCounter] = data as Vehicle;
-        this.showVehicleProgress = false;
-      },
-      error => {
-        // this.disableButtons = false;
-        this.showVehicleProgress = false;
-        console.log(error);
-      })
 
 
-  } */
 
   setCheckBoxService(event) {
     this.btmNavMessageService.changeMessage(true);
@@ -277,21 +249,27 @@ export class AdminOfficesVehiclesComponent implements OnInit {
     }
 
 
-    this.rentServices.ActivateRentService(this.rentServiceTemp.RentServiceId, serviceActivated) .pipe(finalize(
+    this.rentServices.ActivateRentService(this.rentServiceTemp.RentServiceId, serviceActivated,this.rentServiceEtag).pipe(finalize(
       () => {
-        this.checkBoxDisabled=false
+        this.checkBoxDisabled = false
         this.btmNavMessageService.changeMessage(false);
       }))
-    .subscribe(
-      data => {
-      
-        this.rentServiceTemp.Activated=serviceActivated;
-        this.toasterService.Info(data.body,'Info');
-      },
-      error => {
-        this.toasterService.Error(error.error.Message,'Error');
-       // alert(error.error.Message);
-      }
-    )
+      .subscribe(
+        data => {
+          this.rentServiceEtag = JSON.parse(data.headers.get('ETag'));
+          this.rentServiceTemp.Activated = serviceActivated;
+          this.toasterService.Info(data.body, 'Info');
+        },
+        error => {
+          if(error.statusText== "Precondition Failed")
+          {
+            this.toasterService.Error("Data was already changed, please reload",'Error');
+          }
+          else
+          {
+          this.toasterService.Error(error.error.Message,'Error');
+          }
+        }
+      )
   }
 }

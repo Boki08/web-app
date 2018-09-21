@@ -63,12 +63,10 @@
           <div *ngIf="showRentServicesWarning">
               <p class="text-warning">There are no Rent Services</p>
             </div>
-          <!-- <app-cards #cards (sendServiceId)="getVehicles($event)" [isUser]="true"></app-cards> -->
           <div class="row" *ngIf="cardsVisible ">
             <div class="col-lg-3 col-md-5 mb-4" *ngFor="let service of rentServices; let j = index">
               <div class="card h-100">
                 <a>
-                  <!-- <img class="card-img-top" src="http://placehold.it/700x400" alt=""> -->
                   <img class="card-img-top d-block w-100"   style="width:250px; height:250px" src='http://localhost:51680/api/rentService/getServiceLogo/?path={{service.Logo }}' alt="">
                 </a>
                 <div class="card-body">
@@ -88,23 +86,17 @@
                     </div>
                   </div>
                 </div>
-                <!-- <div class="card-footer">
-                   
-                  </div> -->
+               
               </div>
             </div>
     
     
     
     
-            <!-- <app-cards #cards [isUser]="true"></app-cards> -->
             <div class="row">
               <div #processContainer> </div>
             </div>
-            <!--  <div class=" row justify-content-md-center">
-    
-            <app-pager [page]="pageNumber" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
-          </div> -->
+           
           </div>
           <div class=" row justify-content-md-center" *ngIf="rentServices!=null && rentServices.length>0">
     
@@ -113,21 +105,7 @@
                   
           </div>
         </div>
-     <!--  <div class="col-xl-9">
-        <h4>
-          <small>Available Rent Services</small>
-        </h4>
-        <hr>
-        <app-cards #RentServicescards [isUser]="false"></app-cards>
-        <div class="row">
-          <div #processContainer> </div>
-        </div>
-  
-        <div class=" row justify-content-md-center">
-  
-          <app-pager [page]="pageIndex" [totalPages]="totalPagesNumber" (changePage)="page=$event"></app-pager>
-        </div>
-      </div> -->
+     
     </div>
   </div>
   

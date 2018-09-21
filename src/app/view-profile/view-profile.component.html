@@ -50,8 +50,17 @@
       display: flex;
       flex-flow: row wrap;
       justify-content: center;" >
-        <button type="button" class="btn btn-primary" [routerLink]="['/changePassword']">Change password</button>
+        <button type="button" class="btn btn-primary" [routerLink]="['/changePassword']">Change Password</button>
       </div>
     </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm " style="
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;" >
+          <button type="button" class="btn btn-danger" (click)="deleteProfile()">Delete Profile</button>
+        </div>
+      </div>
   </div>
 </div>

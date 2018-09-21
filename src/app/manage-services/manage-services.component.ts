@@ -4,6 +4,7 @@ import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 import { ServiceData } from '../models/serviceData';
 import { finalize } from 'rxjs/operators'
 import { ToasterService } from '../toaster-service/toaster-service.component';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-manage-services',
@@ -12,7 +13,7 @@ import { ToasterService } from '../toaster-service/toaster-service.component';
 })
 export class ManageServicesComponent implements OnInit {
 
-  constructor(private toasterService:ToasterService,private btmNavMessageService: btmNavDataService, private RentServices: RentServices) { }
+  constructor(private sanitizer: DomSanitizer,private toasterService:ToasterService,private btmNavMessageService: btmNavDataService, private RentServices: RentServices) { }
 
   tableVisible: boolean = false;
   showProgress: boolean = false;
@@ -20,13 +21,16 @@ export class ManageServicesComponent implements OnInit {
   notApproved: boolean = false;
   edited: boolean = false;
   notEdited: boolean = false;
-  checkBoxDisabled: boolean = true;
-  showServiceProgress: boolean = false;
+  checkBoxDisabled: boolean = false;
+  showProgressActivate: boolean = false;
+  showProgressPicture: boolean = false;
   showServiceWarning: boolean = false;
 
 
   selectedSortTemp: string = "No Sort";
   selectedSort: string = "noSort";
+  img: SafeUrl = "/assets/images/default-placeholder.png";
+  rentServiceETag:string;
 
 
   pageSize: number = 10;
@@ -45,7 +49,6 @@ export class ManageServicesComponent implements OnInit {
   }
   GetRentServices() {
     this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress = message)
-    //this.dataService.currentMessage.subscribe(rentService => this.rentServiceTemp = rentService)
     this.btmNavMessageService.changeMessage(true);
     this.RentServices.GetAllServicesAdmin(this.approved, this.notApproved, this.edited, this.notEdited, this.selectedSort, this.pageIndex, this.pageSize) .pipe(finalize(
       () => {
@@ -54,7 +57,6 @@ export class ManageServicesComponent implements OnInit {
     .subscribe(
       data => {
         this.rentServices = data.body;
-        /* if (this.rentServices.length > 0) { */
 
           let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
@@ -63,12 +65,7 @@ export class ManageServicesComponent implements OnInit {
           this.totalPagesNumber = jsonData.totalPages;
           this.tableVisible = true;
           this.showServiceWarning=false;
-      /*   }
-        else {
-          this.tableVisible = false;
-        } */
-
-        
+  
       },
       error => {
         if(error.error.Message==="There are no Rent Services"){
@@ -151,11 +148,54 @@ export class ManageServicesComponent implements OnInit {
   }
 
   serviceDetails(service: ServiceData, counter: number) {
+    this.img  = "/assets/images/default-placeholder.png";
     this.selectedService = service;
-  }
 
+
+    this.showProgressPicture = true;
+    this.checkBoxDisabled = true;
+
+    this.RentServices.GetRentService(this.selectedService.RentServiceId).pipe(finalize(
+      () => {
+
+      }))
+      .subscribe(
+        data => {
+
+          this.selectedService =data.body;
+          this.rentServiceETag = JSON.parse(data.headers.get('ETag'));
+
+
+          this.RentServices.getImage(this.selectedService.Logo).pipe(finalize(
+            () => {
+              this.checkBoxDisabled = false;
+              this.showProgressPicture = false;
+            }))
+            .subscribe(
+              data => {
+                this.createImageFromBlob(data);
+              },
+              error => {
+                this.toasterService.Error(error.error.Message, 'Error');
+              })
+        },
+        error => {
+          this.toasterService.Error(error.error.Message, 'Error');
+        })
+    
+  }
+  createImageFromBlob(image: Blob) {
+    let reader = new FileReader();
+    reader.addEventListener("load", () => {
+      this.img = this.sanitizer.bypassSecurityTrustResourceUrl(reader.result as string);
+    }, false);
+
+    if (image) {
+      reader.readAsDataURL(image);
+    }
+  }
   setCheckBoxService(event) {
-    this.showServiceProgress = true;
+    this.showProgressActivate = true;
     this.checkBoxDisabled = true;
     let serviceActivated: boolean;
     if (event.target.checked) {
@@ -166,21 +206,28 @@ export class ManageServicesComponent implements OnInit {
     }
 
 
-    this.RentServices.ActivateRentService(this.selectedService.RentServiceId, serviceActivated) .pipe(finalize(
+    this.RentServices.ActivateRentService(this.selectedService.RentServiceId, serviceActivated,this.rentServiceETag) .pipe(finalize(
       () => {
         this.checkBoxDisabled=false
-        this.showServiceProgress = false;
+        this.showProgressActivate = false;
       }))
     .subscribe(
       data => {
       
+        this.rentServiceETag = JSON.parse(data.headers.get('ETag'));
         this.selectedService.Activated=serviceActivated;
         this.toasterService.Info(data.body,'Info');
         
       },
       error => {
+        if(error.statusText== "Precondition Failed")
+        {
+          this.toasterService.Error("Data was already changed, please reload",'Error');
+        }
+        else
+        {
         this.toasterService.Error(error.error.Message,'Error');
-        //alert(error.error.Message);
+        }
       }
     )
   }

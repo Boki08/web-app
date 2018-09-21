@@ -43,7 +43,7 @@
                   }">
           <div class="invalid-feedback" *ngIf="BirthDate.errors && (BirthDate.dirty || BirthDate.touched)">
             <p *ngIf="BirthDate.errors.required">Birthday is required</p>
-            <!-- <p *ngIf="BirthDate.errors.pattern">Birthday format in not correct</p> -->
+
 
           </div>
 
@@ -53,71 +53,19 @@
 
     </div>
     <div class="form-group row pt-3 justify-content-md-center">
-      <div *ngIf="userData!=null && userData.DocumentPicture==null" class="row">
+      <div *ngIf="(userData!=null && userData.DocumentPicture==null) || (userData.Activated==false && userData.ProfileEdited==false)" class="row">
         <div class="col col-lg-4 col-lg-push-4">
           <img [src]="imageUrl" style="width:250px; height:150px">
           <br>
           <br>
           <input type="file" (change)="handleFileInput($event.target.files)" name="DocumentPicture"
-            #DocumentPicture accept="image/*"><!--  [ngClass]="{
-                'is-valid':DocumentPicture.valid && (DocumentPicture.dirty || DocumentPicture.touched),
-                'is-invalid':DocumentPicture.invalid && (DocumentPicture.dirty || DocumentPicture.touched)
-              }">
-          <div class="invalid-feedback" *ngIf="DocumentPicture.errors && (DocumentPicture.dirty || DocumentPicture.touched)">
-            <p *ngIf="DocumentPicture.errors.required">DocumentPicture is required</p>
-          </div> -->
+            #DocumentPicture accept="image/*">
+
           <br>
         </div>
       </div>
     </div>
-    <!-- <div class="form-group row pt-3 justify-content-md-center">
-
-      <label for="fullNameInput" class="col-sm-2 col-form-label ">First name</label>
-      <div class="col-sm-3">
-        <input type="text" name="FullName" ngModel [(ngModel)]="this.userData.FullName" class="form-control  is-valid" id="fullNameInput"
-          placeholder="Full name" required>
-      </div>
-      <div class="invalid-feedback">
-        Please input a name.
-      </div>
-      <div class="col-lg-offset-2">
-      </div>
-    </div>
-
-    <div class="form-group row pt-3 justify-content-md-center">
-      <label for="emailInput" class="col-sm-2 col-form-label ">Email</label>
-      <div class="col-sm-3">
-        <input type="email" name="Email" ngModel [(ngModel)]="this.userData.Email" class="form-control" id="emailInput" placeholder="Email"
-          aria-describedby="inputGroupPrepend" required>
-      </div>
-      <div class="invalid-feedback">
-        Please choose a username.
-      </div>
-    </div>
-
-    <div class="form-group row pt-3 justify-content-md-center">
-      <label for="birthDate" class="col-sm-2 col-form-label ">Birthday</label>
-      <div class="col-sm-3">
-        <div class="input-group">
-          <input class="form-control" type="date" name="BirthDate" required min="minDate" max="maxDate" placeholder="yyyy-MM-dd" ngModel
-            [(ngModel)]="this.userData.BirthDate">
-        </div>
-      </div>
-    </div>
-    <div class="form-group row pt-3 justify-content-md-center">
-      <div *ngIf="userData.DocumentPicture==null" class="row">
-        <div class="col col-lg-4 col-lg-push-4">
-          <img [src]="imageUrl" style="width:250px; height:150px">
-          <br>
-          <br>
-          <input type="file" (change)="handleFileInput($event.target.files)" name="DocumentPicture" #DocumentPicture accept="image/*">
-          <br>
-        </div>
-      </div>
-    </div>
-    <div class="form-group row pt-3 justify-content-md-center">
-      <button class="btn btn-primary justify-content-md-center" [disabled]="!f.valid" type="submit">Edit</button>
-    </div> -->
+   
     <div class="form-group row pt-3 justify-content-md-center">
       <button class="btn btn-primary justify-content-md-center" [disabled]="!f.valid" type="submit">Edit</button>
     </div>

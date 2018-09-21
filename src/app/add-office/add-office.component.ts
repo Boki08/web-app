@@ -44,6 +44,8 @@ export class AddOfficeComponent implements OnInit {
     this.CreateFormControls();
     this.CreateForm();
     this.isBtnDisabled = true;
+    this.btmNavMessageService.changeMessage(true);
+    this.btmNavMessageService.changeMessage(false);
   }
   ngOnDestroy() {
     this.btmNavMessageService.changeMessage(false);
@@ -52,7 +54,7 @@ export class AddOfficeComponent implements OnInit {
   CreateFormControls() {
     this.Address = new FormControl('', [
       Validators.required,
-      Validators.maxLength(200),
+      Validators.maxLength(60),
     ]);
     this.Picture = new FormControl('', [
       Validators.required,
@@ -97,19 +99,19 @@ export class AddOfficeComponent implements OnInit {
     office.RentServiceId = this.rentServiceId;
     this.officeServices.AddOffice(office, this.fileToUpload).pipe(finalize(
       () => {
+        this.fileToUpload==null;
         this.isBtnDisabled=false;
         this.btmNavMessageService.changeMessage(false);
+        this.imageUrl = "/assets/images/default-placeholder.png"
       }))
       .subscribe(
         data => {
-          //alert("Your changes updated successfully");
           this.toasterService.Info("Office was added",'Info');
           form.reset();
          
         },
         error => {
           this.toasterService.Error(error.error.Message,'Error');
-          //alert(error.error.ModelState[""][0]);
          
         }
       );

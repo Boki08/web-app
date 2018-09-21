@@ -138,13 +138,10 @@
         </div>
       </div>
     </div>
-    <!-- 
-        <hr/>
-        <pre>Model: {{ model | json }}</pre> 
-    <hr/>-->
+
     <div class="form-group row pt-3 mb-3 justify-content-md-center">
       <button class="btn btn-primary justify-content-md-center" [routerLink]="['/manageOfficesVehiclesComponent',vehicle.RentServiceId]">Back</button>
-      <button class="btn btn-primary justify-content-md-center" [disabled]="!f.valid" type="submit">Edit Vehicle</button>
+      <button class="btn btn-primary justify-content-md-center" [disabled]="!f.valid || btnDisabled" type="submit">Edit Vehicle</button>
     </div>
   </form>
 </div>

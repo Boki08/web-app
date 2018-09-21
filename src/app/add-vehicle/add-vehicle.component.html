@@ -13,7 +13,7 @@
         <div class="invalid-feedback" *ngIf="Model.errors && (Model.dirty || Model.touched)">
           <p *ngIf="Model.errors.required">Model is required</p>
           <p *ngIf="Model.errors.maxlength">Model is too long, delete {{Model.errors.maxlength.actualLength
-              - Model.errors.maxlength.requiredLength}} characters </p>
+            - Model.errors.maxlength.requiredLength}} characters </p>
 
         </div>
 
@@ -30,8 +30,9 @@
           }">
         <div class="invalid-feedback" *ngIf="Manufacturer.errors && (Manufacturer.dirty || Manufacturer.touched)">
           <p *ngIf="Manufacturer.errors.required">Manufacturer is required</p>
-          <p *ngIf="Manufacturer.errors.maxlength">Manufacturer is too long, delete {{Manufacturer.errors.maxlength.actualLength
-              - Manufacturer.errors.maxlength.requiredLength}} characters </p>
+          <p *ngIf="Manufacturer.errors.maxlength">Manufacturer is too long, delete
+            {{Manufacturer.errors.maxlength.actualLength
+            - Manufacturer.errors.maxlength.requiredLength}} characters </p>
 
         </div>
       </div>
@@ -47,8 +48,9 @@
           }">
         <div class="invalid-feedback" *ngIf="YearOfManufacturing.errors && (YearOfManufacturing.dirty || YearOfManufacturing.touched)">
           <p *ngIf="YearOfManufacturing.errors.required">Year Of Manufacturing is required</p>
-          <p *ngIf="YearOfManufacturing.errors.maxlength">YearOfManufacturing is too long, delete {{YearOfManufacturing.errors.maxlength.actualLength
-              - YearOfManufacturing.errors.maxlength.requiredLength}} characters </p>
+          <p *ngIf="YearOfManufacturing.errors.maxlength">YearOfManufacturing is too long, delete
+            {{YearOfManufacturing.errors.maxlength.actualLength
+            - YearOfManufacturing.errors.maxlength.requiredLength}} characters </p>
           <p *ngIf="YearOfManufacturing.errors.pattern">Year Of Manufacturing format in not correct</p>
         </div>
       </div>
@@ -64,8 +66,9 @@
           }">
         <div class="invalid-feedback" *ngIf="HourlyPrice.errors && (HourlyPrice.dirty || HourlyPrice.touched)">
           <p *ngIf="HourlyPrice.errors.required">Hourly Price is required</p>
-          <p *ngIf="HourlyPrice.errors.maxlength">HourlyPrice is too long, delete {{HourlyPrice.errors.maxlength.actualLength
-              - HourlyPrice.errors.maxlength.requiredLength}} characters </p>
+          <p *ngIf="HourlyPrice.errors.maxlength">HourlyPrice is too long, delete
+            {{HourlyPrice.errors.maxlength.actualLength
+            - HourlyPrice.errors.maxlength.requiredLength}} characters </p>
           <p *ngIf="HourlyPrice.errors.pattern">Hourly Price format in not correct</p>
         </div>
       </div>
@@ -81,8 +84,9 @@
           }">
         <div class="invalid-feedback" *ngIf="Description.errors && (Description.dirty || Description.touched)">
           <p *ngIf="Description.errors.required">Description is required</p>
-          <p *ngIf="Description.errors.maxlength">Description is too long, delete {{Description.errors.maxlength.actualLength
-              - Description.errors.maxlength.requiredLength}} characters </p>
+          <p *ngIf="Description.errors.maxlength">Description is too long, delete
+            {{Description.errors.maxlength.actualLength
+            - Description.errors.maxlength.requiredLength}} characters </p>
         </div>
       </div>
     </div>
@@ -104,7 +108,7 @@
 
     <div class="form-group row pt-3 justify-content-md-center">
       <div class="row">
-        <div class="col col-lg-4 col-lg-push-4">
+        <!-- <div class="col col-lg-4 col-lg-push-4">
           <img [src]="imagesUrl[1]" style="width:250px; height:150px">
           <br>
           <br>
@@ -123,16 +127,44 @@
         </div>
         <div class="col col-lg-4 col-lg-push-4">
           <img [src]="imagesUrl[3]" style="width:250px; height:150px">
-        </div>
+        </div> -->
+        <div class="col col-lg-4 col-lg-push-4">
+            <img [src]="imagesUrl[0]" style="width:250px; height:150px">
+            <br>
+            <br>
+            <input type="file"  (change)="handleFileInput($event.target.files,0)" name="Picture"
+              #Picture accept="image/*">
+           
+            <br>
+          </div>
+          <div class="col col-lg-4 col-lg-push-4">
+            <img [src]="imagesUrl[1]" style="width:250px; height:150px">
+            <br>
+            <br>
+            <input type="file"  (change)="handleFileInput($event.target.files,1)" name="Picture"
+              #Picture accept="image/*">
+           
+            <br>
+          </div>
+          <div class="col col-lg-4 col-lg-push-4">
+            <img [src]="imagesUrl[2]" style="width:250px; height:150px">
+            <br>
+            <br>
+            <input type="file"  (change)="handleFileInput($event.target.files,2)" name="Picture"
+              #Picture accept="image/*">
+           
+            <br>
+          </div>
       </div>
     </div>
-    <!-- 
-        <hr/>
-        <pre>Model: {{ model | json }}</pre> 
-    <hr/>-->
+
     <div class="form-group row pt-3 mb-3 justify-content-md-center">
-      <button class="btn btn-primary justify-content-md-center" [routerLink]="['/manageOfficesVehiclesComponent',rentServiceId]">Back</button>
-      <button class="btn btn-primary justify-content-md-center" [disabled]="!f.valid" type="submit">Add Vehicle</button>
+      <div class="col">
+        <button class="btn btn-primary ml-auto" id="backBtn" [routerLink]="['/manageOfficesVehiclesComponent',rentServiceId]">Back</button>
+      </div>
+      <div class="col">
+        <button class="btn btn-primary" id="addBtn" [disabled]="!f.valid || disableBtn || !pictureAdded" type="submit">Add Vehicle</button>
+      </div>
     </div>
   </form>
 </div>

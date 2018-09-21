@@ -39,20 +39,19 @@ export class NavbarComponent implements OnInit {
       this.pageName="Manager Services";
     }
     else  if (localStorage.jwt && localStorage.role == "AppUser") {
-      this.link1 = "Home";
-      this.link2 = "Rent Services";
-      this.link3 = "Orders";
-      this.route1 = "/home";
-      this.route2 = "/rentServices";
-      this.route3 = "/viewOrdersComponent";
+
+      this.link1 = "Rent Services";
+      this.link2 = "Orders";
+
+      this.route1 = "/rentServices";
+      this.route2 = "/viewOrdersComponent";
 
       this.pageName="User Services";
     }
     else {
-      this.link1 = "Home";
-      this.link2 = "Rent Services";
-      this.route1 = "/home";
-      this.route2 = "/rentServices";
+
+      this.link1 = "Rent Services";
+      this.route1 = "/rentServices";
 
       this.pageName="Visitor Services";
     }

@@ -15,10 +15,6 @@
           <p *ngIf="FullName.errors.maxlength">Name is too long, delete {{FullName.errors.maxlength.actualLength
             - FullName.errors.maxlength.requiredLength}} characters </p>
         </div>
-        <!--  <p>FullName.dirty {{FullName.dirty}}</p>
-        <p>FullName.valid {{FullName.valid}}</p>
-        <p>FullName.invalid {{FullName.invalid}}</p>
-        <p>FullName.touched {{FullName.touched}}</p> -->
 
       </div>
     </div>
@@ -45,7 +41,7 @@
       <div class="form-group row pt-3 justify-content-md-center">
         <label for="passwordInput" class="col-sm-2 col-form-label ">Password</label>
         <div class="col-sm-3">
-          <input type="password" name="Password" formControlName="Password" pattern='^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,}$'
+          <input type="password" name="Password" formControlName="Password" pattern='^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$'
             class="form-control" id="passwordInput" placeholder="Password" [ngClass]="{
             'is-valid':Password.valid && (Password.dirty || Password.touched),
             'is-invalid':Password.invalid && (Password.dirty || Password.touched)
@@ -98,37 +94,6 @@
       </div>
     </div>
 
-
-    <!--  
-    <div class="form-group row pt-3 justify-content-md-center">
-      <label for="repeatedPassword" class="col-sm-2 col-form-label ">Repeat Password</label>
-      <div class="col-sm-3">
-        <input type="password" name="RepeatedPassword" ngModel class="form-control  is-valid" id="repeatedPassword" placeholder="Repeat Password"
-          required #repeatedPassword="ngModel">
-        <div *ngIf="(repeatedPassword.dirty || repeatedPassword.touched)" class="alert alert-danger">
-          <div [hidden]="passwordInput.value == repeatedPassword.value">
-            <p id="errPasswordMatch">Password doesn't match</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="invalid-feedback">
-        Please choose a password.
-
-      </div>
-    </div>
-    
-
-    <div class="form-group row pt-3 justify-content-md-center">
-      <label for="birthDate" class="col-sm-2 col-form-label ">Birthday</label>
-      <div class="col-sm-3">
-        <div class="input-group">
-          <input class="form-control" type="date" name="BirthDate" min="minDate" max="maxDate" placeholder="yyyy-MM-dd" [(ngModel)]="model">
-
-
-        </div>
-      </div>
-    </div> -->
 
     <div class="form-group row pt-3 justify-content-md-center">
       <button class="btn btn-primary justify-content-md-center" [disabled]="!f.valid" type="submit">Register</button>

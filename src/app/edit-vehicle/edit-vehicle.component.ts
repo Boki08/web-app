@@ -29,6 +29,7 @@ export class EditVehicleComponent implements OnInit {
   showDangerErrorMessage: boolean;
   firstLoad: boolean = false;
 
+
   dangerErrMessage: string;
   ETag: string;
 
@@ -44,8 +45,7 @@ export class EditVehicleComponent implements OnInit {
   Manufacturer: FormControl;
   Description: FormControl;
   HourlyPrice: FormControl;
-  //TypeId: FormControl;
- // Pictures: FormControl;
+
 
   vehicle: Vehicle = new Vehicle(0, 0, ' ', 0, ' ', ' ', 0, 0, true, true, null, null);
 
@@ -66,10 +66,8 @@ export class EditVehicleComponent implements OnInit {
         data => {
           this.vehicle = data.body as Vehicle;
 
-          //this.selectedType=this.vehicle.TypeOfVehicle.Type;
           this.ETag = JSON.parse(data.headers.get('ETag'));
 
-         
 
           this.selectedTypeId = this.vehicle.TypeId;
 
@@ -80,7 +78,6 @@ export class EditVehicleComponent implements OnInit {
             this.fileToUpload[i] = file;
           }
 
-          //this.checkIfAllLoaded();
 
         },
         error => {
@@ -95,27 +92,21 @@ export class EditVehicleComponent implements OnInit {
           else {
             this.toasterService.Error(error.error.Message, 'Error');
           }
-          //this.checkIfAllLoaded();
-          //alert(error.error.ModelState[""][0]);
-
 
         }
       );
     this.vehicleTypeServices.GetVehicleTypes().pipe(finalize(
       () => {
         this.checkIfAllLoaded();
-        /*   this.btmNavMessageService.changeMessage(false);
-          this.disableBtn = false; */
+      
       }))
       .subscribe(
         data => {
           this.vehicleTypes = data.body as VehicleTypes[];
-          //this.selectedType =this.vehicleTypes[0].Type
 
 
         },
         error => {
-          //alert(error.error.Message);
           this.btnDisabled = true;
           this.toasterService.Error(error.error.Message, 'Error');
 
@@ -154,7 +145,6 @@ export class EditVehicleComponent implements OnInit {
       Manufacturer: this.Manufacturer,
       Description: this.Description,
       HourlyPrice: this.HourlyPrice,
-      //TypeId: this.TypeId,
       
     });
   }
@@ -165,22 +155,31 @@ export class EditVehicleComponent implements OnInit {
   }
 
   onSubmit(vehicle: Vehicle, form: NgForm,) {
-
+    this.btmNavMessageService.changeMessage(true);
+    this.btnDisabled=true;
     vehicle.TypeId = this.selectedTypeId;
     vehicle.VehicleId=this.vehicle.VehicleId;
     this.vehicleServices.EditVehicle(vehicle, this.fileToUpload,this.ETag).pipe(finalize(
       () => {
-        /*  this.btmNavMessageService.changeMessage(false);
-         this.disableBtn = false; */
+         this.btmNavMessageService.changeMessage(false);
+         this.btnDisabled = false;
       }))
       .subscribe(
         data => {
-          this.vehicle = data;
+          this.ETag = JSON.parse(data.headers.get('ETag'));
+          
+          this.vehicle = data.body;
           this.toasterService.Info("Vehicle was edited", 'Info');
         },
         error => {
-          //alert(error.error.ModelState[""][0]);
-          this.toasterService.Error(error.error.Message, 'Error');
+          if(error.statusText== "Precondition Failed")
+          {
+            this.toasterService.Error("Data was already changed, please reload",'Error');
+          }
+          else
+          {
+          this.toasterService.Error(error.error.Message,'Error');
+          }
         }
       );
 

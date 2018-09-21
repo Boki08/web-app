@@ -19,11 +19,7 @@ import { ToasterService } from '../toaster-service/toaster-service.component';
 
 })
 export class RegisterComponent implements OnInit {
-  /*  minDate = "1900-1-1";
-   //minDate = new Date(1850, 0, 1);
-   date = new Date();
-   user = new User('1', '1', '1', new Date, '1', '1', '1', true, true);
-   maxDate = this.date.getFullYear() + "-" + (this.date.getMonth() + 1) + "-" + this.date.getDate(); */
+ 
 
 
   constructor(private toasterService:ToasterService,private btmNavMessageService: btmNavDataService, private localeService: BsLocaleService, private UserService: UserServices) {
@@ -53,18 +49,18 @@ export class RegisterComponent implements OnInit {
     this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress = message)
     this.CreateFormControls();
     this.CreateForm();
+    this.btmNavMessageService.changeMessage(true);
+    this.btmNavMessageService.changeMessage(false);
   }
   CreateFormControls() {
     this.FullName = new FormControl('', [
       Validators.maxLength(50),
       Validators.minLength(5),
-      //Validators.pattern('^(?=.*[a-zA-Z])'),
       Validators.required
     ]);
     this.Password = new FormControl('', [
       Validators.maxLength(30),
       Validators.minLength(6),
-      // Validators.pattern('^(?=.*\d)(?=.*[!@#$%^*/\._?])(?=.*[a-z])(?=.*[A-Z]).{7,}$'),
       Validators.required
     ]);
     this.RepeatedPassword = new FormControl('', Validators.required);
@@ -80,14 +76,12 @@ export class RegisterComponent implements OnInit {
       Validators.required
     ]);
     this.BirthDate = new FormControl('', [
-      // Validators.pattern('^([0-9]{4})\-([0-9]{2})\-([0-9]{2})[T]([0-9]{2})\:([0-9]{2})\:([0-9]{2}).*$'),
       Validators.required]);
   }
   CreateForm() {
     this.regForm = new FormGroup({
       FullName: this.FullName,
-      /* Password: this.Password,
-      RepeatedPassword: this.RepeatedPassword, */
+
       Matching_passwords_group: this.Matching_passwords_group,
       Email: this.Email,
       BirthDate: this.BirthDate,
@@ -100,7 +94,6 @@ export class RegisterComponent implements OnInit {
     user.Password = user.Matching_passwords_group.Password;
     user.RepeatedPassword = user.Matching_passwords_group.RepeatedPassword;
     delete user.Matching_passwords_group;
-    //user.birthDate=/* JSON.stringify(user.birthDate) */user.birthDate["year"]+'-'+user.birthDate["month"]+'-'+user.birthDate["day"]+'T00:00:00';
     this.UserService.register(user) .pipe(finalize(
       () => {
         this.btmNavMessageService.changeMessage(false);
@@ -108,10 +101,8 @@ export class RegisterComponent implements OnInit {
     .subscribe(
       data => {
         this.toasterService.Info("Registration was successfull",'Info');
-        //alert("You registered successfully");
       },
       error => {
-        //alert(error.error.Message);
         this.toasterService.Error(error.error.Message,'Error');
         console.log(error);
       })

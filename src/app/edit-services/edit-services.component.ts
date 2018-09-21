@@ -73,7 +73,6 @@ export class EditServicesComponent implements OnInit {
     .subscribe(
       data => {
         this.rentServices = data.body as ServiceData[];
-        //this.userData=this.users[0];
         this.cardsVisible = true;
         
         let jsonData = JSON.parse(data.headers.get('Paging-Headers'));

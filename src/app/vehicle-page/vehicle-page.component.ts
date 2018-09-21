@@ -23,14 +23,13 @@ import { ToasterService } from '../toaster-service/toaster-service.component';
 })
 export class VehiclePageComponent implements OnInit {
 
-  //@ViewChild('vehicleModal') modal; 
   Id: string = "-1";
   vehicles: Vehicle[];
   counter: number;
   rentServiceTemp: ServiceData;
   rentService: ServiceData = new ServiceData(1, " ", " ", " ", " ", 1, true, true);
   pageIndex: number = 1;
-  pageSize: number = 9;
+  pageSize: number = 8;
   totalPagesNumber: number = 0;
   rentServiceId: number;
   @Input() isVisible: boolean[];
@@ -72,9 +71,6 @@ export class VehiclePageComponent implements OnInit {
         error => {
           
             this.toasterService.Error(error.error.Message,'Error');
-          
-         
-          //alert(error.error.ModelState[""][0]);
 
         }
       );
@@ -87,7 +83,6 @@ export class VehiclePageComponent implements OnInit {
   ngOnInit() {
     this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress = message)
 
-    /*  this.dataRentService.currentMessage.subscribe(rentService => this.rentServiceTemp = rentService) */
     this.btmNavMessageService.changeMessage(true);
     this.rentServices.GetRentService(this.rentServiceId).pipe(finalize(
       () => {
@@ -102,13 +97,11 @@ export class VehiclePageComponent implements OnInit {
         this.toasterService.Error(error.error.Message, 'Error');
         console.log(error);
       })
-    //this.rentService=this.rentServiceTemp;
     this.getVehicles();
 
   }
   vehicleDetails(vehicle: Vehicle, counter: number) {
     this.vehicle = vehicle;
-    //this.vehicleCounter = counter;
     if (this.vehicle.VehiclePictures.length > 0) {
       this.vehiclePictures = this.vehicle.VehiclePictures;
     }
@@ -116,17 +109,7 @@ export class VehiclePageComponent implements OnInit {
       this.vehiclePictures = [];
       this.vehiclePictures.push(new VehiclePictures(1, 1, 'pic'));
     }
-    //this.vehilePictures=this.vehicle.VehiclePictures;
-    /* this.vehicleServices.GetVehiclePictures(vehicle.VehicleId).subscribe(
-      data => {
-        this.vehilePictures = data as VehiclePictures[];
-        this.tempPic=this.vehilePictures[0].Data;
-        //this.vehilePictures[0]=null;
-      },
-      error => {
-       // this.disableButtons = false;
-        console.log(error);
-      }) */
+   
   }
 
   public getVehicles() {
@@ -149,7 +132,6 @@ export class VehiclePageComponent implements OnInit {
         this.totalPagesNumber = jsonData.totalPages;
 
        this.showWarning=false;
-        //alert("GET: id: " + this.methodResult.id + ", userId: " + this.methodResult.userId + ", title: " + this.methodResult.title + ", body: " + this.methodResult.body);
       },
       error => {
         if (error.error.Message === 'There are no Vehicles') {
@@ -162,11 +144,6 @@ export class VehiclePageComponent implements OnInit {
         }
         console.log(error);
       })
-
-    //this.RentServices = JSON.parse(temp);
-
-
-    //(<ProcessComponent>componentRef.instance).data=step.desc;
 
   }
 
@@ -224,12 +201,9 @@ StopNav(){
       }))
     .subscribe(
       data => {
-        this.counter = 0;
 
         this.comments = data.body as CommentModel[];
        
-
-        //alert("GET: id: " + this.methodResult.id + ", userId: " + this.methodResult.userId + ", title: " + this.methodResult.title + ", body: " + this.methodResult.body);
       },
       error => {
         this.toasterService.Error(error.error.Message, 'Error');

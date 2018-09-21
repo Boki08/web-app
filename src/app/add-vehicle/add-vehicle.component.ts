@@ -7,6 +7,7 @@ import { Vehicle } from '../models/vehicles';
 import { VehicleTypeServices } from '../services/vehicleType-services';
 import { finalize } from 'rxjs/operators'
 import { ToasterService } from '../toaster-service/toaster-service.component';
+import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 
 @Component({
   selector: 'app-add-vehicle',
@@ -15,15 +16,16 @@ import { ToasterService } from '../toaster-service/toaster-service.component';
 })
 export class AddVehicleComponent implements OnInit {
 
-  constructor(private toasterService:ToasterService,private vehicleTypeServices:VehicleTypeServices,private vehicleServices: VehicleServices, private activatedRoute: ActivatedRoute) {
+  constructor(private btmNavMessageService: btmNavDataService,private toasterService:ToasterService,private vehicleTypeServices:VehicleTypeServices,private vehicleServices: VehicleServices, private activatedRoute: ActivatedRoute) {
     activatedRoute.params.subscribe(params => { this.rentServiceId = params["rentServiceId"] });
   }
   rentServiceId: number;
   vehicleTypes: VehicleTypes[];
   selectedType: string = "Select Type";
   fileToUpload: Array<File> = [];
-  imagesUrl: Array<string> = [] = ["/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png"];
+  imagesUrl: Array<string>  = ["/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png"];
   selectedTypeId: number;
+  disableBtn:boolean=false;
 
   addVehicleForm: FormGroup;
   Model: FormControl;
@@ -31,17 +33,24 @@ export class AddVehicleComponent implements OnInit {
   Manufacturer: FormControl;
   Description: FormControl;
   HourlyPrice: FormControl;
+
+  pictureAdded:boolean=false;
   //TypeId: FormControl;
-  Pictures: FormControl;
+ //Pictures: FormControl;
 
 
   ngOnInit() {
+    let file=new File([new Blob([ "/assets/images/default-placeholder.png"], { type: 'application/zip' })], "/assets/images/default-placeholder.png", { type: 'application/zip' })
+    this.fileToUpload.push(file);
+    this.fileToUpload.push(file);
+    this.fileToUpload.push(file);
+    this.btmNavMessageService.changeMessage(true);
     this.CreateFormControls() ;
     this.CreateForm();
     this.vehicleTypeServices.GetVehicleTypes().pipe(finalize(
       () => {
-      /*   this.btmNavMessageService.changeMessage(false);
-        this.disableBtn = false; */
+        this.btmNavMessageService.changeMessage(false);
+      
       }))
       .subscribe(
         data => {
@@ -81,9 +90,9 @@ export class AddVehicleComponent implements OnInit {
       Validators.pattern("^[0-9]+(\.[0-9][0-9]?)?$"),
     ]);
     
-    this.Pictures = new FormControl('', [
+   /*  this.Pictures = new FormControl('', [
       Validators.required,
-    ]);
+    ]); */
   }
   CreateForm() {
     this.addVehicleForm = new FormGroup({
@@ -93,7 +102,7 @@ export class AddVehicleComponent implements OnInit {
       Description: this.Description,
       HourlyPrice: this.HourlyPrice,
       //TypeId: this.TypeId,
-      Pictures: this.Pictures,
+     // Pictures: this.Pictures,
     });
   }
 
@@ -103,20 +112,27 @@ export class AddVehicleComponent implements OnInit {
   }
 
   onSubmit(vehicle: Vehicle, form: NgForm) {
+    this.disableBtn = true;
+    this.btmNavMessageService.changeMessage(true);
     vehicle.RentServiceId = this.rentServiceId;
     vehicle.TypeId = this.selectedTypeId;
     this.vehicleServices.AddVehicle(vehicle, this.fileToUpload) .pipe(finalize(
       () => {
-       /*  this.btmNavMessageService.changeMessage(false);
-        this.disableBtn = false; */
+       
+        this.btmNavMessageService.changeMessage(false);
+        this.disableBtn = false;
       }))
       .subscribe(
         data => {
-         // this.vehicleId = data.VehicleId as number;
+          this.pictureAdded=false;
+          form.reset();
+          for(let i=0;i<this.fileToUpload.length;i++){
+            this.fileToUpload[i]=new File([new Blob([ "/assets/images/default-placeholder.png"], { type: 'application/zip' })], "/assets/images/default-placeholder.png", { type: 'application/zip' })
+          }
+            this.imagesUrl = ["/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png", "/assets/images/default-placeholder.png"];
          this.toasterService.Info(data,'Info');
         },
         error => {
-          //alert(error.error.ModelState[""][0]);
           this.toasterService.Error(error.error.Message,'Error');
         }
       );
@@ -124,7 +140,7 @@ export class AddVehicleComponent implements OnInit {
   }
 
   counter: number = 0;
-  handleFileInput(file: FileList) {
+ /*  handleFileInput(file: FileList) {
     this.fileToUpload.push(file.item(0));
     //Show image preview
     var reader = new FileReader();
@@ -133,5 +149,21 @@ export class AddVehicleComponent implements OnInit {
     }
     reader.readAsDataURL(this.fileToUpload[this.counter]);
     this.counter += 1;
+  } */
+
+  handleFileInput(file: FileList, element: number) {
+    this.pictureAdded=true;
+    this.fileToUpload[element] = (file.item(0));
+
+    //Show image preview
+    var reader = new FileReader();
+    reader.onload = (event: any) => {
+      this.imagesUrl[element] = event.target.result;
+    }
+    reader.readAsDataURL(file.item(0));
+    this.counter += 1;
+    if (this.counter == 3) {
+      this.counter = 0;
+    }
   }
 }

@@ -29,18 +29,21 @@ export class UserServices {
   getProfile():Observable<any>{
     return this.httpClient.get("http://localhost:51680/api/appUser/getCurrentUser", { observe: 'response' });
   }
+  getProfileById(userId:string):Observable<any>{
+    return this.httpClient.get("http://localhost:51680/api/appUser/getUserById/"+userId, { observe: 'response' });
+  }
   LogOut():Observable<any>{
     return this.httpClient.post("http://localhost:51680/api/Account/Logout",localStorage.jwt);
   }
   
-  EditUser(userData:User, fileToUpload:File,ETag:string){
+  EditUser(userData:User, fileToUpload:File,ETag:string):Observable<any>{
 
     let headers = new HttpHeaders();
     headers = headers.append('if-match', ETag);
 
    
     const formData: FormData = new FormData();
-    if(!userData.DocumentPicture)
+    if(!userData.DocumentPicture && fileToUpload!=null)
     {
       formData.append('Image', fileToUpload, fileToUpload.name);
     }
@@ -50,15 +53,17 @@ export class UserServices {
     formData.append('Email', userData.Email.toString());
     formData.append('UserId', userData.UserId.toString());
 
-    return this.httpClient.post('http://localhost:51680/api/appUser/editAppUser', formData, { "headers": headers });
+    return this.httpClient.post('http://localhost:51680/api/appUser/editAppUser', formData, { "headers": headers,observe: 'response' });
   }
 
   GetAllUsers(type:string,pageIndex:number,pageSize:number,editedFirst:boolean,approvedFirst:boolean): Observable<any> {
     return this.httpClient.get("http://localhost:51680/api/appUser/allUsers/"+pageIndex+"/"+pageSize+"/"+type+"/"+editedFirst+"/"+approvedFirst, { observe: 'response' }) ;
     
   }
-  ActivateUser(userId:number,activated:boolean): Observable<any> {
-    return this.httpClient.get("http://localhost:51680/api/appUser/activateUser/"+userId+"/"+activated) ;
+  ActivateUser(userId:number,activated:boolean,ETag:string): Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.append('if-match', ETag);
+    return this.httpClient.get("http://localhost:51680/api/appUser/activateUser/"+userId+"/"+activated, { "headers": headers }) ;
     
   }
   DeleteUser(userId:number): Observable<any> {

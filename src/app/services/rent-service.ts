@@ -20,7 +20,7 @@ export class RentServices {
   AddRentService(serviceData: ServiceData, fileToUpload: File) {
 
     const formData: FormData = new FormData();
-    if (!serviceData.Logo) {
+    if (!serviceData.Logo && fileToUpload!=null) {
       formData.append('Logo', fileToUpload, fileToUpload.name);
     }
 
@@ -31,22 +31,23 @@ export class RentServices {
     return this.httpClient.post('http://localhost:51680/api/rentService/addRentService', formData);
   }
 
-  EditRentService(serviceData: ServiceData, fileToUpload: File,ETag:string) {
-    
+  EditRentService(serviceData: ServiceData, fileToUpload: File, ETag: string): Observable<any> {
+
     let headers = new HttpHeaders();
     headers = headers.append('if-match', ETag);
 
     const formData: FormData = new FormData();
-
-    if (!serviceData.Logo) {
+    debugger;
+    if (serviceData.Logo) {
       formData.append('Logo', fileToUpload, fileToUpload.name);
     }
 
+    formData.append('RentServiceId', serviceData.RentServiceId.toString());
     formData.append('Name', serviceData.Name.toString());
     formData.append('Email', serviceData.Email.toString());
     formData.append('Description', serviceData.Description.toString());
 
-    return this.httpClient.post('http://localhost:51680/api/rentService/editRentService', formData, { "headers": headers });
+    return this.httpClient.post('http://localhost:51680/api/rentService/editRentService', formData, { "headers": headers,observe: 'response' });
   }
 
   GetAllServicesManager(isApproved: boolean, noOffices: boolean, noVehicles: boolean, pageIndex: number, pageSize: number): Observable<any> {
@@ -62,12 +63,19 @@ export class RentServices {
     return this.httpClient.get("http://localhost:51680/api/rentService/getRentService/" + sericeId, { observe: 'response' });
 
   }
-  ActivateRentService(sericeId: number, activated: boolean): Observable<any> {
-    return this.httpClient.get("http://localhost:51680/api/rentService/activateRentService/" + sericeId + "/" + activated, { observe: 'response' });
+  ActivateRentService(sericeId: number, activated: boolean, ETag: string): Observable<any> {
+
+    let headers = new HttpHeaders();
+    headers = headers.append('if-match', ETag);
+
+    return this.httpClient.get("http://localhost:51680/api/rentService/activateRentService/" + sericeId + "/" + activated, {  "headers": headers,observe: 'response' });
 
   }
   DeleteRentService(sericeId: number) {
     return this.httpClient.get("http://localhost:51680/api/rentService/deleteRentService/" + sericeId);
 
+  }
+  getImage(name: string): Observable<Blob> {
+    return this.httpClient.get('http://localhost:51680/api/rentService/GetServiceLogo?path=' + name, { responseType: "blob" });
   }
 }

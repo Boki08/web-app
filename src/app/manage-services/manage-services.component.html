@@ -15,7 +15,6 @@
 
               <div class="col col-md-7 ml-3">
                 <div class="row justify-content-md-center">
-                  <!-- <ul style="padding-left:0px"> -->
                   <div class="custom-control custom-checkbox mb-3  mr-auto">
                     <input type="checkbox" class="custom-control-input" (change)="setCheckBox1($event)"
                       #defaultUnchecked id="defaultUnchecked">
@@ -37,7 +36,6 @@
                       #defaultUnchecked4 id="defaultUnchecked4">
                     <label class="custom-control-label" for="defaultUnchecked4">Not Edited</label>
                   </div>
-                  <!-- </ul> -->
                 </div>
                 <div class="row justify-content-md-center mb-3">
                   <div class="form-group">
@@ -72,7 +70,6 @@
         <small>Available Rent Services</small>
       </h4>
       <hr>
-      <!-- <app-cards #cards (sendServiceId)="getVehicles($event)" [isUser]="true"></app-cards> -->
 
       <div *ngIf="showServiceWarning">
         <p class="text-warning">There are no Rent Services</p>
@@ -84,14 +81,14 @@
               <th scope="col">Num</th>
               <th scope="col">Name</th>
               <th scope="col">Edited</th>
-              <th scope="col">Activated</th>
+              <th scope="col">Approved</th>
             </tr>
 
           </thead>
           <tbody>
             <tr *ngFor="let service of rentServices ; let i = index" (click)="serviceDetails(service,i)" data-toggle="modal"
               data-target="#serviceModal">
-              <th scope="row">{{i+1}}</th>
+              <th scope="row">{{pageSize*(pageIndex-1)+i+1}}</th>
               <td>{{service.Name}}</td>
               <td>
                 <p [ngStyle]="{'color': (service!=null && service.ServiceEdited==true)? 'green' : 'red'}">{{(service!=null
@@ -147,10 +144,7 @@
                       <th scope="row">Email:</th>
                       <td>{{null != selectedService ? selectedService.Email: 'no data' }}</td>
                     </tr>
-                    <tr>
-                      <th scope="row">Description:</th>
-                      <td>{{null != selectedService ? selectedService.Description: 'no data' }}</td>
-                    </tr>
+
                     <tr>
                       <th scope="row">Edited:</th>
                       <td>
@@ -165,7 +159,7 @@
                         <p [ngStyle]="{'color': (selectedService!=null && selectedService.Activated==true)? 'green' : 'red'}">{{(selectedService!=null
                           && selectedService.Activated==true)?'Yes' : 'No' }}</p>
                         <label class="switch">
-                          <input type="checkbox" [disabled]="selectedService==null && checkBoxDisabled" (change)="setCheckBoxService($event)"
+                          <input type="checkbox" [disabled]="selectedService==null || checkBoxDisabled" (change)="setCheckBoxService($event)"
                             [checked]="(selectedService!=null && selectedService.Activated==true)">
                           <span class="slider round"></span>
                         </label>
@@ -180,7 +174,7 @@
               <div class="col" *ngIf="selectedService!=null">
                 <div class="shadow p-3 mb-5 bg-white rounded">
 
-                  <img class="d-block w-100" style="width:250px; height:250px" src='http://localhost:51680/api/rentService/GetServiceLogo/?path={{selectedService.Logo }}'
+                  <img class="d-block w-100" style="width:300px; height:300px" [src]="img"
                     alt="">
 
                 </div>
@@ -198,7 +192,7 @@
                 display: flex;
                 flex-flow: row wrap;
                 justify-content: center;"
-              *ngIf="showServiceProgress">
+              *ngIf="showProgressActivate || showProgressPicture">
               <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100"
                 aria-valuemin="0" aria-valuemax="100" style="width: 100%">
               </div>

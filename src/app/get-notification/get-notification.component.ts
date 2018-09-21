@@ -43,20 +43,13 @@ export class GetNotificationComponent implements OnInit {
          this._ngZone.run(() => {
       
            if(localStorage.role == 'Admin'){
-             //alert(notif);
              this.toasterService.Info(notif,'Info');
 
-             /* let len=this.messages.push(new Message(notif,'info'));
-             if(len>3){
-               this.messages.pop();
-             } */
+
            }
         });  
   }
-/* 
-  Info(){
-    this.toasterService.Info("hii",'title');
-  } */
+
 }
 
 export class Message {

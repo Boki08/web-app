@@ -1,4 +1,5 @@
 import { Vehicle } from "./vehicles";
+import { User } from "./user.model";
 
  export class OrderData{
     constructor(
@@ -11,6 +12,7 @@ import { Vehicle } from "./vehicles";
         public DepartureOfficeId: number,
         public ReturnOfficeId:number,
         public Vehicle:Vehicle,
+        public User:User,
         public VehicleReturned:boolean,
     ){ }
 }

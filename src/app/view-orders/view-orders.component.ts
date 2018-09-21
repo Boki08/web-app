@@ -57,7 +57,6 @@ export class ViewOrdersComponent implements OnInit {
       .subscribe(
         data => {
           this.orders = data.body as OrderData[];
-          //this.userData=this.users[0];
 
           let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
@@ -79,11 +78,6 @@ export class ViewOrdersComponent implements OnInit {
           }
           console.log(error.Message);
         })
-
-    //this.RentServices = JSON.parse(temp);
-
-
-    //(<ProcessComponent>componentRef.instance).data=step.desc;
 
   }
   OrderDetails(order: OrderData, orderPosition: number) {
@@ -107,7 +101,7 @@ export class ViewOrdersComponent implements OnInit {
     returnDate.setMinutes(0);
     returnDate.setHours(0);
 
-    if (returnDate <= today) {
+    if (this.vehicleReturned==true) {
       this.stopNavLockCount += 1;
       this.commentServices.CanComment(order.OrderId, order.UserId).subscribe(
         data => {
@@ -182,7 +176,7 @@ export class ViewOrdersComponent implements OnInit {
 
   }
 
-  onSubmit(comment: CommentModel) {//////////????????
+  onSubmit(comment: CommentModel) {
     this.showOrderProgress = true;
     comment.Grade = Number(this.selectedGrade);
     comment.OrderId = this.order.OrderId;
@@ -197,7 +191,7 @@ export class ViewOrdersComponent implements OnInit {
           this.displayComment = true;
           this.canComment = false;
 
-          this.toasterService.Info("Comment was posted", 'Error');
+          this.toasterService.Info("Comment was posted", 'Info');
         },
         error => {
           this.toasterService.Error(error.error.Message, 'Error');
@@ -219,6 +213,7 @@ export class ViewOrdersComponent implements OnInit {
           this.order.Vehicle = data.body as Vehicle;
           this.order.VehicleReturned = true;
           this.OrderDetails(this.order, 1);
+          this.toasterService.Info("Vehicle was returned", 'Info');
         },
         error => {
           this.toasterService.Error(error.error.Message, 'Error');

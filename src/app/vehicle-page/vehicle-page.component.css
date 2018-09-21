@@ -169,9 +169,14 @@ a, a:hover, a:focus {
   display: block;
 }
 
-#sidebar ul li a:hover {
+#sidebar li a:hover {
   color: rgb(33, 37, 41);
   background: #fff;
+}
+
+#sidebar ul  {
+  color: #fff;
+  background: #343A40;
 }
 
 #list   ul li a:hover {
@@ -284,3 +289,34 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 } 
+
+
+
+
+#serviceName, #rating {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+
+
+/* stars */
+.star {
+  font-size: 1.5rem;
+  color: #b0c4de;
+  position: relative;
+    display: inline-block;
+}
+/* .filled {
+  color: #1e90ff;
+} */
+.full {
+  color: #1e90ff;
+}
+.half {
+  position: absolute;
+  display: inline-block;
+  overflow: hidden;
+  color: #1e90ff;
+}

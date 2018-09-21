@@ -4,6 +4,7 @@ import { RentServices } from '../services/rent-service';
 import { finalize } from 'rxjs/operators'
 import { Validators, FormControl, FormGroup, NgForm } from '@angular/forms';
 import { ToasterService } from '../toaster-service/toaster-service.component';
+import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 
 @Component({
   selector: 'app-add-service',
@@ -12,10 +13,13 @@ import { ToasterService } from '../toaster-service/toaster-service.component';
 })
 export class AddServiceComponent implements OnInit {
 
-  constructor(private toasterService:ToasterService,private RentServices:RentServices) { }
+  constructor(private btmNavMessageService: btmNavDataService,private toasterService:ToasterService,private RentServices:RentServices) {
+   
+   }
   serviceData:ServiceData;
   fileToUpload : File = null;
   imageUrl: string = "/assets/images/default-placeholder.png"
+  disableBtn:boolean=false;
 
   addServiceForm: FormGroup;
   Name: FormControl;
@@ -27,6 +31,8 @@ export class AddServiceComponent implements OnInit {
   ngOnInit() {
     this.CreateFormControls();
     this.CreateForm();
+    this.btmNavMessageService.changeMessage(true);
+    this.btmNavMessageService.changeMessage(false);
   }
 
   CreateFormControls() {
@@ -66,22 +72,25 @@ export class AddServiceComponent implements OnInit {
   }
   onSubmit(serviceDataForm:ServiceData,form:NgForm){
     console.log(serviceDataForm);
-    
+    this.btmNavMessageService.changeMessage(true);
     serviceDataForm.Logo=null;
+    this.disableBtn=true;
     this.RentServices.AddRentService(serviceDataForm,this.fileToUpload) .pipe(finalize(
       () => {
-       /*  this.btmNavMessageService.changeMessage(false);
-        this.disableBtn = false; */
+        
+        
+        this.btmNavMessageService.changeMessage(false);
+        this.disableBtn = false;
       }))
     .subscribe(
       data=>{
+        this.fileToUpload==null;
+        this.imageUrl = "/assets/images/default-placeholder.png"
         this.toasterService.Info("Your changes updated successfully",'Info');
-        //alert("Your changes updated successfully");
         form.reset();
       },
       error=>{
         this.toasterService.Error(error.error.Message,'Error');
-        //alert(error.error.ModelState[""][0]);
       }
     );
   }

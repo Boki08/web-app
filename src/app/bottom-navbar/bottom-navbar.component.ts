@@ -10,20 +10,14 @@ import { Subscription } from 'rxjs';
 export class BottomNavbarComponent implements OnInit {
   message:string;
   showProgress: boolean = false; 
-  //subscription: Subscription;
-  constructor(private btmNavMessageService: btmNavDataService) {
-    //this.subscription = this.btmNavMessageService.getMessage().subscribe(message => { this.showProgress = message; });
-  }
+ 
+  constructor(private btmNavMessageService: btmNavDataService) {}
   
   ngOnInit() {
     this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress = message)
     
   }
-  
-  ngOnDestroy() {
-    // unsubscribe to ensure no memory leaks
-    //this.subscription.unsubscribe();
-}
+
 }
 
 

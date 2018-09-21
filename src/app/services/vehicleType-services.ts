@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 //import { Http, Response } from '@angular/http';
 import { Headers, RequestOptions } from '@angular/http';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
@@ -26,6 +26,16 @@ export class VehicleTypeServices {
     return this.httpClient.get('http://localhost:51680/api/typeOfVehicle/getVehicleTypes', { observe: 'response' });
   }
 
+  GetVehicleType(typeId:number): Observable<any> {
+    return this.httpClient.get('http://localhost:51680/api/typeOfVehicle/getTypeOfVehicle/'+typeId, { observe: 'response' });
+  }
+  EditVehicleType(vehileType:VehicleTypes,ETag:string): Observable<any> {
+
+    let headers = new HttpHeaders();
+    headers = headers.append('if-match', ETag);
+
+    return this.httpClient.post('http://localhost:51680/api/typeOfVehicle/editTypeOfVehicle',vehileType, {  "headers": headers,observe: 'response' });
+  }
  AddVehicleType(vehileType:VehicleTypes): Observable<any> {
     return this.httpClient.post('http://localhost:51680/api/typeOfVehicle/addVehicleType',vehileType, { observe: 'response' });
   }

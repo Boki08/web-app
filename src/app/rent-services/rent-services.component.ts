@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewChild, ComponentFactoryResolver, ViewContainerRef } from '@angular/core';
 import { ProcessItem } from './process-item';
-//import { ViewContainerRef } from '@angular/core/src/linker/view_container_ref';
 import { ProcessComponent } from './process';
 import { Services } from '../services/services.component';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
-//import { PagerServices } from '../services/pagerService';
 import { finalize } from 'rxjs/operators'
 import { ToasterService } from '../toaster-service/toaster-service.component';
 

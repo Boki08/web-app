@@ -34,6 +34,8 @@ export class ChangePasswordComponent implements OnInit {
 
     this.CreateFormControls();
     this.CreateForm();
+    this.btmNavMessageService.changeMessage(true);
+    this.btmNavMessageService.changeMessage(false);
   }
   CreateFormControls() {
     this.OldPassword = new FormControl('', [
@@ -43,7 +45,6 @@ export class ChangePasswordComponent implements OnInit {
     this.NewPassword = new FormControl('', [
       Validators.maxLength(30),
       Validators.minLength(6),
-      // Validators.pattern('^(?=.*\d)(?=.*[!@#$%^*/\._?])(?=.*[a-z])(?=.*[A-Z]).{7,}$'),
       Validators.required
     ]);
     this.ConfirmPassword = new FormControl('', Validators.required);
@@ -80,11 +81,10 @@ export class ChangePasswordComponent implements OnInit {
       .subscribe(
         data => {
           this.toasterService.Info("Your changes updated successfully",'Info');
-         // alert("Your changes updated successfully");
+      
         },
         error => {
           this.toasterService.Error(error.error.Message,'Error');
-          //alert(error.error.Message);
         }
       );
   }

@@ -35,7 +35,7 @@ export class OfficeServices {
 
   }
 
-  EditOffice(office: OfficeModel, fileToUpload: File,ETag:string) {
+  EditOffice(office: OfficeModel, fileToUpload: File,ETag:string): Observable<any> {
 
 
     let headers = new HttpHeaders();
@@ -43,12 +43,15 @@ export class OfficeServices {
 
     const formData: FormData = new FormData();
     formData.append('OfficeId', office.OfficeId.toString());
-    formData.append('Picture', fileToUpload, fileToUpload.name);
+    if (office.Picture) {
+      formData.append('Picture', fileToUpload, fileToUpload.name);
+    }
+    
     formData.append('Address', office.Address.toString());
     formData.append('Latitude', office.Latitude.toString());
     formData.append('Longitude', office.Longitude.toString());
     formData.append('RentServiceId', office.RentServiceId.toString());
-    return this.httpClient.post("http://localhost:51680/api/office/editOffice/", formData, { "headers": headers });
+    return this.httpClient.post("http://localhost:51680/api/office/editOffice/", formData, { observe: 'response',"headers": headers });
 
   }
   GetRentOffices(serviceId: number, pageIndex: number, pageSize: number) {

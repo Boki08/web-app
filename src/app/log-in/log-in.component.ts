@@ -1,5 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter, AfterContentInit } from '@angular/core';
-import { User } from '../models/user.model';
+import { Component, ViewChild, ElementRef, Output, EventEmitter, AfterContentInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { LogInService } from '../services/log-in-service';
 import { LogInData } from '../models/logInData';
@@ -7,6 +6,7 @@ import { UserServices } from '../services/user-services';
 import { btmNavDataService } from '../bottom-navbar/btmNavDataService';
 import { finalize } from 'rxjs/operators'
 import { ToasterService } from '../toaster-service/toaster-service.component';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -28,13 +28,12 @@ export class LogInComponent implements AfterContentInit {
 
 
 
-  constructor(private toasterService:ToasterService,private btmNavMessageService: btmNavDataService, private LogInService: LogInService, private UserService: UserServices) {
+  constructor(private router: Router,private toasterService:ToasterService,private btmNavMessageService: btmNavDataService, private LogInService: LogInService, private UserService: UserServices) {
   }
 
   ngOnInit() {
     this.btmNavMessageService.currentMessage.subscribe(message => this.showProgress1 = message)
     this.btmNavMessageService.changeMessage(false);
-   // this.testJwt();??
   }
   ngOnDestroy() {
     this.btmNavMessageService.changeMessage(false);
@@ -44,16 +43,7 @@ export class LogInComponent implements AfterContentInit {
     this.setUp();
 
   }
- /*  testJwt() {
-    if (!localStorage.jwt) {
-      this.isVisibleNotLogged = true;
-      this.isVisibleLogged = false;
-    }
-    else {
-      this.isVisibleNotLogged = false;
-      this.isVisibleLogged = true;
-    }
-  } */
+ 
   setUp() {
     if (!localStorage.jwt) {
       this.isVisibleNotLogged = true;
@@ -75,7 +65,6 @@ export class LogInComponent implements AfterContentInit {
       }
       this.isVisibleLogged = true;
 
-      //this.loggedButton.nativeElement.innerHTML = this.name;
     }
 
   }
@@ -85,18 +74,13 @@ export class LogInComponent implements AfterContentInit {
     form.reset();
     this.setUp();
   }
-  /*   getUser() {
-      this.UserService.getProfile().subscribe(
-        res => {
-          let data = res;
-  
-        });
-    } */
+
   logOut() {
     this.btmNavMessageService.changeMessage(true);
     this.UserService.LogOut().pipe(finalize(
       () => {
         this.btmNavMessageService.changeMessage(false);
+        this.router.navigate(['/home']);
       }))
       .subscribe(
         data => {
@@ -106,13 +90,11 @@ export class LogInComponent implements AfterContentInit {
           this.setUp();
           this.loggedOutEvent.emit();
           this.toasterService.Info("Logged Out",'Info');
-          //alert("Logged out");
 
         },
         error => {
           if (localStorage.jwt) { localStorage.removeItem("jwt"); }
           if (localStorage.role) { localStorage.removeItem("role"); }
-          //alert(error.error.Message);
           this.toasterService.Error(error.error.Message,'Error');
           this.setUp();
           this.loggedOutEvent.emit();

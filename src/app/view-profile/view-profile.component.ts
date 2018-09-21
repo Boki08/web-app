@@ -38,12 +38,32 @@ export class ViewProfileComponent implements OnInit {
           
         },
         error => {
-         // alert(error.error.Message);
          this.toasterService.Error(error.error.Message,'Error');
         }
       )
   }
   ngOnDestroy() {
     this.btmNavMessageService.changeMessage(false);
+  }
+  deleteProfile(){
+    this.userServices.DeleteUser( parseInt(this.userData.UserId)).pipe(finalize(
+      () => {
+        this.btmNavMessageService.changeMessage(false);
+      }))
+      .subscribe(
+        data => {
+          localStorage.removeItem("jwt");
+          localStorage.removeItem("role");
+         
+          this.toasterService.Info("Logged Out",'Info');
+          let win = (window as any);
+          win.location.reload();
+          
+        },
+        error => {
+
+         this.toasterService.Error(error.error.Message,'Error');
+        }
+      )
   }
 }

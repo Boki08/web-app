@@ -86,12 +86,8 @@
       </div>
     </div>
 
-    <!-- 
-        <hr/>
-        <pre>Model: {{ model | json }}</pre> 
-    <hr/>-->
     <div class="form-group row pt-3 justify-content-md-center">
-      <button class="btn btn-primary justify-content-md-center" [disabled]="!f.valid" type="submit">Add</button>
+      <button class="btn btn-primary justify-content-md-center" [disabled]="!f.valid || disableBtn" type="submit">Add</button>
     </div>
   </form>
 </div>

@@ -14,7 +14,7 @@ import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
   selector: 'app-manage-users',
   templateUrl: './manage-users.component.html',
   styleUrls: ['./manage-users.component.css'],
-   providers: [{
+  providers: [{
     // register the interceptor to our angular module
     provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true
   }]
@@ -22,11 +22,11 @@ import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 
 export class ManageUsersComponent implements OnInit {
 
-  constructor(private sanitizer: DomSanitizer,private toasterService: ToasterService, private btmNavMessageService: btmNavDataService, private UserServices: UserServices) { }
+  constructor(private sanitizer: DomSanitizer, private toasterService: ToasterService, private btmNavMessageService: btmNavDataService, private UserServices: UserServices) { }
 
   pageSize: number = 5;
 
-  img:SafeUrl="/assets/images/default-placeholder.png";
+  img: SafeUrl = "/assets/images/default-placeholder.png";
 
   users: User[];
   managers: User[];
@@ -48,7 +48,7 @@ export class ManageUsersComponent implements OnInit {
   isUser: boolean = true;
   enabledFirst: boolean = false;
   disabledFirst: boolean = false;
-  showPicture:boolean=false;
+  showPicture: boolean = false;
 
   pageIndexU: number = 1;
   totalPagesNumberU: number = 0;
@@ -57,8 +57,8 @@ export class ManageUsersComponent implements OnInit {
   managerCounter: number;
   usercounter: number;
 
+userEtag:string;
 
-  
 
 
   ngOnInit() {
@@ -68,7 +68,7 @@ export class ManageUsersComponent implements OnInit {
   ngOnDestroy() {
     this.btmNavMessageService.changeMessage(false);
   }
-  
+
   public getAllUsers(type: string) {
     this.btmNavMessageService.changeMessage(true);
     if (type == "AppUser") {
@@ -80,8 +80,7 @@ export class ManageUsersComponent implements OnInit {
           data => {
 
             this.users = data.body as User[];
-            /* if (this.users.length > 0) { */
-            //this.userData=this.users[0];
+
 
             let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
@@ -90,11 +89,7 @@ export class ManageUsersComponent implements OnInit {
             this.totalPagesNumberU = jsonData.totalPages;
             this.showUsers = true;
             this.showUsersWarning = false;
-            /*  }
-             else {
-               this.showUsers = false;
- 
-             } */
+
           },
           error => {
             if (error.error.Message === "There are no Users") {
@@ -105,7 +100,7 @@ export class ManageUsersComponent implements OnInit {
               this.showUsersWarning = false;
               this.toasterService.Error(error.error.Message, 'Error');
             }
-            //console.log(error);
+
           })
     }
     else {//manager
@@ -117,8 +112,7 @@ export class ManageUsersComponent implements OnInit {
           data => {
 
             this.managers = data.body as User[];
-            //this.userData=this.users[0];
-            /*  if (this.managers.length > 0) { */
+
             let jsonData = JSON.parse(data.headers.get('Paging-Headers'));
 
             this.pageIndexM = jsonData.currentPage;
@@ -127,11 +121,7 @@ export class ManageUsersComponent implements OnInit {
 
             this.showManagers = true;
             this.showManagersWarning = false;
-            /* }
-            else {
-              this.showManagers = false;
 
-            } */
           },
           error => {
             if (error.error.Message === "There are no Managers") {
@@ -166,7 +156,6 @@ export class ManageUsersComponent implements OnInit {
   private selectedLink: string = "AppUser";
 
   setTab(value: string): void {
-    // if(value=="AppUSer")//za vracanje na 0, zbog pamcenja paginacije??
     this.getAllUsers(value);
     this.selectedLink = value;
     if (value == "AppUser") {
@@ -186,70 +175,87 @@ export class ManageUsersComponent implements OnInit {
   }
 
   userDetails(user: User, counter: number) {
+    this.img  = "/assets/images/default-placeholder.png";
     this.userData = user;
     this.usercounter = counter;
 
     this.userProgress = true;
-    
 
-    this.UserServices.getImage(this.userData.DocumentPicture).pipe(finalize(
+    this.UserServices.getProfileById(this.userData.UserId).pipe(finalize(
       () => {
-        this.userProgress = false;
-     
-          this.disableButtons = false;
-        
+
       }))
       .subscribe(
         data => {
-this.createImageFromBlob(data);
+          this.userEtag = JSON.parse(data.headers.get('ETag'));
+          this.userData=data.body;
+
+          this.users[counter]=this.userData;
+
+          this.UserServices.getImage(this.userData.DocumentPicture).pipe(finalize(
+            () => {
+              this.userProgress = false;
+              this.disableButtons = false;
+            }))
+            .subscribe(
+              data => {
+                this.createImageFromBlob(data);
+              },
+              error => {
+                this.toasterService.Error(error.error.Message, 'Error');
+              })
+
+
 
         },
         error => {
-          /* if (error.error.Message === "There are no Users") {
-            this.showUsers = false;
-            this.showUsersWarning = true;
-          }
-          else {
-            this.showUsersWarning = false; */
-            this.toasterService.Error(error.error.Message, 'Error');
-         /*  } */
-          //console.log(error);
+          this.userProgress = false;
+          this.toasterService.Error(error.error.Message, 'Error');
         })
+
+   
   }
   createImageFromBlob(image: Blob) {
     let reader = new FileReader();
     reader.addEventListener("load", () => {
-       this.img =  this.sanitizer.bypassSecurityTrustResourceUrl(reader.result as string);
+      this.img = this.sanitizer.bypassSecurityTrustResourceUrl(reader.result as string);
     }, false);
- 
+
     if (image) {
-       reader.readAsDataURL(image);
+      reader.readAsDataURL(image);
     }
- }
+  }
   managerDetails(manager: User, counter: number) {
     this.managerData = manager;
     this.managerCounter = counter;
   }
 
 
-  acceptUser(counter: number, userID: number, activate: boolean) {//enable/disable user
+  acceptUser( userID: number, activate: boolean) {
     this.userProgress = true;
     if (activate == true) {
       this.disableButtons = true;
     }
-    this.UserServices.ActivateUser(userID, activate).pipe(finalize(
+    this.UserServices.ActivateUser(userID, activate,this.userEtag).pipe(finalize(
       () => {
         this.userProgress = false;
       }))
       .subscribe(
         data => {
           this.userData = data;
-          this.users[counter] = data;
+          this.users[this.usercounter] = data;
 
         },
         error => {
-          this.disableButtons = false;//????????????????????????????????????????????????????????
-
+          this.disableButtons = false;
+          if(error.statusText== "Precondition Failed")
+          {
+            this.toasterService.Error("Data was already changed, please reload",'Error');
+          }
+          else
+          {
+          this.toasterService.Error(error.error.Message,'Error');
+          }
           console.log(error);
         }
       )
@@ -265,7 +271,7 @@ this.createImageFromBlob(data);
     else {
       managerEnabled = false;
     }
-    this.UserServices.ActivateUser(parseInt(this.managerData.UserId), managerEnabled).pipe(finalize(
+    this.UserServices.ActivateUser(parseInt(this.managerData.UserId), managerEnabled,this.userEtag).pipe(finalize(
       () => {
         this.disableCheckButton = false;
         this.managerProgress = false;
@@ -278,7 +284,14 @@ this.createImageFromBlob(data);
 
         },
         error => {
-
+          if(error.statusText== "Precondition Failed")
+          {
+            this.toasterService.Error("Data was already changed, please reload",'Error');
+          }
+          else
+          {
+          this.toasterService.Error(error.error.Message,'Error');
+          }
           console.log(error);
         })
   }
@@ -290,14 +303,17 @@ this.createImageFromBlob(data);
       }))
       .subscribe(
         data => {
-          //this.managerData = data;
           this.users.splice[this.usercounter]
-          // this.disableButtons = false;
-          //this.managerProgress=false;
         },
         error => {
-          //this.managerProgress=false;
-          //this.disableButtons = false;
+          if(error.statusText== "Precondition Failed")
+          {
+            this.toasterService.Error("Data was already changed, please reload",'Error');
+          }
+          else
+          {
+          this.toasterService.Error(error.error.Message,'Error');
+          }
           console.log(error.Message);
         }
       )
@@ -319,7 +335,6 @@ this.createImageFromBlob(data);
       this.approvedFirst = false;
     }
     this.getAllUsers("AppUser");
-    //this.selectedRadio = value;
 
   }
 
@@ -339,7 +354,6 @@ this.createImageFromBlob(data);
       this.disabledFirst = false;
     }
     this.getAllUsers("AppUser");
-    //this.selectedRadio = value;
 
   }
 }
