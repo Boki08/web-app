@@ -63,7 +63,7 @@ export class UserServices {
   ActivateUser(userId:number,activated:boolean,ETag:string): Observable<any> {
     let headers = new HttpHeaders();
     headers = headers.append('if-match', ETag);
-    return this.httpClient.get("http://localhost:51680/api/appUser/activateUser/"+userId+"/"+activated, { "headers": headers }) ;
+    return this.httpClient.get("http://localhost:51680/api/appUser/activateUser/"+userId+"/"+activated, { "headers": headers,observe: 'response' }) ;
     
   }
   DeleteUser(userId:number): Observable<any> {

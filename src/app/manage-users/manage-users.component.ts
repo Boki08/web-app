@@ -59,6 +59,7 @@ export class ManageUsersComponent implements OnInit {
 
 userEtag:string;
 
+managerEtag:string;
 
 
   ngOnInit() {
@@ -195,10 +196,11 @@ userEtag:string;
           this.UserServices.getImage(this.userData.DocumentPicture).pipe(finalize(
             () => {
               this.userProgress = false;
-              this.disableButtons = false;
+             
             }))
             .subscribe(
               data => {
+                this.disableButtons = false;
                 this.createImageFromBlob(data);
               },
               error => {
@@ -228,6 +230,27 @@ userEtag:string;
   managerDetails(manager: User, counter: number) {
     this.managerData = manager;
     this.managerCounter = counter;
+
+    this.disableCheckButton = true;
+
+    this.managerProgress = true;
+
+    this.UserServices.getProfileById(this.managerData.UserId).pipe(finalize(
+      () => {
+        this.managerProgress = false;
+      }))
+      .subscribe(
+        data => {
+          this.managerEtag = JSON.parse(data.headers.get('ETag'));
+          this.managerData=data.body;
+          this.disableCheckButton = false;
+
+          this.managers[counter]=this.managerData;
+        },
+        error => {
+          
+          this.toasterService.Error(error.error.Message, 'Error');
+        })
   }
 
 
@@ -242,9 +265,17 @@ userEtag:string;
       }))
       .subscribe(
         data => {
-          this.userData = data;
-          this.users[this.usercounter] = data;
+          this.userData = data.body;
+          this.users[this.usercounter] = data.body;
+          this.userEtag = JSON.parse(data.headers.get('ETag'));
 
+          if (activate == true) {
+            this.toasterService.Info("User was activated",'Info');
+          }
+          else{
+            this.toasterService.Info("User was deactivated",'Info');
+          }
+         
         },
         error => {
           this.disableButtons = false;
@@ -271,7 +302,7 @@ userEtag:string;
     else {
       managerEnabled = false;
     }
-    this.UserServices.ActivateUser(parseInt(this.managerData.UserId), managerEnabled,this.userEtag).pipe(finalize(
+    this.UserServices.ActivateUser(parseInt(this.managerData.UserId), managerEnabled,this.managerEtag).pipe(finalize(
       () => {
         this.disableCheckButton = false;
         this.managerProgress = false;
@@ -279,9 +310,17 @@ userEtag:string;
       }))
       .subscribe(
         data => {
-          this.managerData = data;
-          this.managers[this.managerCounter] = data;
+          this.managerEtag = JSON.parse(data.headers.get('ETag'));
+          this.managerData = data.body;
+          this.managers[this.managerCounter] = data.body;
 
+          if (managerEnabled == true) {
+            this.toasterService.Info("Manager was activated",'Info');
+          }
+          else{
+            this.toasterService.Info("Manager was deactivated",'Info');
+          }
+         
         },
         error => {
           if(error.statusText== "Precondition Failed")

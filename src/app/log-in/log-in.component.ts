@@ -66,7 +66,6 @@ export class LogInComponent implements AfterContentInit {
       this.isVisibleLogged = true;
 
     }
-
   }
   onSubmit(user: LogInData, form: NgForm) {
     console.log(user);
@@ -79,25 +78,28 @@ export class LogInComponent implements AfterContentInit {
     this.btmNavMessageService.changeMessage(true);
     this.UserService.LogOut().pipe(finalize(
       () => {
+        if (localStorage.jwt) { localStorage.removeItem("jwt"); }
+          if (localStorage.role) { localStorage.removeItem("role"); }
         this.btmNavMessageService.changeMessage(false);
+        this.loggedOutEvent.emit();
+        this.setUp();
         this.router.navigate(['/home']);
       }))
       .subscribe(
         data => {
 
-          localStorage.removeItem("jwt");
-          localStorage.removeItem("role");
-          this.setUp();
-          this.loggedOutEvent.emit();
+          
+          
+         
           this.toasterService.Info("Logged Out",'Info');
 
         },
         error => {
-          if (localStorage.jwt) { localStorage.removeItem("jwt"); }
-          if (localStorage.role) { localStorage.removeItem("role"); }
+          //if (localStorage.jwt) { localStorage.removeItem("jwt"); }
+          //if (localStorage.role) { localStorage.removeItem("role"); }
           this.toasterService.Error(error.error.Message,'Error');
-          this.setUp();
-          this.loggedOutEvent.emit();
+          //this.setUp();
+          //this.loggedOutEvent.emit();
 
         }
       );

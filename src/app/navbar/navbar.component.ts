@@ -16,6 +16,10 @@ export class NavbarComponent implements OnInit {
   route2: string;
   route3: string;
   userNav: boolean;
+
+  link1Visible: boolean=false;
+  link2Visible: boolean=false;
+  link3Visible: boolean=false;
   ngOnInit() {
     this.loggedOut();
   }
@@ -27,6 +31,10 @@ export class NavbarComponent implements OnInit {
       this.route1 = "/manageUsers";
       this.route2 = "/manageServices";
       this.route3 = "/vehicleType";
+
+      this.link1Visible=true;
+      this.link2Visible=true;
+      this.link3Visible=true;
       
       this.pageName="Admin Services";
     }
@@ -35,6 +43,11 @@ export class NavbarComponent implements OnInit {
       this.link2 = "Manage Rent Services";
       this.route1 = "/addServiceComponent";
       this.route2 = "/editServicesComponent";
+
+      this.link1Visible=true;
+      this.link2Visible=true;
+      this.link3Visible=false;
+      
 
       this.pageName="Manager Services";
     }
@@ -46,12 +59,20 @@ export class NavbarComponent implements OnInit {
       this.route1 = "/rentServices";
       this.route2 = "/viewOrdersComponent";
 
+      this.link1Visible=true;
+      this.link2Visible=true;
+      this.link3Visible=false;
+
       this.pageName="User Services";
     }
     else {
 
       this.link1 = "Rent Services";
       this.route1 = "/rentServices";
+
+      this.link1Visible=true;
+      this.link2Visible=false;
+      this.link3Visible=false;
 
       this.pageName="Visitor Services";
     }

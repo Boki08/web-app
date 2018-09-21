@@ -9,15 +9,15 @@
    
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item active" [routerLinkActive]="['active']">
+        <li class="nav-item active" [routerLinkActive]="['active']" *ngIf="link1Visible">
           <a class="nav-link" [routerLink]="route1" href="#">{{link1}}</a>
         </li>
-        <li class="nav-item" [routerLinkActive]="['active']">
+        <li class="nav-item" [routerLinkActive]="['active']" *ngIf="link2Visible">
           <a class="nav-link" [routerLink]="route2" href="#">{{link2}}</a>
 
         </li>
 
-        <li class="nav-item" [routerLinkActive]="['active']">
+        <li class="nav-item" [routerLinkActive]="['active']" *ngIf="link3Visible">
           <a class="nav-link" [routerLink]="route3" href="#">{{link3}}</a>
 
         </li>
